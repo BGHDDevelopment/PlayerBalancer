@@ -1,0 +1,142 @@
+version: '${project.version}'
+
+# Providers of this plugin
+# NONE: Returns no server
+# DIRECT: Returns the only server in the list
+# LOCALIZED: Returns the server that matches a region (testing)
+# LOWEST: Returns the server with the least players online
+# RANDOM: Returns a random server
+# PROGRESSIVE: Returns the first server that is not full
+# FILLER: Returns the server with the most players online that is not full
+
+settings:
+  # The plugin will be disabled as default
+  enabled: false
+
+  # Disable the messages the plugin prints out when loading
+  silent-startup: false
+
+  # Whether the plugin should ask you to update or not
+  check-updates: true
+
+  # Pings to the servers to see if they can be accessed or not
+  server-check:
+    # If this is disabled the players will connect to the first server available
+    enabled: true
+
+    # Use either CUSTOM or GENERIC, the first one generally works the best
+    tactic: CUSTOM
+
+    # The attempts before giving up on getting a server for a player
+    attempts: 5
+
+    # The interval between every round of checks
+    interval: 10000
+
+    # This prints info every time the plugin checks a server and prints its results
+    print-info: false
+
+    # The descriptions that mark a server as non accessible
+    marker-motds: ["Server is not accessible", "Gamemode has already started"]
+
+  # This will connect the players to a server
+  reconnect-kick:
+    enabled: true
+
+    # If enabled, the reasons will work as a blacklist instead of a whitelist
+    inverted: false
+
+    # The reasons that determine if a player is reconnected or not, supports regex
+    reasons: []
+
+    # Sections where this feature is ignored
+    ignored: []
+
+    # This prints info every time a player gets kicked telling you the reason and if it matches the reasons
+    print-info: false
+
+    # The message the player is sent when kicked, comment it out to remove the message
+    message: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
+
+    # Override the behavior with rules
+    rules: {}
+
+  backward-command:
+    enabled: true
+    name: 'backward'
+    aliases: ['lobby', 'hub', 'back']
+    permission: ''
+
+    # Sections where this command is ignored
+    ignored: []
+
+    # Whether the command can accept the name of a section as a target
+    arguments: false
+
+    # Override the behavior with rules
+    rules: {}
+
+  # This gets the country of a player and decides to which server the player should go
+  # WARNING: In testing stage
+  geolocation:
+    enabled: false
+    rules: {}
+
+  # This will reload the plugin everytime you execute /greload
+  auto-reload: true
+
+  # Support for getting the players on a server with RedisBungee
+  redis-bungee: false
+
+  # Assign a target to a player instead of looking every time for one
+  assign-targets: false
+
+  messages:
+    connecting: '&aConnecting to {server}'
+    failure: '&cCould not find a server to connect to'
+    unavailable: '&cThis command cannot be executed on this server'
+    unknown: '&cCould not find a section with that name'
+
+# Here you have an example of what you can do with the sections
+# It is recommended to create your own sections
+# The plugin will print out info telling you if your config is right or not
+# The best way to understand this is to play around with it
+# You can use regex to match a set of servers
+sections:
+  general-lobbies:
+    principal: true
+    provider: RANDOM
+    server: 'general-lobbies'
+    servers: ["Lobby1", "Lobby2", "Lobby3"]
+  eggwars-lobbies:
+    parent: 'general-lobbies'
+    server: 'eggwars-lobbies'
+    servers: ["EWLobby1", "EWLobby2", "EWLobby3"]
+  eggwars-games:
+    provider: FILLER
+    parent: 'eggwars-lobbies'
+    servers: ["EW1", "EW2", "EW3", "EW4", "EW5"]
+    command:
+      name: 'playeggwars'
+      permission: ''
+      aliases: []
+  skywars-lobbies:
+    parent: 'general-lobbies'
+    server: 'skywars-lobbies'
+    servers: ["SWLobby1", "SWLobby2", "SWLobby3"]
+  skywars-games:
+    provider: FILLER
+    parent: 'skywars-lobbies'
+    servers: ["SW1", "SW2", "SW3", "SW4", "SW5"]
+    command:
+      name: 'playskywars'
+      permission: ''
+      aliases: []
+  practice:
+    provider: LOCALIZED
+    parent: 'general-lobbies'
+    servers: ["EUPractice", "USPractice"]
+    command:
+      name: 'practice'
+      permission: ''
+      aliases: ["rektnoobs"]
