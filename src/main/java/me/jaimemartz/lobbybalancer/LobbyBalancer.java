@@ -1,5 +1,6 @@
 package me.jaimemartz.lobbybalancer;
 
+import com.google.gson.Gson;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import me.jaimemartz.faucet.ConfigFactory;
 import me.jaimemartz.lobbybalancer.commands.BackwardCommand;
@@ -29,6 +30,7 @@ public class LobbyBalancer extends Plugin {
     public static final String NONCE_ID = "%%__NONCE__%%";
 
     private boolean failed = false;
+    private Gson gson;
 
     private ConfigFactory factory;
     private PingManager pingManager;
@@ -40,6 +42,7 @@ public class LobbyBalancer extends Plugin {
     @Override
     public void onEnable() {
         instance = this;
+        gson = new Gson();
         if (factory == null) {
             factory = new ConfigFactory(this);
             factory.register(0, "config.yml");
@@ -197,6 +200,10 @@ public class LobbyBalancer extends Plugin {
 
         instance.getLogger().info(String.format(format, args));
         return true;
+    }
+
+    public Gson getGson() {
+        return gson;
     }
 
     public GeolocationManager getGeolocationManager() {

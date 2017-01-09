@@ -1,5 +1,6 @@
 package me.jaimemartz.lobbybalancer.section;
 
+import com.google.gson.annotations.Expose;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
 import me.jaimemartz.lobbybalancer.utils.AdapterFix;
@@ -15,16 +16,34 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServerSection {
-    private final String name;
     private final Configuration section;
     private final SectionManager manager;
 
+    @Expose
+    private final String name;
+
+    @Expose
     private boolean principal;
+
+    @Expose
     private ServerSection parent;
+
+    @Expose
+    private boolean inherit = false;
+
+    @Expose
     private List<ServerInfo> servers;
+
+    @Expose
     private ProviderType provider;
+
+    @Expose
     private ServerInfo server;
+
+    @Expose
     private SectionCommand command;
+
+    @Expose
     private boolean valid = false;
 
     ServerSection(String name, Configuration section, SectionManager manager) {
@@ -37,6 +56,14 @@ public class ServerSection {
     void preInit(LobbyBalancer plugin) {
         principal = section.getBoolean("principal", false);
 
+        if (principal) {
+            ServerSection section = manager.getPrincipal();
+            if (section != null) {
+                throw new IllegalStateException(String.format("The section \"%s\" is already principal", section.getName()));
+            } else {
+                manager.setPrincipal(this);
+            }
+        }
         if (ConfigUtils.isSet(section, "parent")) {
             if (principal) {
                 throw new IllegalStateException(String.format("The principal section \"%s\" has a parent set", name));
@@ -84,14 +111,6 @@ public class ServerSection {
             throw new IllegalStateException(String.format("The section \"%s\" and \"%s\" are parents of each other", this.name, parent.name));
         }
 
-        if (principal) {
-            manager.getSections().forEach((name, section) -> {
-                if (section.isPrincipal() && section != this) {
-                    throw new IllegalStateException(String.format("The section \"%s\" is already principal", section.getName()));
-                }
-            });
-        }
-
         if (ConfigUtils.isSet(section, "provider")) {
             try {
                 provider = ProviderType.valueOf(section.getString("provider").toUpperCase());
@@ -118,23 +137,24 @@ public class ServerSection {
                 sect = sect.parent;
             }
 
-            LobbyBalancer.printStartupInfo("The section \"%s\" inherits the provider from parent section \"%s\"", this.name, sect.name);
+            LobbyBalancer.printStartupInfo("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name);
             provider = sect.provider;
+            inherit = true;
         }
 
         if (provider == null) {
             throw new IllegalStateException(String.format("The section \"%s\" does not have a provider", name));
         }
 
-        if (ConfigUtils.isSet(section, "server")) {
+        if (ConfigUtils.isSet(section, "section-server")) {
             int port = (int) Math.floor(Math.random() * (0xFFFF + 1));
-            ServerInfo server = plugin.getProxy().constructServerInfo("@" + section.getString("server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
+            server = plugin.getProxy().constructServerInfo("@" + section.getString("section-server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
             plugin.getSectionManager().register(server, this);
             AdapterFix.addFakeServer(server);
         }
 
-        if (ConfigUtils.isSet(section, "command")) {
-            Configuration other = section.getSection("command");
+        if (ConfigUtils.isSet(section, "section-command")) {
+            Configuration other = section.getSection("section-command");
 
             String name = other.getString("name");
             String permission = other.getString("permission");
@@ -169,6 +189,10 @@ public class ServerSection {
 
     public ProviderType getProvider() {
         return provider;
+    }
+
+    public boolean isProviderInherit() {
+        return inherit;
     }
 
     public ServerInfo getServer() {

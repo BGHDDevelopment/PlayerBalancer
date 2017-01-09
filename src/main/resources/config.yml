@@ -39,7 +39,7 @@ settings:
     # The descriptions that mark a server as non accessible
     marker-motds: ["Server is not accessible", "Gamemode has already started"]
 
-  # This will connect the players to a server
+  # This will connect the player to a server of the parent of the section the player is kicked from
   reconnect-kick:
     enabled: true
 
@@ -61,8 +61,10 @@ settings:
     # Override the behavior with rules
     rules: {}
 
+  # This will connect the player to a server of the parent of the section the player is currently on
   backward-command:
     enabled: true
+
     name: 'backward'
     aliases: ['lobby', 'hub', 'back']
     permission: ''
@@ -80,7 +82,15 @@ settings:
   # WARNING: In testing stage
   geolocation:
     enabled: false
-    rules: {}
+
+    # This prints info every time the plugin checks the country of a player (while being used)
+    print-info: true
+
+    # The rules for the LOCALIZED provider, every section using it has to have a rule
+    rules:
+      practice:
+        'EUPractice': ["Country1", "Country2"]
+        'USPractice': ["Country3", "Country4"]
 
   # This will reload the plugin everytime you execute /greload
   auto-reload: true
@@ -106,29 +116,29 @@ sections:
   general-lobbies:
     principal: true
     provider: RANDOM
-    server: 'general-lobbies'
+    section-server: 'general-lobbies'
     servers: ["Lobby1", "Lobby2", "Lobby3"]
   eggwars-lobbies:
     parent: 'general-lobbies'
-    server: 'eggwars-lobbies'
+    section-server: 'eggwars-lobbies'
     servers: ["EWLobby1", "EWLobby2", "EWLobby3"]
   eggwars-games:
     provider: FILLER
     parent: 'eggwars-lobbies'
     servers: ["EW1", "EW2", "EW3", "EW4", "EW5"]
-    command:
+    section-command:
       name: 'playeggwars'
       permission: ''
       aliases: []
   skywars-lobbies:
     parent: 'general-lobbies'
-    server: 'skywars-lobbies'
+    section-server: 'skywars-lobbies'
     servers: ["SWLobby1", "SWLobby2", "SWLobby3"]
   skywars-games:
     provider: FILLER
     parent: 'skywars-lobbies'
     servers: ["SW1", "SW2", "SW3", "SW4", "SW5"]
-    command:
+    section-command:
       name: 'playskywars'
       permission: ''
       aliases: []
@@ -136,7 +146,7 @@ sections:
     provider: LOCALIZED
     parent: 'general-lobbies'
     servers: ["EUPractice", "USPractice"]
-    command:
+    section-command:
       name: 'practice'
       permission: ''
       aliases: ["rektnoobs"]

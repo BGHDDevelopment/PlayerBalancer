@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ConnectionIntent {
-    public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
+    protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
         ServerInfo target = this.findTarget(plugin, player, section);
         Messager msgr = new Messager(player);
 
@@ -44,11 +44,11 @@ public abstract class ConnectionIntent {
         servers.addAll(section.getServers());
 
         while (intents-- >= 1) {
-            ServerInfo target = provider.requestTarget(plugin, section, servers, player);
-            if (target == null) continue;
-
             if (servers.size() == 0) return null;
             if (servers.size() == 1) return servers.get(0);
+
+            ServerInfo target = provider.requestTarget(plugin, section, servers, player);
+            if (target == null) continue;
 
             ServerStatus status = plugin.getPingManager().getStatus(target);
             if (status.isAccessible()) {

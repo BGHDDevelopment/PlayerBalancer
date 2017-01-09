@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SectionManager {
+    private ServerSection principal;
     private final LobbyBalancer plugin;
     private final Map<String, ServerSection> sectionStorage = new ConcurrentHashMap<>();
     private final Map<ServerInfo, ServerSection> sectionServers = new ConcurrentHashMap<>();
@@ -96,5 +97,13 @@ public class SectionManager {
 
     public boolean hasSection(String name) {
         return sectionStorage.containsKey(name);
+    }
+
+    public ServerSection getPrincipal() {
+        return principal;
+    }
+
+    protected void setPrincipal(ServerSection principal) {
+        this.principal = principal;
     }
 }

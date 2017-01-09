@@ -21,6 +21,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<List<String>> SERVER_CHECK_MARKER_MOTDS = new ConfigEntry<>(0, "settings.server_check.marker-motds", Arrays.asList("Server is not accessible", "Gamemode has already started"));
 
     public static final ConfigEntry<Boolean> GEOLOCATION_ENABLED = new ConfigEntry<>(0, "settings.geolocation.enabled", true);
+    public static final ConfigEntry<Boolean> GEOLOCATION_PRINT_INFO = new ConfigEntry<>(0, "settings.geolocation.print-info", true);
 
     public static final ConfigEntry<Boolean> RECONNECT_KICK_ENABLED = new ConfigEntry<>(0, "settings.reconnect-kick.enabled", true);
     public static final ConfigEntry<Boolean> RECONNECT_KICK_INVERTED = new ConfigEntry<>(0, "settings.reconnect-kick.inverted", false);

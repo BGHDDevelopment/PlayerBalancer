@@ -43,9 +43,17 @@ public enum ProviderType {
                     CountryResponse countryResponse = plugin.getGeolocationManager().getReader().country(address);
                     Country country = countryResponse.getCountry();
 
+                    if (ConfigEntries.GEOLOCATION_PRINT_INFO.get()) {
+                        plugin.getLogger().info(String.format(
+                                "Player Address: \"%s\", Country Name: \"%s\"",
+                                address.toString(),
+                                country.getName()
+                        ));
+                    }
+
                     for (String name : rule.getKeys()) {
                         List<String> countries = rule.getStringList(name);
-                        if (countries.contains(country.getName().toUpperCase())) {
+                        if (countries.contains(country.getName())) {
                             ServerInfo server = plugin.getProxy().getServerInfo(name);
                             if (server != null) {
                                 return server;
