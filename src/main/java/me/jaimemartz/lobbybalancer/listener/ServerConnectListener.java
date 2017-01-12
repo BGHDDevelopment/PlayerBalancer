@@ -6,7 +6,7 @@ import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
-import me.jaimemartz.lobbybalancer.utils.PlayerLocker;
+import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

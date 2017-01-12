@@ -12,10 +12,10 @@ import net.md_5.bungee.api.plugin.Command;
 import java.util.List;
 
 public class SectionCommand extends Command {
-    private final LobbyBalancer plugin;
-    private final ServerSection section;
+    private transient final LobbyBalancer plugin;
+    private transient final ServerSection section;
 
-    public SectionCommand(LobbyBalancer plugin, String name, String permission, List<String> aliases, ServerSection section) {
+    SectionCommand(LobbyBalancer plugin, String name, String permission, List<String> aliases, ServerSection section) {
         super(name, permission, aliases.stream().toArray(String[]::new));
         this.plugin = plugin;
         this.section = section;

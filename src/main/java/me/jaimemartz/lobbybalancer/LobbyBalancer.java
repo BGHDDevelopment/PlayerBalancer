@@ -3,16 +3,17 @@ package me.jaimemartz.lobbybalancer;
 import com.google.gson.Gson;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import me.jaimemartz.faucet.ConfigFactory;
-import me.jaimemartz.lobbybalancer.commands.BackwardCommand;
+import me.jaimemartz.lobbybalancer.commands.RegressCommand;
 import me.jaimemartz.lobbybalancer.commands.MainCommand;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.listener.*;
 import me.jaimemartz.lobbybalancer.ping.PingManager;
 import me.jaimemartz.lobbybalancer.section.SectionManager;
-import me.jaimemartz.lobbybalancer.utils.AdapterFix;
-import me.jaimemartz.lobbybalancer.utils.GeolocationManager;
-import me.jaimemartz.lobbybalancer.utils.PlayerLocker;
+import me.jaimemartz.lobbybalancer.manager.AdapterFix;
+import me.jaimemartz.lobbybalancer.manager.GeolocationManager;
+import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
+import me.jaimemartz.lobbybalancer.utils.DigitUtils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -29,13 +30,15 @@ public class LobbyBalancer extends Plugin {
     public static final String RESOURCE_ID = "%%__RESOURCE__%%";
     public static final String NONCE_ID = "%%__NONCE__%%";
 
+    public static final int LAST_CONFIG_UPDATE_VER = 20200;
+
     private boolean failed = false;
     private Gson gson;
 
     private ConfigFactory factory;
     private PingManager pingManager;
     private SectionManager sectionManager;
-    private Command backwardCommand, mainCommand;
+    private Command regressCommand, mainCommand;
     private GeolocationManager geolocationManager;
     private Listener connectListener, kickListener, messageListener, reloadListener;
 
@@ -43,17 +46,24 @@ public class LobbyBalancer extends Plugin {
     public void onEnable() {
         instance = this;
         gson = new Gson();
+
         if (factory == null) {
             factory = new ConfigFactory(this);
             factory.register(0, "config.yml");
             factory.submit(ConfigEntries.class);
         }
-        enable();
+
+        factory.load(0, true);
+
+        int configVersion = DigitUtils.getDigits(ConfigEntries.CONFIG_VERSION.get(), 5);
+        if (configVersion < LAST_CONFIG_UPDATE_VER) {
+            throw new IllegalStateException("Your config is outdated, please reset it and configure it again");
+        } else {
+            this.enable();
+        }
     }
 
     private void enable() {
-        factory.load(0, true);
-
         mainCommand = new MainCommand(this);
         getProxy().getPluginManager().registerCommand(this, mainCommand);
 
@@ -81,9 +91,9 @@ public class LobbyBalancer extends Plugin {
                     pingManager.start();
                 }
 
-                if (ConfigEntries.BACKWARD_COMMAND_ENABLED.get()) {
-                    backwardCommand = new BackwardCommand(this);
-                    getProxy().getPluginManager().registerCommand(this, backwardCommand);
+                if (ConfigEntries.REGRESS_COMMAND_ENABLED.get()) {
+                    regressCommand = new RegressCommand(this);
+                    getProxy().getPluginManager().registerCommand(this, regressCommand);
                 }
 
                 connectListener = new ServerConnectListener(this);
@@ -129,6 +139,7 @@ public class LobbyBalancer extends Plugin {
     private void disable() {
         getProxy().getPluginManager().unregisterCommand(mainCommand);
         mainCommand = null;
+
         if (ConfigEntries.AUTO_RELOAD_ENABLED.get()) {
             getProxy().getPluginManager().unregisterListener(reloadListener);
             reloadListener = null;
@@ -138,9 +149,13 @@ public class LobbyBalancer extends Plugin {
             //Do not try to do anything if the plugin has not loaded correctly
             if (hasFailed()) return;
 
-            if (ConfigEntries.BACKWARD_COMMAND_ENABLED.get()) {
-                getProxy().getPluginManager().unregisterCommand(backwardCommand);
-                backwardCommand = null;
+            if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
+                pingManager.stop();
+            }
+
+            if (ConfigEntries.REGRESS_COMMAND_ENABLED.get()) {
+                getProxy().getPluginManager().unregisterCommand(regressCommand);
+                regressCommand = null;
             }
 
             getProxy().getPluginManager().unregisterListener(connectListener);
@@ -169,8 +184,9 @@ public class LobbyBalancer extends Plugin {
         printStartupInfo("Reloading the plugin...");
         long starting = System.currentTimeMillis();
 
-        disable();
-        enable();
+        this.disable();
+        factory.load(0, true);
+        this.enable();
 
         long ending = System.currentTimeMillis() - starting;
         printStartupInfo("The plugin has been reloaded, took %sms", ending);

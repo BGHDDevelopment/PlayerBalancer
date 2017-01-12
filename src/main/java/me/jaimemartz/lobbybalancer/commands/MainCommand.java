@@ -2,7 +2,7 @@ package me.jaimemartz.lobbybalancer.commands;
 
 import me.jaimemartz.faucet.Messager;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
-import me.jaimemartz.lobbybalancer.utils.PasteHelper;
+import me.jaimemartz.lobbybalancer.manager.PasteHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;

@@ -1,4 +1,4 @@
-package me.jaimemartz.lobbybalancer.utils;
+package me.jaimemartz.lobbybalancer.manager;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;

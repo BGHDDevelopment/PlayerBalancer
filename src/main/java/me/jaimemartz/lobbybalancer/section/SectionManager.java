@@ -1,7 +1,7 @@
 package me.jaimemartz.lobbybalancer.section;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
-import me.jaimemartz.lobbybalancer.utils.AdapterFix;
+import me.jaimemartz.lobbybalancer.manager.AdapterFix;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
 

@@ -49,14 +49,6 @@ public class PingManager {
         tactic.ping(server, new PingCallback() {
             @Override
             public void onPong(ServerStatus status) {
-                /* FIXME: 08/01/2017 Not sure if necessary
-                if (status.isAccessible()) {
-                    if (LobbyBalancer.getPlayerCount(server) > status.getMaximumPlayers()) {
-                        status.setAccessible(false);
-                    }
-                }
-                */
-
                 if (ConfigEntries.SERVER_CHECK_PRINT_INFO.get()) {
                     plugin.getLogger().info(String.format(
                             "Tracking server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",

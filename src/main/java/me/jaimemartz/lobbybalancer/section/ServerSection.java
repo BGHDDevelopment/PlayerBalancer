@@ -1,9 +1,8 @@
 package me.jaimemartz.lobbybalancer.section;
 
-import com.google.gson.annotations.Expose;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
-import me.jaimemartz.lobbybalancer.utils.AdapterFix;
+import me.jaimemartz.lobbybalancer.manager.AdapterFix;
 import me.jaimemartz.lobbybalancer.utils.ConfigUtils;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
@@ -16,34 +15,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServerSection {
-    private final Configuration section;
-    private final SectionManager manager;
+    private transient final Configuration section;
+    private transient final SectionManager manager;
 
-    @Expose
     private final String name;
-
-    @Expose
     private boolean principal;
-
-    @Expose
     private ServerSection parent;
-
-    @Expose
     private boolean inherit = false;
-
-    @Expose
     private List<ServerInfo> servers;
-
-    @Expose
     private ProviderType provider;
-
-    @Expose
     private ServerInfo server;
-
-    @Expose
     private SectionCommand command;
-
-    @Expose
     private boolean valid = false;
 
     ServerSection(String name, Configuration section, SectionManager manager) {

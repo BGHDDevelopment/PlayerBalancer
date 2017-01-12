@@ -1,5 +1,3 @@
-version: '${project.version}'
-
 # Providers of this plugin
 # NONE: Returns no server
 # DIRECT: Returns the only server in the list
@@ -62,7 +60,7 @@ settings:
     rules: {}
 
   # This will connect the player to a server of the parent of the section the player is currently on
-  backward-command:
+  regress-command:
     enabled: true
 
     name: 'backward'
@@ -100,6 +98,9 @@ settings:
 
   # Assign a target to a player instead of looking every time for one
   assign-targets: false
+
+  # When a player is not in any section, the player will go to the principal section
+  fallback-principal: true
 
   messages:
     connecting: '&aConnecting to {server}'
@@ -150,3 +151,4 @@ sections:
       name: 'practice'
       permission: ''
       aliases: ["rektnoobs"]
+version: '${project.version}'

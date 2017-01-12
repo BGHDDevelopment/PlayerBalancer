@@ -3,7 +3,8 @@ package me.jaimemartz.lobbybalancer.listener;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
-import me.jaimemartz.lobbybalancer.utils.PlayerLocker;
+import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -18,11 +19,12 @@ public class PlayerDisconnectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDisconnect(PlayerDisconnectEvent event) {
-        PlayerLocker.unlock(event.getPlayer());
+        ProxiedPlayer player = event.getPlayer();
+        PlayerLocker.unlock(player);
 
         //Delete this if we want to keep assigned groups even when leaving
         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
-            ServerAssignRegistry.clearAsssignedServers(event.getPlayer());
+            ServerAssignRegistry.clearAsssignedServers(player);
         }
     }
 }

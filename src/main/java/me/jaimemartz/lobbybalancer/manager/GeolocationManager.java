@@ -1,4 +1,4 @@
-package me.jaimemartz.lobbybalancer.utils;
+package me.jaimemartz.lobbybalancer.manager;
 
 import com.fasterxml.jackson.databind.ext.Java7Support;
 import com.maxmind.db.CHMCache;
