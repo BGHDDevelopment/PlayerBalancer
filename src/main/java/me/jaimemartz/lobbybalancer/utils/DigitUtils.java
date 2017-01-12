@@ -9,6 +9,7 @@ public class DigitUtils {
                 if (builder.length() >= digits) {
                     break;
                 }
+
                 builder.append(character);
             }
         }

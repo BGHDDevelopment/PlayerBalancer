@@ -18,6 +18,8 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static me.jaimemartz.lobbybalancer.LobbyBalancer.getPlayerCount;
+
 public enum ProviderType {
     NONE(0, "Returns no server") {
         @Override
@@ -75,7 +77,7 @@ public enum ProviderType {
             ServerInfo target = null;
 
             for (ServerInfo server : list) {
-                int count = LobbyBalancer.getPlayerCount(server);
+                int count = getPlayerCount(server);
 
                 if (count < min) {
                     min = count;
@@ -97,7 +99,7 @@ public enum ProviderType {
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             for (ServerInfo server : list) {
                 ServerStatus status = plugin.getPingManager().getStatus(server);
-                if (LobbyBalancer.getPlayerCount(server) < status.getMaximumPlayers()) {
+                if (getPlayerCount(server) < status.getMaximumPlayers()) {
                     return server;
                 }
             }
@@ -113,7 +115,7 @@ public enum ProviderType {
 
             for (ServerInfo server : list) {
                 ServerStatus status = plugin.getPingManager().getStatus(server);
-                int count = LobbyBalancer.getPlayerCount(server);
+                int count = getPlayerCount(server);
 
                 if (count > max && count <= status.getMaximumPlayers()) {
                     max = count;

@@ -21,6 +21,10 @@ public enum PasteHelper {
         @Override
         public String paste(Plugin plugin) throws Exception {
             File file = new File(plugin.getDataFolder(), "config.yml");
+            if (!file.exists()) {
+                return "File does not exist";
+            }
+
             PastebinPaste paste = new PastebinPaste();
             paste.setPasteTitle("{name} ({version} on {bungee_version}) Configuration"
                     .replace("{name}", plugin.getDescription().getName())
@@ -42,6 +46,10 @@ public enum PasteHelper {
         @Override
         public String paste(Plugin plugin) throws Exception {
             File file = new File(plugin.getDataFolder().getParentFile().getParentFile(), "config.yml");
+            if (!file.exists()) {
+                return "File does not exist";
+            }
+
             PastebinPaste paste = new PastebinPaste();
             paste.setPasteTitle("{name} ({version}) Configuration"
                     .replace("{name}", plugin.getProxy().getName())
@@ -62,6 +70,10 @@ public enum PasteHelper {
         @Override
         public String paste(Plugin plugin) throws Exception {
             File file = new File(plugin.getDataFolder().getParentFile().getParentFile(), "proxy.log.0");
+            if (!file.exists()) {
+                return "File does not exist";
+            }
+
             PastebinPaste paste = new PastebinPaste();
             paste.setPasteTitle("{name} ({version}) Last Logs"
                     .replace("{name}", plugin.getProxy().getName())
@@ -80,7 +92,6 @@ public enum PasteHelper {
     };
 
     private String link;
-
     private ScheduledTask task = null;
     public void send(Plugin plugin, CommandSender sender, String message) {
         try {

@@ -14,6 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
+
 public class ServerSection {
     private transient final Configuration section;
     private transient final SectionManager manager;
@@ -46,17 +48,15 @@ public class ServerSection {
                 manager.setPrincipal(this);
             }
         }
-        if (ConfigUtils.isSet(section, "parent")) {
-            if (principal) {
-                throw new IllegalStateException(String.format("The principal section \"%s\" has a parent set", name));
-            }
 
+        if (ConfigUtils.isSet(section, "parent")) {
             parent = manager.getByName(section.getString("parent"));
 
             if (parent == null) {
                 throw new IllegalArgumentException(String.format("The section \"%s\" has an invalid parent set", name));
             }
         } else {
+            //Principal sections do not necessarily must have a parent section
             if (!principal) {
                 throw new IllegalArgumentException(String.format("The section \"%s\" does not have a parent set", name));
             }
@@ -69,7 +69,7 @@ public class ServerSection {
                 plugin.getProxy().getServers().forEach((key, value) -> {
                     Matcher matcher = pattern.matcher(key);
                     if (matcher.matches()) {
-                        LobbyBalancer.printStartupInfo("Found a match with \"%s\" for entry \"%s\"", key, entry);
+                        printStartupInfo("Found a match with \"%s\" for entry \"%s\"", key, entry);
                         servers.add(value);
                         manager.register(server, this);
                         matches.set(true);
@@ -81,7 +81,7 @@ public class ServerSection {
                 }
             });
 
-            LobbyBalancer.printStartupInfo("Recognized %s server(s) out of %s entries", servers.size(), section.getStringList("servers").size());
+            printStartupInfo("Recognized %s server(s) out of %s entries", servers.size(), section.getStringList("servers").size());
         } else {
             throw new IllegalArgumentException(String.format("The section \"%s\" does not have any servers set", name));
         }
@@ -119,7 +119,7 @@ public class ServerSection {
                 sect = sect.parent;
             }
 
-            LobbyBalancer.printStartupInfo("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name);
+            printStartupInfo("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name);
             provider = sect.provider;
             inherit = true;
         }

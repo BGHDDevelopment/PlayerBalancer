@@ -16,6 +16,9 @@ import net.md_5.bungee.event.EventPriority;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static me.jaimemartz.lobbybalancer.LobbyBalancer.checkSendMessage;
+import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
+
 public class ServerKickListener implements Listener {
     private final LobbyBalancer plugin;
 
@@ -39,6 +42,8 @@ public class ServerKickListener implements Listener {
         }
 
         ServerSection section = plugin.getSectionManager().getByServer(from);
+
+        //Section the player is going to be reconnected
         Callable<ServerSection> task = () -> {
             if (section != null) {
                 if ((ConfigEntries.RECONNECT_KICK_IGNORED_SECTIONS.get()).contains(section.getName())) {
@@ -51,9 +56,6 @@ public class ServerKickListener implements Listener {
 
                 if (target == null) {
                     target = section.getParent();
-                    if (target == null) {
-                        return null;
-                    }
                 }
 
                 AtomicBoolean matches = new AtomicBoolean(false);
@@ -69,12 +71,12 @@ public class ServerKickListener implements Listener {
                     matches.set(!matches.get());
                 }
 
-                if (matches.get()) {
-                    return target;
+                if (ConfigEntries.RECONNECT_KICK_PRINT_INFO.get()) {
+                    printStartupInfo(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches));
                 }
 
-                if (ConfigEntries.RECONNECT_KICK_PRINT_INFO.get()) {
-                    LobbyBalancer.printStartupInfo(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches.get()));
+                if (matches.get()) {
+                    return target;
                 }
             } else {
                 if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
@@ -90,6 +92,8 @@ public class ServerKickListener implements Listener {
                 new ConnectionIntent(plugin, player, target) {
                     @Override
                     public void connect(ServerInfo server) {
+                        checkSendMessage(player, ConfigEntries.RECONNECT_KICK_MESSAGE.get().replace("{from}", from.getName()).replace("{to}", server.getName()).replace("{reason}", TextComponent.toPlainText(event.getKickReasonComponent())));
+
                         event.setCancelled(true);
                         event.setCancelServer(server);
                     }

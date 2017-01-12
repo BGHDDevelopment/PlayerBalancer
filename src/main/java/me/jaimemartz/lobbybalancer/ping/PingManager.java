@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
+
 public class PingManager {
     private final LobbyBalancer plugin;
     private boolean stopped = true;
@@ -26,7 +28,7 @@ public class PingManager {
         }
         stopped = false;
         tactic = PingTacticType.valueOf((ConfigEntries.SERVER_CHECK_MODE.get()).toUpperCase());
-        LobbyBalancer.printStartupInfo(String.format("Starting the ping task, the interval is %s", ConfigEntries.SERVER_CHECK_INTERVAL.get()));
+        printStartupInfo(String.format("Starting the ping task, the interval is %s", ConfigEntries.SERVER_CHECK_INTERVAL.get()));
         task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
             for (ServerInfo server : plugin.getProxy().getServers().values()) {
                 if (stopped) break;

@@ -4,8 +4,8 @@ import me.jaimemartz.faucet.Messager;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
-import me.jaimemartz.lobbybalancer.section.ServerSection;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
+import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -13,7 +13,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.config.Configuration;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
 
 public class RegressCommand extends Command {
     private final LobbyBalancer plugin;

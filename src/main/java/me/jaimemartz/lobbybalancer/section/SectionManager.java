@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
+
 public class SectionManager {
     private ServerSection principal;
     private final LobbyBalancer plugin;
@@ -20,40 +22,40 @@ public class SectionManager {
     }
 
     public void load() throws RuntimeException {
-        LobbyBalancer.printStartupInfo("Loading sections from the config, this may take a while...");
+        printStartupInfo("Loading sections from the config, this may take a while...");
         long starting = System.currentTimeMillis();
 
         Configuration sections = plugin.getConfig().getSection("sections");
         sections.getKeys().forEach(name -> {
-            LobbyBalancer.printStartupInfo("Construction of section with name \"%s\"", name);
+            printStartupInfo("Construction of section with name \"%s\"", name);
             Configuration section = sections.getSection(name);
             ServerSection object = new ServerSection(name, section, this);
             sectionStorage.put(name, object);
         });
 
         sectionStorage.forEach((name, section) -> {
-            LobbyBalancer.printStartupInfo("Pre-Initialization of section with name \"%s\"", name);
+            printStartupInfo("Pre-Initialization of section with name \"%s\"", name);
             section.preInit(plugin);
         });
 
         sectionStorage.forEach((name, section) -> {
-            LobbyBalancer.printStartupInfo("Initialization of section with name \"%s\"", name);
+            printStartupInfo("Initialization of section with name \"%s\"", name);
             section.load(plugin);
         });
 
         sectionStorage.forEach((name, section) -> {
-            LobbyBalancer.printStartupInfo("Post-Initialization of section with name \"%s\"", name);
+            printStartupInfo("Post-Initialization of section with name \"%s\"", name);
             section.postInit(plugin);
         });
 
         AdapterFix.inject(plugin.getProxy());
 
         long ending = System.currentTimeMillis() - starting;
-        LobbyBalancer.printStartupInfo("A total of %s section(s) have been loaded in %sms", sectionStorage.size(), ending);
+        printStartupInfo("A total of %s section(s) have been loaded in %sms", sectionStorage.size(), ending);
     }
 
     public void flush() {
-        LobbyBalancer.printStartupInfo("Flushing section storage because of plugin shutdown");
+        printStartupInfo("Flushing section storage because of plugin shutdown");
         sectionStorage.forEach((key, value) -> {
             value.setValid(false);
 
@@ -77,7 +79,7 @@ public class SectionManager {
             throw new IllegalArgumentException(String.format("The server \"%s\" is already in the section \"%s\"", server.getName(), other.getName()));
         }
 
-        LobbyBalancer.printStartupInfo("Registering server \"%s\" to section \"%s\"", server.getName(), section.getName());
+        printStartupInfo("Registering server \"%s\" to section \"%s\"", server.getName(), section.getName());
         sectionServers.put(server, section);
     }
 
@@ -93,10 +95,6 @@ public class SectionManager {
 
     public Map<String, ServerSection> getSections() {
         return Collections.unmodifiableMap(sectionStorage);
-    }
-
-    public boolean hasSection(String name) {
-        return sectionStorage.containsKey(name);
     }
 
     public ServerSection getPrincipal() {
