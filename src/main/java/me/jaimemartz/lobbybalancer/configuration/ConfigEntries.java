@@ -17,7 +17,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<Integer> SERVER_CHECK_ATTEMPTS = new ConfigEntry<>(0, "settings.server_check.attempts", 5);
     public static final ConfigEntry<Integer> SERVER_CHECK_INTERVAL = new ConfigEntry<>(0, "settings.server_check.interval", 10000);
     public static final ConfigEntry<Boolean> SERVER_CHECK_PRINT_INFO = new ConfigEntry<>(0, "settings.server_check.print-info", false);
-    public static final ConfigEntry<List<String>> SERVER_CHECK_MARKER_MOTDS = new ConfigEntry<>(0, "settings.server_check.marker-motds", Arrays.asList("Server is not accessible", "Gamemode has already started"));
+    public static final ConfigEntry<List<String>> SERVER_CHECK_MARKER_DESCS = new ConfigEntry<>(0, "settings.server_check.marker-descs", Arrays.asList("Server is not accessible", "Gamemode has already started"));
 
     public static final ConfigEntry<Boolean> GEOLOCATION_ENABLED = new ConfigEntry<>(0, "settings.geolocation.enabled", true);
     public static final ConfigEntry<Boolean> GEOLOCATION_PRINT_INFO = new ConfigEntry<>(0, "settings.geolocation.print-info", true);

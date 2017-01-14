@@ -41,7 +41,7 @@ settings:
     print-info: false
 
     # The descriptions that mark a server as non accessible
-    marker-motds: ["Server is not accessible", "Gamemode has already started"]
+    marker-descs: ["Server is not accessible", "Gamemode has already started"]
 
   # This will connect the player to a server of the parent of the section the player is kicked from
   reconnect-kick:

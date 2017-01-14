@@ -13,8 +13,8 @@ public final class ServerStatus {
         this.maximum = maximum;
         boolean accessible = true;
         if (maximum != 0) {
-            for (String pattern : ConfigEntries.SERVER_CHECK_MARKER_MOTDS.get()) {
-                if (description.contains(pattern) || description.matches(pattern)) {
+            for (String pattern : ConfigEntries.SERVER_CHECK_MARKER_DESCS.get()) {
+                if (description.matches(pattern)) {
                     accessible = false;
                 }
             }

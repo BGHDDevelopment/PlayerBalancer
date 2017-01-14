@@ -13,10 +13,10 @@ import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
 
 public class PingManager {
     private final LobbyBalancer plugin;
-    private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
     private boolean stopped = true;
     private PingTacticType tactic;
     private ScheduledTask task;
+    private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
 
     public PingManager(LobbyBalancer plugin) {
         this.plugin = plugin;
