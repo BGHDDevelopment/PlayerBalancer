@@ -1,3 +1,9 @@
+# LobbyBalancer Configuration (https://www.spigotmc.org/resources/10788/)
+# Read the comments, they are a very important part of the configuration
+# To get support send me a private message with a description of the problem and the config file
+# To easily paste the config file (and other relevant files) use the command /balancer paste
+# Remember to set enabled under settings to true
+
 # Providers of this plugin
 # NONE: Returns no server
 # DIRECT: Returns the only server in the list
@@ -39,6 +45,7 @@ settings:
 
   # This will connect the player to a server of the parent of the section the player is kicked from
   reconnect-kick:
+    # If this is enabled the kick reasons must still match for this to work
     enabled: true
 
     # If enabled, the reasons will work as a blacklist instead of a whitelist
@@ -60,11 +67,17 @@ settings:
     rules: {}
 
   # This will connect the player to a server of the parent of the section the player is currently on
-  regress-command:
+  fallback-command:
+    # If this is disabled the command will not be registered
     enabled: true
 
-    name: 'backward'
+    # The name of the command, make sure it does not interfere with other commands
+    name: 'fallback'
+
+    # The aliases of the command, make sure it does not interfere with other commands
     aliases: ['lobby', 'hub', 'back']
+
+    # Leave this empty for no permission
     permission: ''
 
     # Sections where this command is ignored
@@ -77,29 +90,34 @@ settings:
     rules: {}
 
   # This gets the country of a player and decides to which server the player should go
+  # Country codes: http://dev.maxmind.com/geoip/legacy/codes/iso3166/
   # WARNING: In testing stage
   geolocation:
+    # If disabled the localized provider will choose a random server
     enabled: false
 
     # This prints info every time the plugin checks the country of a player (while being used)
     print-info: true
 
-    # The rules for the LOCALIZED provider, every section using it has to have a rule
+    # The rules for the localized provider, every section using it has to have a rule
+    # The country must be the code as specified in the link above
     rules:
       practice:
         'EUPractice': ["Country1", "Country2"]
         'USPractice': ["Country3", "Country4"]
 
-  # This will reload the plugin everytime you execute /greload
+  # This will reload the plugin every time you execute /greload
   auto-reload: true
 
-  # Support for getting the players on a server with RedisBungee
+  # Support for getting the players connected to a server with RedisBungee
   redis-bungee: false
 
   # Assign a target to a player instead of looking every time for one
+  # This is reset every time the player disconnects
   assign-targets: false
 
   # When a player is not in any section, the player will go to the principal section
+  # This affects both the fallback command and reconnect kick features
   fallback-principal: true
 
   messages:
@@ -151,4 +169,6 @@ sections:
       name: 'practice'
       permission: ''
       aliases: ["rektnoobs"]
+
+# Do not modify this
 version: '${project.version}'

@@ -3,8 +3,8 @@ package me.jaimemartz.lobbybalancer;
 import com.google.gson.Gson;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import me.jaimemartz.faucet.ConfigFactory;
+import me.jaimemartz.lobbybalancer.commands.FallbackCommand;
 import me.jaimemartz.lobbybalancer.commands.MainCommand;
-import me.jaimemartz.lobbybalancer.commands.RegressCommand;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.listener.*;
@@ -29,7 +29,7 @@ public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
     public static final String RESOURCE_ID = "%%__RESOURCE__%%";
     public static final String NONCE_ID = "%%__NONCE__%%";
-    private static final int LAST_VER_CONFIG_UPDATE = 20200;
+    private static final int LAST_VER_CONFIG_UPDATE = 20300;
 
     private final Gson gson = new Gson();
     private boolean failed = false;
@@ -37,7 +37,7 @@ public class LobbyBalancer extends Plugin {
     private ConfigFactory factory;
     private PingManager pingManager;
     private SectionManager sectionManager;
-    private Command regressCommand, mainCommand;
+    private Command fallbackCommand, mainCommand;
     private GeolocationManager geolocationManager;
     private Listener connectListener, kickListener, messageListener, reloadListener;
 
@@ -91,9 +91,9 @@ public class LobbyBalancer extends Plugin {
                     pingManager.start();
                 }
 
-                if (ConfigEntries.REGRESS_COMMAND_ENABLED.get()) {
-                    regressCommand = new RegressCommand(this);
-                    getProxy().getPluginManager().registerCommand(this, regressCommand);
+                if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
+                    fallbackCommand = new FallbackCommand(this);
+                    getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
 
                 connectListener = new ServerConnectListener(this);
@@ -153,9 +153,9 @@ public class LobbyBalancer extends Plugin {
                 pingManager.stop();
             }
 
-            if (ConfigEntries.REGRESS_COMMAND_ENABLED.get()) {
-                getProxy().getPluginManager().unregisterCommand(regressCommand);
-                regressCommand = null;
+            if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
+                getProxy().getPluginManager().unregisterCommand(fallbackCommand);
+                fallbackCommand = null;
             }
 
             getProxy().getPluginManager().unregisterListener(connectListener);

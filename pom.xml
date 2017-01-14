@@ -6,7 +6,7 @@
 
     <groupId>me.jaimemartz</groupId>
     <artifactId>lobbybalancer</artifactId>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
     <name>LobbyBalancer</name>
 
     <repositories>
