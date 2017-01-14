@@ -12,6 +12,11 @@ import java.util.Map;
 public class AdapterFix implements ConfigurationAdapter {
     private static final Map<String, ServerInfo> fakeServers = new HashMap<>();
     private static AdapterFix instance = null;
+    private final ConfigurationAdapter adapter;
+
+    public AdapterFix(ConfigurationAdapter adapter) {
+        this.adapter = adapter;
+    }
 
     public static void inject(ProxyServer server) {
         if (instance == null) {
@@ -30,12 +35,6 @@ public class AdapterFix implements ConfigurationAdapter {
 
     public static Map<String, ServerInfo> getFakeServers() {
         return fakeServers;
-    }
-
-    private final ConfigurationAdapter adapter;
-
-    public AdapterFix(ConfigurationAdapter adapter) {
-        this.adapter = adapter;
     }
 
     @Override

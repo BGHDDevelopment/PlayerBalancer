@@ -91,8 +91,10 @@ public enum PasteHelper {
         }
     };
 
+    public static final String DEVELOPER_KEY = "e3ff18d8fb001a3ece08ae0d7d4a87bd";
     private String link;
     private ScheduledTask task = null;
+
     public void send(Plugin plugin, CommandSender sender, String message) {
         try {
             sender.sendMessage(new ComponentBuilder(message.replace("{link}", link == null ? link = paste(plugin) : link)
@@ -108,12 +110,11 @@ public enum PasteHelper {
                 sender.sendMessage(new ComponentBuilder("An unexpected error occurred while pasting the file").color(ChatColor.RED).create());
             }
             e.printStackTrace();
-        } catch(Exception e) {
+        } catch (Exception e) {
             sender.sendMessage(new ComponentBuilder("An internal error occurred while attempting to perform this command").color(ChatColor.RED).create());
             e.printStackTrace();
         }
     }
 
     public abstract String paste(Plugin plugin) throws Exception;
-    public static final String DEVELOPER_KEY = "e3ff18d8fb001a3ece08ae0d7d4a87bd";
 }
