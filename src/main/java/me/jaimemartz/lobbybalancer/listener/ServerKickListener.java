@@ -93,7 +93,6 @@ public class ServerKickListener implements Listener {
                     @Override
                     public void connect(ServerInfo server) {
                         checkSendMessage(player, ConfigEntries.RECONNECT_KICK_MESSAGE.get().replace("{from}", from.getName()).replace("{to}", server.getName()).replace("{reason}", TextComponent.toPlainText(event.getKickReasonComponent())));
-
                         event.setCancelled(true);
                         event.setCancelServer(server);
                     }

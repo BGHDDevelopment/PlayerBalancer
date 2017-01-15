@@ -6,6 +6,7 @@ import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
+import me.jaimemartz.lobbybalancer.utils.ConfigUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -30,7 +31,7 @@ public class FallbackCommand extends Command {
             ProxiedPlayer player = (ProxiedPlayer) sender;
             ServerSection section = plugin.getSectionManager().getByServer(player.getServer().getInfo());
 
-            Callable<ServerSection> task = () -> {
+            Callable<ServerSection> callable = () -> {
                 if (section != null) {
                     if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
                         msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
@@ -48,14 +49,13 @@ public class FallbackCommand extends Command {
                         return target;
                     } else {
                         Configuration rules = plugin.getConfig().getSection("settings.backward-command.rules");
-                        String bind = rules.getString(section.getName());
-                        ServerSection target = plugin.getSectionManager().getByName(bind);
 
-                        if (target == null) {
-                            target = section.getParent();
+                        if (ConfigUtils.isSet(rules, section.getName())) {
+                            String bind = rules.getString(section.getName());
+                            plugin.getSectionManager().getByName(bind);
+                        } else {
+                            return section.getParent();
                         }
-
-                        return target;
                     }
                 } else {
                     if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
@@ -67,7 +67,7 @@ public class FallbackCommand extends Command {
             };
 
             try {
-                ServerSection target = task.call();
+                ServerSection target = callable.call();
                 if (target != null) {
                     new ConnectionIntent(plugin, player, target) {
                         @Override
