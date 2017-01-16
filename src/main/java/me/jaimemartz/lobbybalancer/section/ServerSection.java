@@ -71,7 +71,7 @@ public class ServerSection {
                     if (matcher.matches()) {
                         printStartupInfo("Found a match with \"%s\" for entry \"%s\"", key, entry);
                         servers.add(value);
-                        manager.register(server, this);
+                        manager.register(value, this);
                         matches.set(true);
                     }
                 });
