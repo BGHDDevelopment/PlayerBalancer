@@ -1,5 +1,7 @@
 package me.jaimemartz.lobbybalancer.listener;
 
+import me.jaimemartz.faucet.Messager;
+import me.jaimemartz.faucet.Replacement;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
@@ -15,9 +17,6 @@ import net.md_5.bungee.event.EventPriority;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static me.jaimemartz.lobbybalancer.LobbyBalancer.checkSendMessage;
-import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
 
 public class ServerKickListener implements Listener {
     private final LobbyBalancer plugin;
@@ -72,7 +71,7 @@ public class ServerKickListener implements Listener {
                 }
 
                 if (ConfigEntries.RECONNECT_KICK_PRINT_INFO.get()) {
-                    printStartupInfo(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches));
+                    plugin.getLogger().info(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches));
                 }
 
                 if (matches.get()) {
@@ -92,7 +91,11 @@ public class ServerKickListener implements Listener {
                 new ConnectionIntent(plugin, player, target) {
                     @Override
                     public void connect(ServerInfo server) {
-                        checkSendMessage(player, ConfigEntries.RECONNECT_KICK_MESSAGE.get().replace("{from}", from.getName()).replace("{to}", server.getName()).replace("{reason}", TextComponent.toPlainText(event.getKickReasonComponent())));
+                        Messager msgr = new Messager(player);
+                        msgr.send(ConfigEntries.RECONNECT_KICK_MESSAGE.get(),
+                                new Replacement("{from}", from.getName()),
+                                new Replacement("{to}", server.getName()),
+                                new Replacement("{reason}", TextComponent.toPlainText(event.getKickReasonComponent())));
                         event.setCancelled(true);
                         event.setCancelServer(server);
                     }

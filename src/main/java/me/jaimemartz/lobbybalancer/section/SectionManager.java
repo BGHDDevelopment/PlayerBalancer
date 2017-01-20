@@ -1,15 +1,12 @@
 package me.jaimemartz.lobbybalancer.section;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
-import me.jaimemartz.lobbybalancer.manager.AdapterFix;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
 
 public class SectionManager {
     private ServerSection principal;
@@ -22,40 +19,38 @@ public class SectionManager {
     }
 
     public void load() throws RuntimeException {
-        printStartupInfo("Loading sections from the config, this may take a while...");
+        plugin.getLogger().info("Loading sections from the config, this may take a while...");
         long starting = System.currentTimeMillis();
 
         Configuration sections = plugin.getConfig().getSection("sections");
         sections.getKeys().forEach(name -> {
-            printStartupInfo("Construction of section with name \"%s\"", name);
+            plugin.getLogger().info(String.format("Construction of section with name \"%s\"", name));
             Configuration section = sections.getSection(name);
             ServerSection object = new ServerSection(name, section, this);
             sectionStorage.put(name, object);
         });
 
         sectionStorage.forEach((name, section) -> {
-            printStartupInfo("Pre-Initialization of section with name \"%s\"", name);
+            plugin.getLogger().info(String.format("Pre-Initialization of section with name \"%s\"", name));
             section.preInit(plugin);
         });
 
         sectionStorage.forEach((name, section) -> {
-            printStartupInfo("Initialization of section with name \"%s\"", name);
+            plugin.getLogger().info(String.format("Initialization of section with name \"%s\"", name));
             section.load(plugin);
         });
 
         sectionStorage.forEach((name, section) -> {
-            printStartupInfo("Post-Initialization of section with name \"%s\"", name);
+            plugin.getLogger().info(String.format("Post-Initialization of section with name \"%s\"", name));
             section.postInit(plugin);
         });
 
-        AdapterFix.inject(plugin.getProxy());
-
         long ending = System.currentTimeMillis() - starting;
-        printStartupInfo("A total of %s section(s) have been loaded in %sms", sectionStorage.size(), ending);
+        plugin.getLogger().info(String.format("A total of %s section(s) have been loaded in %sms", sectionStorage.size(), ending));
     }
 
     public void flush() {
-        printStartupInfo("Flushing section storage because of plugin shutdown");
+        plugin.getLogger().info("Flushing section storage because of plugin shutdown");
         sectionStorage.forEach((key, value) -> {
             value.setValid(false);
 
@@ -65,10 +60,12 @@ public class SectionManager {
             }
 
             if (value.hasServer()) {
-                AdapterFix.removeFakeServer(value.getServer());
+                ServerInfo server = value.getServer();
+                plugin.getProxy().getServers().remove(server.getName());
             }
         });
 
+        principal = null;
         sectionStorage.clear();
         sectionServers.clear();
     }
@@ -79,7 +76,7 @@ public class SectionManager {
             throw new IllegalArgumentException(String.format("The server \"%s\" is already in the section \"%s\"", server.getName(), other.getName()));
         }
 
-        printStartupInfo("Registering server \"%s\" to section \"%s\"", server.getName(), section.getName());
+        plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"", server.getName(), section.getName()));
         sectionServers.put(server, section);
     }
 

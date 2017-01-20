@@ -1,6 +1,7 @@
 package me.jaimemartz.lobbybalancer.connection;
 
 import me.jaimemartz.faucet.Messager;
+import me.jaimemartz.faucet.Replacement;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.ping.ServerStatus;
@@ -12,12 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ConnectionIntent {
+
     protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
         ServerInfo target = this.findTarget(plugin, player, section);
         Messager msgr = new Messager(player);
 
         if (target != null) {
-            msgr.send((ConfigEntries.CONNECTING_MESSAGE.get()).replace("{server}", target.getName()));
+            msgr.send(ConfigEntries.CONNECTING_MESSAGE.get(), new Replacement("{server}", target.getName()));
             this.connect(target);
         } else {
             msgr.send(ConfigEntries.FAILURE_MESSAGE.get());

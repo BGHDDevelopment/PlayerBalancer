@@ -8,14 +8,11 @@ import me.jaimemartz.lobbybalancer.commands.MainCommand;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.listener.*;
-import me.jaimemartz.lobbybalancer.manager.AdapterFix;
 import me.jaimemartz.lobbybalancer.manager.GeolocationManager;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.ping.PingManager;
 import me.jaimemartz.lobbybalancer.section.SectionManager;
 import me.jaimemartz.lobbybalancer.utils.DigitUtils;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
@@ -24,6 +21,7 @@ import net.md_5.bungee.config.Configuration;
 import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
@@ -68,6 +66,10 @@ public class LobbyBalancer extends Plugin {
         }
 
         if (ConfigEntries.PLUGIN_ENABLED.get()) {
+            if (ConfigEntries.SILENT_STARTUP.get()) {
+                getLogger().setLevel(Level.WARNING);
+            }
+
             if (ConfigEntries.AUTO_RELOAD_ENABLED.get()) {
                 reloadListener = new ProxyReloadListener(this);
                 getProxy().getPluginManager().registerListener(this, reloadListener);
@@ -112,7 +114,7 @@ public class LobbyBalancer extends Plugin {
                 }
 
                 if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
-                    printStartupInfo("The geolocation feature has not been tested in depth");
+                    getLogger().warning("The geolocation feature has not been tested in depth");
                     try {
                         geolocationManager = new GeolocationManager(this);
                     } catch (IOException e) {
@@ -170,7 +172,6 @@ public class LobbyBalancer extends Plugin {
             }
 
             sectionManager.flush();
-            AdapterFix.getFakeServers().clear();
 
             if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
                 ServerAssignRegistry.getTable().clear();
@@ -181,14 +182,14 @@ public class LobbyBalancer extends Plugin {
     }
 
     public void reloadPlugin() {
-        printStartupInfo("Reloading the plugin...");
+        getLogger().info("Reloading the plugin...");
         long starting = System.currentTimeMillis();
 
         this.disable();
         this.enable();
 
         long ending = System.currentTimeMillis() - starting;
-        printStartupInfo("The plugin has been reloaded, took %sms", ending);
+        getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
     }
 
     public static int getPlayerCount(ServerInfo server) {
@@ -200,21 +201,6 @@ public class LobbyBalancer extends Plugin {
             }
         }
         return server.getPlayers().size();
-    }
-
-    public static void checkSendMessage(CommandSender sender, String message) {
-        if (message != null) {
-            sender.sendMessage(TextComponent.fromLegacyText(message));
-        }
-    }
-
-    public static boolean printStartupInfo(String format, Object... args) {
-        if (ConfigEntries.SILENT_STARTUP.get()) {
-            return false;
-        }
-
-        instance.getLogger().info(String.format(format, args));
-        return true;
     }
 
     public Gson getGson() {

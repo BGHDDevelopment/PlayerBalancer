@@ -33,11 +33,11 @@ public class ServerConnectListener implements Listener {
             return;
         }
 
-        if (section.getServers().contains(target)) {
-            if (PlayerLocker.isLocked(player)) {
-                return;
-            }
+        if (PlayerLocker.isLocked(player)) {
+            return;
+        }
 
+        if (section.getServers().contains(target)) {
             if (player.hasPermission("lobbybalancer.bypass")) {
                 msgr.send(ChatColor.RED + "You have not been moved because you have the lobbybalancer.bypass permission");
                 return;

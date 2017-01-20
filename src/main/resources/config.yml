@@ -120,6 +120,7 @@ settings:
   # This affects both the fallback command and reconnect kick features
   fallback-principal: true
 
+  # Comment a message to disable it
   messages:
     connecting: '&aConnecting to {server}'
     failure: '&cCould not find a server to connect to'

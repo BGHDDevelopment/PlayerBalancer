@@ -2,7 +2,6 @@ package me.jaimemartz.lobbybalancer.section;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
-import me.jaimemartz.lobbybalancer.manager.AdapterFix;
 import me.jaimemartz.lobbybalancer.utils.ConfigUtils;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
@@ -13,8 +12,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
 
 public class ServerSection {
     private transient final Configuration section;
@@ -69,7 +66,7 @@ public class ServerSection {
                 plugin.getProxy().getServers().forEach((key, value) -> {
                     Matcher matcher = pattern.matcher(key);
                     if (matcher.matches()) {
-                        printStartupInfo("Found a match with \"%s\" for entry \"%s\"", key, entry);
+                        plugin.getLogger().info(String.format("Found a match with \"%s\" for entry \"%s\"", key, entry));
                         servers.add(value);
                         manager.register(value, this);
                         matches.set(true);
@@ -81,7 +78,7 @@ public class ServerSection {
                 }
             });
 
-            printStartupInfo("Recognized %s server(s) out of %s entries", servers.size(), section.getStringList("servers").size());
+            plugin.getLogger().info(String.format("Recognized %s server(s) out of %s entries on the section \"%s\"", servers.size(), section.getStringList("servers").size(), this.name));
         } else {
             throw new IllegalArgumentException(String.format("The section \"%s\" does not have any servers set", name));
         }
@@ -119,7 +116,7 @@ public class ServerSection {
                 sect = sect.parent;
             }
 
-            printStartupInfo("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name);
+            plugin.getLogger().info(String.format("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name));
             provider = sect.provider;
             inherit = true;
         }
@@ -132,7 +129,7 @@ public class ServerSection {
             int port = (int) Math.floor(Math.random() * (0xFFFF + 1));
             server = plugin.getProxy().constructServerInfo("@" + section.getString("section-server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
             plugin.getSectionManager().register(server, this);
-            AdapterFix.addFakeServer(server);
+            plugin.getProxy().getServers().put(server.getName(), server);
         }
 
         if (ConfigUtils.isSet(section, "section-command")) {

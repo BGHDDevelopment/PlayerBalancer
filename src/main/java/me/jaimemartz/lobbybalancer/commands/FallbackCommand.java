@@ -15,6 +15,7 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.config.Configuration;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 public class FallbackCommand extends Command {
     private final LobbyBalancer plugin;
@@ -36,8 +37,6 @@ public class FallbackCommand extends Command {
                     if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
                         msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                     }
-
-                    PlayerLocker.lock(player);
 
                     if (ConfigEntries.FALLBACK_COMMAND_ARGUMENTS.get() && args.length == 1) {
                         ServerSection target = plugin.getSectionManager().getByName(args[0]);
@@ -69,18 +68,22 @@ public class FallbackCommand extends Command {
             try {
                 ServerSection target = callable.call();
                 if (target != null) {
+                    PlayerLocker.lock(player);
                     new ConnectionIntent(plugin, player, target) {
                         @Override
                         public void connect(ServerInfo server) {
                             player.connect(server);
-                            PlayerLocker.unlock(player);
+                            plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                                PlayerLocker.unlock(player);
+                            }, 2, TimeUnit.SECONDS);
                         }
                     };
                 } else {
                     msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                 }
             } catch (Exception e) {
-                msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                e.printStackTrace();
+                msgr.send(ConfigEntries.FAILURE_MESSAGE.get());
             }
         } else {
             msgr.send(ChatColor.RED + "This command can only be executed by a player");

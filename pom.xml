@@ -6,7 +6,7 @@
 
     <groupId>me.jaimemartz</groupId>
     <artifactId>lobbybalancer</artifactId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
     <name>LobbyBalancer</name>
 
     <repositories>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>me.jaimemartz</groupId>
             <artifactId>faucet-bungee</artifactId>
-            <version>1.1</version>
+            <version>LATEST</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

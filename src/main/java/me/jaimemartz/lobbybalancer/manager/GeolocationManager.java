@@ -16,8 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
-import static me.jaimemartz.lobbybalancer.LobbyBalancer.printStartupInfo;
-
 public class GeolocationManager {
     private final DatabaseReader reader;
 
@@ -33,7 +31,7 @@ public class GeolocationManager {
         File database = new File(dir, "GeoLite2-Country.mmdb");
 
         if (!database.exists()) {
-            printStartupInfo("Downloading database");
+            plugin.getLogger().info("Downloading database");
             URL url = new URL("http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz");
             try (ReadableByteChannel rbc = Channels.newChannel(url.openStream())) {
                 try (FileOutputStream fos = new FileOutputStream(packed)) {
@@ -41,7 +39,7 @@ public class GeolocationManager {
                 }
             }
 
-            printStartupInfo("Unpacking database");
+            plugin.getLogger().info("Unpacking database");
             byte[] buffer = new byte[1024];
             try (GZIPInputStream in = new GZIPInputStream(new FileInputStream(packed))) {
                 try (FileOutputStream out = new FileOutputStream(database)) {
@@ -52,12 +50,12 @@ public class GeolocationManager {
                 }
             }
 
-            printStartupInfo("Deleting packed archive, success: " + (packed.delete() ? "yes" : "no"));
+            plugin.getLogger().info("Deleting packed archive, success: " + (packed.delete() ? "yes" : "no"));
         } else {
-            printStartupInfo("Database exists, no need to download again");
+            plugin.getLogger().info("Database exists, no need to download again");
         }
 
-        printStartupInfo("Initializing database");
+        plugin.getLogger().info("Initializing database");
         reader = new DatabaseReader.Builder(database).withCache(new CHMCache()).build();
     }
 
