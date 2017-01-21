@@ -53,7 +53,7 @@ public class ServerSection {
                 throw new IllegalArgumentException(String.format("The section \"%s\" has an invalid parent set", name));
             }
         } else {
-            //Principal sections do not necessarily must have a parent section
+            //Principal sections do not necessarily must have a parent section, but might
             if (!principal) {
                 throw new IllegalArgumentException(String.format("The section \"%s\" does not have a parent set", name));
             }
@@ -126,7 +126,7 @@ public class ServerSection {
         }
 
         if (ConfigUtils.isSet(section, "section-server")) {
-            int port = (int) Math.floor(Math.random() * (0xFFFF + 1));
+            int port = (int) Math.floor(Math.random() * (0xFFFF + 1)); //Get a random valid port for our fake server
             server = plugin.getProxy().constructServerInfo("@" + section.getString("section-server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
             plugin.getSectionManager().register(server, this);
             plugin.getProxy().getServers().put(server.getName(), server);

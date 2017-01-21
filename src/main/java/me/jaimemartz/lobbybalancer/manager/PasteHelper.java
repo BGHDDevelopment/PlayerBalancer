@@ -69,6 +69,7 @@ public enum PasteHelper {
     LOGS {
         @Override
         public String paste(Plugin plugin) throws Exception {
+            //TODO Do not assume location and name of the latest log file
             File file = new File(plugin.getDataFolder().getParentFile().getParentFile(), "proxy.log.0");
             if (!file.exists()) {
                 return "File does not exist";
