@@ -47,7 +47,7 @@ public class FallbackCommand extends Command {
 
                         return target;
                     } else {
-                        Configuration rules = plugin.getConfig().getSection("settings.backward-command.rules");
+                        Configuration rules = plugin.getConfig().getSection("settings.fallback-command.rules");
 
                         if (ConfigUtils.isSet(rules, section.getName())) {
                             String bind = rules.getString(section.getName());
