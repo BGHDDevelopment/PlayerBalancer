@@ -41,6 +41,7 @@ public class PluginMessageListener implements Listener {
                             return;
                         }
 
+                        PlayerLocker.lock(player);
                         new ConnectionIntent(plugin, player, section) {
                             @Override
                             public void connect(ServerInfo server) {
@@ -65,6 +66,7 @@ public class PluginMessageListener implements Listener {
                         return;
                     }
 
+                    PlayerLocker.lock(player);
                     new ConnectionIntent(plugin, player, section) {
                         @Override
                         public void connect(ServerInfo server) {
