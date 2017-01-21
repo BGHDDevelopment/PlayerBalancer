@@ -19,6 +19,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import org.inventivetalent.update.bungee.BungeeUpdater;
+import org.mcstats.Metrics;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -120,6 +121,13 @@ public class LobbyBalancer extends Plugin {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }
+
+                try {
+                    Metrics metrics = new Metrics(this);
+                    metrics.start();
+                } catch (IOException e) {
+                    // Failed to submit the stats :-(
                 }
 
                 getLogger().info("The plugin has finished loading without any problems");
