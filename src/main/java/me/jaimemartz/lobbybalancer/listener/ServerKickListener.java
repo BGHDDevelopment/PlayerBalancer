@@ -5,6 +5,7 @@ import me.jaimemartz.faucet.Replacement;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
+import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -16,6 +17,7 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerKickListener implements Listener {
@@ -92,12 +94,16 @@ public class ServerKickListener implements Listener {
                     @Override
                     public void connect(ServerInfo server) {
                         Messager msgr = new Messager(player);
+                        PlayerLocker.lock(player);
                         msgr.send(ConfigEntries.RECONNECT_KICK_MESSAGE.get(),
                                 new Replacement("{from}", from.getName()),
                                 new Replacement("{to}", server.getName()),
                                 new Replacement("{reason}", TextComponent.toPlainText(event.getKickReasonComponent())));
                         event.setCancelled(true);
                         event.setCancelServer(server);
+                        plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                            PlayerLocker.unlock(player);
+                        }, 2, TimeUnit.SECONDS);
                     }
                 };
             }
