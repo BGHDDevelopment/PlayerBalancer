@@ -46,8 +46,8 @@ public class ServerConnectListener implements Listener {
             if (player.getServer() != null && section.getServers().contains(player.getServer().getInfo())) {
                 if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
                     ServerAssignRegistry.assignTarget(player, section, target);
-                    return;
                 }
+                return;
             }
         }
 
