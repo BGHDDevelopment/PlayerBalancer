@@ -28,7 +28,7 @@ public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
     public static final String RESOURCE_ID = "%%__RESOURCE__%%";
     public static final String NONCE_ID = "%%__NONCE__%%";
-    private static final int LAST_VER_CONFIG_UPDATE = 20300;
+    private static final int LAST_VER_CONFIG_UPDATE = 20600;
 
     private final Gson gson = new Gson();
     private boolean failed = false;
@@ -50,10 +50,12 @@ public class LobbyBalancer extends Plugin {
             factory.submit(ConfigEntries.class);
         }
 
-        //Metrics (https://bstats.org/)
-        new Metrics(this);
-
         this.enable();
+
+        if (ConfigEntries.SUBMIT_STATS.get()) {
+            //Metrics (https://bstats.org/)
+            new Metrics(this);
+        }
     }
 
     private void enable() {
