@@ -13,13 +13,13 @@ import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.ping.PingManager;
 import me.jaimemartz.lobbybalancer.section.SectionManager;
 import me.jaimemartz.lobbybalancer.utils.DigitUtils;
+import me.jaimemartz.lobbybalancer.utils.Metrics;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import org.inventivetalent.update.bungee.BungeeUpdater;
-import org.mcstats.Metrics;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -49,6 +49,9 @@ public class LobbyBalancer extends Plugin {
             factory.register(0, "config.yml");
             factory.submit(ConfigEntries.class);
         }
+
+        //Metrics (https://bstats.org/)
+        new Metrics(this);
 
         this.enable();
     }
@@ -121,13 +124,6 @@ public class LobbyBalancer extends Plugin {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }
-
-                try {
-                    Metrics metrics = new Metrics(this);
-                    metrics.start();
-                } catch (IOException e) {
-                    // Failed to submit the stats :-(
                 }
 
                 getLogger().info("The plugin has finished loading without any problems");
