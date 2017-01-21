@@ -195,7 +195,7 @@ public class LobbyBalancer extends Plugin {
     public static int getPlayerCount(ServerInfo server) {
         if (ConfigEntries.REDIS_BUNGEE_ENABLED.get()) {
             try {
-                RedisBungee.getApi().getPlayersOnServer(server.getName()).size();
+                return RedisBungee.getApi().getPlayersOnServer(server.getName()).size();
             } catch (Exception e) {
                 e.printStackTrace();
             }
