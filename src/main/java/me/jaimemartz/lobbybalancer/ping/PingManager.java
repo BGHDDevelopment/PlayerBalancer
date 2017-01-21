@@ -2,6 +2,7 @@ package me.jaimemartz.lobbybalancer.ping;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
+import net.md_5.bungee.api.config.ConfigurationAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
@@ -27,10 +28,14 @@ public class PingManager {
         stopped = false;
         tactic = PingTacticType.valueOf((ConfigEntries.SERVER_CHECK_MODE.get()).toUpperCase());
         plugin.getLogger().info(String.format("Starting the ping task, the interval is %s", ConfigEntries.SERVER_CHECK_INTERVAL.get()));
+        ConfigurationAdapter adapter = plugin.getProxy().getConfigurationAdapter();
         task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
             for (ServerInfo server : plugin.getProxy().getServers().values()) {
-                if (stopped) break;
-                if (server != null) {
+                if (stopped) {
+                    break;
+                }
+
+                if (server != null && adapter.getServers().containsKey(server.getName())) {
                     track(server);
                 }
             }
