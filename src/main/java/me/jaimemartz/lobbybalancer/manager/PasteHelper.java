@@ -1,11 +1,11 @@
 package me.jaimemartz.lobbybalancer.manager;
 
+import com.google.common.io.CharStreams;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
-import org.apache.commons.io.IOUtils;
 import org.jpaste.exceptions.PasteException;
 import org.jpaste.pastebin.PasteExpireDate;
 import org.jpaste.pastebin.PastebinLink;
@@ -13,7 +13,7 @@ import org.jpaste.pastebin.PastebinPaste;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.charset.Charset;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 public enum PasteHelper {
@@ -36,7 +36,7 @@ public enum PasteHelper {
             paste.setVisibility(PastebinPaste.VISIBILITY_UNLISTED);
             paste.setPasteFormat("yaml");
             try (FileInputStream stream = new FileInputStream(file)) {
-                paste.setContents(IOUtils.toString(stream, Charset.forName("UTF-8")));
+                paste.setContents(CharStreams.toString(new InputStreamReader(stream, "UTF-8")));
             }
             PastebinLink link = paste.paste();
             return link.getLink().toString();
@@ -60,7 +60,7 @@ public enum PasteHelper {
             paste.setVisibility(PastebinPaste.VISIBILITY_UNLISTED);
             paste.setPasteFormat("yaml");
             try (FileInputStream stream = new FileInputStream(file)) {
-                paste.setContents(IOUtils.toString(stream, Charset.forName("UTF-8")));
+                paste.setContents(CharStreams.toString(new InputStreamReader(stream, "UTF-8")));
             }
             PastebinLink link = paste.paste();
             return link.getLink().toString();
@@ -85,7 +85,7 @@ public enum PasteHelper {
             paste.setVisibility(PastebinPaste.VISIBILITY_UNLISTED);
             paste.setPasteFormat("text");
             try (FileInputStream stream = new FileInputStream(file)) {
-                paste.setContents(IOUtils.toString(stream, Charset.forName("UTF-8")));
+                paste.setContents(CharStreams.toString(new InputStreamReader(stream, "UTF-8")));
             }
             PastebinLink link = paste.paste();
             return link.getLink().toString();
