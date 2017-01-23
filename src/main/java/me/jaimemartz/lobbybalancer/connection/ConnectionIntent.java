@@ -15,7 +15,15 @@ import java.util.List;
 public abstract class ConnectionIntent {
 
     protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
-        ServerInfo target = this.findTarget(plugin, player, section);
+        this(plugin, player, section, new ArrayList<>(section.getServers()));
+    }
+
+    protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
+        if (servers == section.getServers()) {
+            throw new IllegalStateException("The servers list parameter is the same object as the section servers list, this cannot happen");
+        }
+
+        ServerInfo target = this.findTarget(plugin, player, section, servers);
         Messager msgr = new Messager(player);
 
         if (target != null) {
@@ -27,7 +35,7 @@ public abstract class ConnectionIntent {
         }
     }
 
-    private ServerInfo findTarget(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
+    private ServerInfo findTarget(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
@@ -42,8 +50,6 @@ public abstract class ConnectionIntent {
 
         ProviderType provider = section.getProvider();
         int intents = ConfigEntries.SERVER_CHECK_ATTEMPTS.get();
-        List<ServerInfo> servers = new ArrayList<>();
-        servers.addAll(section.getServers());
 
         while (intents-- >= 1) {
             if (servers.size() == 0) return null;

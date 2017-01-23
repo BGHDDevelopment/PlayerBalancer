@@ -16,6 +16,8 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -90,7 +92,15 @@ public class ServerKickListener implements Listener {
         try {
             ServerSection target = task.call();
             if (target != null) {
-                new ConnectionIntent(plugin, player, target) {
+                //Do not try to reconnect to the server we are kicked from
+                List<ServerInfo> servers = new ArrayList<>();
+                servers.addAll(target.getServers());
+
+                if (ConfigEntries.RECONNECT_KICK_EXCLUDE_FROM.get()) {
+                    servers.remove(from);
+                }
+
+                new ConnectionIntent(plugin, player, target, servers) {
                     @Override
                     public void connect(ServerInfo server) {
                         Messager msgr = new Messager(player);

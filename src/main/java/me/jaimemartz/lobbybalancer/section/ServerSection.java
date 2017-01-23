@@ -8,6 +8,7 @@ import net.md_5.bungee.config.Configuration;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -163,7 +164,7 @@ public class ServerSection {
     }
 
     public List<ServerInfo> getServers() {
-        return servers;
+        return Collections.unmodifiableList(servers);
     }
 
     public ProviderType getProvider() {

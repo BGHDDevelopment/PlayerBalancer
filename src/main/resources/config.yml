@@ -60,6 +60,9 @@ settings:
     # Sections where this feature is ignored
     ignored: []
 
+    # This will make it so that the server the player is kicked from will be excluded
+    exclude-from: true
+
     # This prints info every time a player gets kicked telling you the reason and if it matches the reasons
     print-info: false
 
