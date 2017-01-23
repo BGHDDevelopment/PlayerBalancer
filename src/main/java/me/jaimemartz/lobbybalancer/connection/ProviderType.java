@@ -42,20 +42,20 @@ public enum ProviderType {
                 InetAddress address = player.getAddress().getAddress();
 
                 try {
-                    CountryResponse countryResponse = plugin.getGeolocationManager().getReader().country(address);
-                    Country country = countryResponse.getCountry();
+                    CountryResponse response = plugin.getGeolocationManager().getReader().country(address);
+                    Country country = response.getCountry();
 
                     if (ConfigEntries.GEOLOCATION_PRINT_INFO.get()) {
                         plugin.getLogger().info(String.format(
-                                "Player Address: \"%s\", Country Name: \"%s\"",
+                                "Player Address: \"%s\", Country Code: \"%s\"",
                                 address.toString(),
-                                country.getName()
+                                country.getIsoCode()
                         ));
                     }
 
                     for (String name : rule.getKeys()) {
                         List<String> countries = rule.getStringList(name);
-                        if (countries.contains(country.getName())) {
+                        if (countries.contains(country.getIsoCode())) {
                             ServerInfo server = plugin.getProxy().getServerInfo(name);
                             if (server != null) {
                                 return server;

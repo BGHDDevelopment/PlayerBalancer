@@ -93,7 +93,7 @@ settings:
     rules: {}
 
   # This gets the country of a player and decides to which server the player should go
-  # Country codes: http://dev.maxmind.com/geoip/legacy/codes/iso3166/
+  # Country ISO codes: http://dev.maxmind.com/geoip/legacy/codes/iso3166/
   # WARNING: In testing stage
   geolocation:
     # If disabled the localized provider will choose a random server
