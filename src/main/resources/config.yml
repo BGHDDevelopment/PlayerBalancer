@@ -5,7 +5,7 @@
 # Remember to set enabled under settings to true
 
 # Providers of this plugin
-# NONE: Returns no server
+# NONE: Returns no server (dummy provider)
 # DIRECT: Returns the only server in the list
 # LOCALIZED: Returns the server that matches a region (testing)
 # LOWEST: Returns the server with the least players online

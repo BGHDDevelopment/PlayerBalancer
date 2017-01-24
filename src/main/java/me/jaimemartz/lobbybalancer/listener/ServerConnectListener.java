@@ -52,10 +52,6 @@ public class ServerConnectListener implements Listener {
             }
         }
 
-        if (section.getProvider() == ProviderType.NONE) {
-            return;
-        }
-
         new ConnectionIntent(plugin, player, section) {
             @Override
             public void connect(ServerInfo server) {

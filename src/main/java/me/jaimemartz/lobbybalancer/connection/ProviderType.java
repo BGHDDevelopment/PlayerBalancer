@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import static me.jaimemartz.lobbybalancer.LobbyBalancer.getPlayerCount;
 
 public enum ProviderType {
-    NONE(0, "Returns no server") {
+    NONE(0, "Returns no server (dummy provider)") {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             return null;

@@ -13,29 +13,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class ConnectionIntent {
-
     protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
-        this(plugin, player, section, new ArrayList<>(section.getServers()));
+        this(plugin, player, section.getProvider(), section);
+    }
+
+    protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ProviderType type, ServerSection section) {
+        this(plugin, player, type, section, new ArrayList<>(section.getServers()));
     }
 
     protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
+        this(plugin, player, section.getProvider(), section, servers);
+    }
+
+    protected ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ProviderType provider, ServerSection section, List<ServerInfo> servers) {
         if (servers == section.getServers()) {
             throw new IllegalStateException("The servers list parameter is the same object as the section servers list, this cannot happen");
         }
 
-        ServerInfo target = this.findTarget(plugin, player, section, servers);
-        Messager msgr = new Messager(player);
-
-        if (target != null) {
-            msgr.send(ConfigEntries.CONNECTING_MESSAGE.get(), new Replacement("{server}", target.getName()));
-            this.connect(target);
-        } else {
-            msgr.send(ConfigEntries.FAILURE_MESSAGE.get());
-            this.failure();
+        if (section.getProvider() != ProviderType.NONE) {
+            ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
+            if (target != null) {
+                new Messager(player).send(ConfigEntries.CONNECTING_MESSAGE.get(), new Replacement("{server}", target.getName()));
+                this.connect(target);
+            } else {
+                new Messager(player).send(ConfigEntries.FAILURE_MESSAGE.get());
+                this.failure();
+            }
         }
     }
 
-    private ServerInfo findTarget(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
+    final ServerInfo fetchServer(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {
         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
@@ -48,9 +55,7 @@ public abstract class ConnectionIntent {
             }
         }
 
-        ProviderType provider = section.getProvider();
         int intents = ConfigEntries.SERVER_CHECK_ATTEMPTS.get();
-
         while (intents-- >= 1) {
             if (servers.size() == 0) return null;
             if (servers.size() == 1) return servers.get(0);
