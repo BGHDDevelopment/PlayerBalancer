@@ -50,11 +50,7 @@ public class FallbackCommand extends Command {
                         String bind = rules.getString(section.getName());
                         ServerSection target = plugin.getSectionManager().getByName(bind);
 
-                        if (target == null) {
-                            target = section.getParent();
-                        }
-
-                        return target;
+                        return target == null ? section.getParent() : target;
                     }
                 } else {
                     if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {

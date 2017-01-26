@@ -53,14 +53,6 @@ public class ServerKickListener implements Listener {
                     return null;
                 }
 
-                Configuration rules = plugin.getConfig().getSection("settings.reconnect-kick.rules");
-                String name = rules.getString(section.getName());
-                ServerSection target = plugin.getSectionManager().getByName(name);
-
-                if (target == null) {
-                    target = section.getParent();
-                }
-
                 AtomicBoolean matches = new AtomicBoolean(false);
                 String reason = TextComponent.toPlainText(event.getKickReasonComponent());
                 for (String pattern : ConfigEntries.RECONNECT_KICK_REASONS.get()) {
@@ -79,7 +71,11 @@ public class ServerKickListener implements Listener {
                 }
 
                 if (matches.get()) {
-                    return target;
+                    Configuration rules = plugin.getConfig().getSection("settings.reconnect-kick.rules");
+                    String name = rules.getString(section.getName());
+                    ServerSection target = plugin.getSectionManager().getByName(name);
+
+                    return target == null ? section.getParent() : target;
                 }
             } else {
                 if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {

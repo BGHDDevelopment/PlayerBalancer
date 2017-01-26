@@ -56,11 +56,6 @@ public class ServerSection {
             if (parent == null) {
                 throw new IllegalArgumentException(String.format("The section \"%s\" has an invalid parent set", name));
             }
-        } else {
-            //Principal sections do not necessarily must have a parent section, but might
-            if (!principal) {
-                throw new IllegalArgumentException(String.format("The section \"%s\" does not have a parent set", name));
-            }
         }
 
         if (ConfigUtils.isSet(section, "servers")) {
@@ -164,6 +159,10 @@ public class ServerSection {
 
     public boolean isDummy() {
         return dummy;
+    }
+
+    public boolean hasParent() {
+        return parent != null;
     }
 
     public ServerSection getParent() {
