@@ -89,6 +89,8 @@ public class ServerKickListener implements Listener {
             ServerSection target = task.call();
             if (target != null) {
                 //Do not try to reconnect to the server we are kicked from
+                //This can happen when the sections are working on recursive mode (with rules)
+                //Example: You are kicked to a server, you go to another server in the same section
                 List<ServerInfo> servers = new ArrayList<>();
                 servers.addAll(target.getServers());
 
