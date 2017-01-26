@@ -20,6 +20,7 @@ public class ServerSection {
 
     private final String name;
     private boolean principal;
+    private boolean dummy;
     private ServerSection parent;
     private boolean inherit = false;
     private List<ServerInfo> servers;
@@ -46,6 +47,8 @@ public class ServerSection {
                 manager.setPrincipal(this);
             }
         }
+
+        dummy = section.getBoolean("dummy", false);
 
         if (ConfigUtils.isSet(section, "parent")) {
             parent = manager.getByName(section.getString("parent"));
@@ -157,6 +160,10 @@ public class ServerSection {
 
     public boolean isPrincipal() {
         return principal;
+    }
+
+    public boolean isDummy() {
+        return dummy;
     }
 
     public ServerSection getParent() {

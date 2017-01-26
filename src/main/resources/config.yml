@@ -5,7 +5,7 @@
 # Remember to set enabled under settings to true
 
 # Providers of this plugin
-# NONE: Returns no server (dummy provider)
+# NONE: Returns no server
 # DIRECT: Returns the only server in the list
 # LOCALIZED: Returns the server that matches a region (testing)
 # LOWEST: Returns the server with the least players online
@@ -168,6 +168,12 @@ sections:
       name: 'playskywars'
       permission: ''
       aliases: []
+  dummy-section:
+    provider: RANDOM
+    dummy: true
+    parent: 'skywars-lobbies'
+    section-server:
+    servers: ["DS1"]
   practice:
     provider: LOCALIZED
     parent: 'general-lobbies'

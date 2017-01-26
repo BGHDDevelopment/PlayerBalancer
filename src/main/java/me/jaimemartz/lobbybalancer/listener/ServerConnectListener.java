@@ -4,7 +4,6 @@ import me.jaimemartz.faucet.Messager;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
-import me.jaimemartz.lobbybalancer.connection.ProviderType;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
@@ -50,6 +49,10 @@ public class ServerConnectListener implements Listener {
                 }
                 return;
             }
+        }
+
+        if (section.isDummy()) {
+            return;
         }
 
         new ConnectionIntent(plugin, player, section) {
