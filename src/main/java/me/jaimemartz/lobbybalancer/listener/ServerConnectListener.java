@@ -38,6 +38,10 @@ public class ServerConnectListener implements Listener {
         }
 
         if (section.getServers().contains(target)) {
+            if (section.isDummy()) {
+                return;
+            }
+
             if (player.hasPermission("lobbybalancer.bypass")) {
                 msgr.send(ChatColor.RED + "You have not been moved because you have the lobbybalancer.bypass permission");
                 return;
@@ -49,10 +53,6 @@ public class ServerConnectListener implements Listener {
                 }
                 return;
             }
-        }
-
-        if (section.isDummy()) {
-            return;
         }
 
         new ConnectionIntent(plugin, player, section) {
