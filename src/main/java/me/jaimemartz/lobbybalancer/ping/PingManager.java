@@ -25,17 +25,18 @@ public class PingManager {
         if (task != null) {
             stop();
         }
+
         stopped = false;
         tactic = PingTacticType.valueOf((ConfigEntries.SERVER_CHECK_MODE.get()).toUpperCase());
         plugin.getLogger().info(String.format("Starting the ping task, the interval is %s", ConfigEntries.SERVER_CHECK_INTERVAL.get()));
-        ConfigurationAdapter adapter = plugin.getProxy().getConfigurationAdapter();
+
         task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
             for (ServerInfo server : plugin.getProxy().getServers().values()) {
                 if (stopped) {
                     break;
                 }
 
-                if (server != null && adapter.getServers().containsKey(server.getName())) {
+                if (server != null && isDefined(server)) {
                     track(server);
                 }
             }
@@ -51,25 +52,34 @@ public class PingManager {
     }
 
     private void track(ServerInfo server) {
-        tactic.ping(server, new PingCallback() {
-            @Override
-            public void onPong(ServerStatus status) {
-                if (ConfigEntries.SERVER_CHECK_PRINT_INFO.get()) {
-                    plugin.getLogger().info(String.format(
-                            "Tracking server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
-                            server.getName(), status.getDescription(), status.getOnlinePlayers(), status.getMaximumPlayers(), status.isAccessible())
-                    );
-                }
-                storage.put(server, status);
+        tactic.ping(server, (status, throwable) -> {
+            if (status == null) {
+                status = new ServerStatus("Server Unreachable", 0, 0);
             }
+
+            if (ConfigEntries.SERVER_CHECK_PRINT_INFO.get()) {
+                plugin.getLogger().info(String.format(
+                        "Tracking server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
+                        server.getName(), status.getDescription(), status.getOnlinePlayers(), status.getMaximumPlayers(), status.isAccessible()
+                ));
+            }
+
+            storage.put(server, status);
         }, plugin);
+    }
+
+    private boolean isDefined(ServerInfo server) {
+        ConfigurationAdapter adapter = plugin.getProxy().getConfigurationAdapter();
+        return adapter.getServers().containsKey(server.getName());
     }
 
     public ServerStatus getStatus(ServerInfo server) {
         ServerStatus status = storage.get(server);
+
         if (status == null) {
             status = new ServerStatus(server.getMotd(), server.getPlayers().size(), Integer.MAX_VALUE);
         }
+
         return status;
     }
 }

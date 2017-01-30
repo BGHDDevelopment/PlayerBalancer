@@ -29,9 +29,10 @@ public class FallbackCommand extends Command {
         Messager msgr = new Messager(sender);
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            ServerSection section = plugin.getSectionManager().getByServer(player.getServer().getInfo());
 
             Callable<ServerSection> callable = () -> {
+                ServerSection section = plugin.getSectionManager().getByServer(player.getServer().getInfo());
+
                 if (section != null) {
                     if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
                         msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
@@ -62,10 +63,10 @@ public class FallbackCommand extends Command {
             };
 
             try {
-                ServerSection target = callable.call();
-                if (target != null) {
+                ServerSection section = callable.call();
+                if (section != null) {
                     PlayerLocker.lock(player);
-                    new ConnectionIntent(plugin, player, target) {
+                    new ConnectionIntent(plugin, player, section) {
                         @Override
                         public void connect(ServerInfo server) {
                             player.connect(server);

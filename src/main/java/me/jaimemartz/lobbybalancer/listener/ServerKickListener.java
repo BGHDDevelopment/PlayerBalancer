@@ -44,10 +44,10 @@ public class ServerKickListener implements Listener {
             return;
         }
 
-        ServerSection section = plugin.getSectionManager().getByServer(from);
-
         //Section the player is going to be reconnected
-        Callable<ServerSection> task = () -> {
+        Callable<ServerSection> callable = () -> {
+            ServerSection section = plugin.getSectionManager().getByServer(from);
+
             if (section != null) {
                 if ((ConfigEntries.RECONNECT_KICK_IGNORED_SECTIONS.get()).contains(section.getName())) {
                     return null;
@@ -55,8 +55,8 @@ public class ServerKickListener implements Listener {
 
                 AtomicBoolean matches = new AtomicBoolean(false);
                 String reason = TextComponent.toPlainText(event.getKickReasonComponent());
-                for (String pattern : ConfigEntries.RECONNECT_KICK_REASONS.get()) {
-                    if (reason.matches(pattern)) {
+                for (String string : ConfigEntries.RECONNECT_KICK_REASONS.get()) {
+                    if (reason.matches(string)) {
                         matches.set(true);
                         break;
                     }
@@ -86,19 +86,19 @@ public class ServerKickListener implements Listener {
         };
 
         try {
-            ServerSection target = task.call();
-            if (target != null) {
+            ServerSection section = callable.call();
+            if (section != null) {
                 //Do not try to reconnect to the server we are kicked from
                 //This can happen when the sections are working on recursive mode (with rules)
                 //Example: You are kicked to a server, you go to another server in the same section
                 List<ServerInfo> servers = new ArrayList<>();
-                servers.addAll(target.getServers());
+                servers.addAll(section.getServers());
 
                 if (ConfigEntries.RECONNECT_KICK_EXCLUDE_FROM.get()) {
                     servers.remove(from);
                 }
 
-                new ConnectionIntent(plugin, player, target, servers) {
+                new ConnectionIntent(plugin, player, section, servers) {
                     @Override
                     public void connect(ServerInfo server) {
                         Messager msgr = new Messager(player);
