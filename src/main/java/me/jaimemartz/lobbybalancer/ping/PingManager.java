@@ -2,7 +2,7 @@ package me.jaimemartz.lobbybalancer.ping;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
-import net.md_5.bungee.api.config.ConfigurationAdapter;
+import me.jaimemartz.lobbybalancer.utils.FixedAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class PingManager {
     private final LobbyBalancer plugin;
     private boolean stopped = true;
-    private PingTacticType tactic;
+    private PingTactic tactic;
     private ScheduledTask task;
     private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
 
@@ -27,7 +27,7 @@ public class PingManager {
         }
 
         stopped = false;
-        tactic = PingTacticType.valueOf((ConfigEntries.SERVER_CHECK_MODE.get()).toUpperCase());
+        tactic = PingTactic.valueOf((ConfigEntries.SERVER_CHECK_MODE.get()).toUpperCase());
         plugin.getLogger().info(String.format("Starting the ping task, the interval is %s", ConfigEntries.SERVER_CHECK_INTERVAL.get()));
 
         task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
@@ -36,7 +36,11 @@ public class PingManager {
                     break;
                 }
 
-                if (server != null && isDefined(server)) {
+                if (server != null) {
+                    if (FixedAdapter.getFakeServers().containsKey(server.getName())) {
+                        continue;
+                    }
+
                     track(server);
                 }
             }
@@ -66,11 +70,6 @@ public class PingManager {
 
             storage.put(server, status);
         }, plugin);
-    }
-
-    private boolean isDefined(ServerInfo server) {
-        ConfigurationAdapter adapter = plugin.getProxy().getConfigurationAdapter();
-        return adapter.getServers().containsKey(server.getName());
     }
 
     public ServerStatus getStatus(ServerInfo server) {

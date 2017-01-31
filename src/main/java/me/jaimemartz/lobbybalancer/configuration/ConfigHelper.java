@@ -1,6 +1,7 @@
 package me.jaimemartz.lobbybalancer.configuration;
 
 import me.jaimemartz.faucet.ConfigEntry;
+import net.md_5.bungee.config.Configuration;
 
 import java.util.List;
 
@@ -79,5 +80,9 @@ public class ConfigHelper {
 
     public static List<Short> getShortList(ConfigEntry<List<Short>> entry) {
         return entry.get();
+    }
+
+    public static boolean isSet(Configuration config, String path) {
+        return config.get(path) != null;
     }
 }

@@ -3,17 +3,19 @@ package me.jaimemartz.lobbybalancer.ping;
 import me.jaimemartz.faucet.ServerListPing;
 import me.jaimemartz.faucet.StatusResponse;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.io.IOException;
 
-public enum PingTacticType {
+public enum PingTactic {
     CUSTOM {
         ServerListPing utility = new ServerListPing();
 
         @Override
         public void ping(ServerInfo server, Callback<ServerStatus> callback, LobbyBalancer plugin) {
+            utility.setTimeout(ConfigEntries.SERVER_CHECK_TIMEOUT.get());
             plugin.getProxy().getScheduler().runAsync(plugin, () -> {
                 try {
                     StatusResponse response = utility.ping(server.getAddress());

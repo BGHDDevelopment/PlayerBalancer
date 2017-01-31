@@ -4,17 +4,14 @@ import me.jaimemartz.faucet.Messager;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
-import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.config.Configuration;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 public class FallbackCommand extends Command {
     private final LobbyBalancer plugin;
@@ -65,16 +62,7 @@ public class FallbackCommand extends Command {
             try {
                 ServerSection section = callable.call();
                 if (section != null) {
-                    PlayerLocker.lock(player);
-                    new ConnectionIntent(plugin, player, section) {
-                        @Override
-                        public void connect(ServerInfo server) {
-                            player.connect(server);
-                            plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                                PlayerLocker.unlock(player);
-                            }, 2, TimeUnit.SECONDS);
-                        }
-                    };
+                    ConnectionIntent.simple(plugin, player, section);
                 } else {
                     msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                 }

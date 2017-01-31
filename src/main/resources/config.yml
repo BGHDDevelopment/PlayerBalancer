@@ -4,15 +4,6 @@
 # To easily paste the config file (and other relevant files) use the command /balancer paste
 # Remember to set enabled under settings to true
 
-# Providers of this plugin
-# NONE: Returns no server
-# DIRECT: Returns the only server in the list
-# LOCALIZED: Returns the server that matches a region (testing)
-# LOWEST: Returns the server with the least players online
-# RANDOM: Returns a random server
-# PROGRESSIVE: Returns the first server that is not full
-# FILLER: Returns the server with the most players online that is not full
-
 settings:
   # The plugin will be disabled as default
   enabled: false
@@ -39,6 +30,9 @@ settings:
 
     # The interval between every round of checks
     interval: 10000
+
+    # This only applies for the custom tactic
+    timeout: 5000
 
     # This prints info every time the plugin checks a server and prints its results
     print-info: false
@@ -69,8 +63,11 @@ settings:
     # The message the player is sent when kicked, comment it out to remove the message
     message: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
 
-    # Override the behavior with rules
-    rules: {}
+    # You can override the behavior with rules, overriding the parent section
+    # This will set the section to go when you come from the section specified
+    # This will still require the kick reasons to match
+    rules:
+      'section-from': 'section-to'
 
   # This will connect the player to a server of the parent of the section the player is currently on
   fallback-command:
@@ -92,8 +89,10 @@ settings:
     # Whether the command can accept the name of a section as a target
     arguments: false
 
-    # Override the behavior with rules
-    rules: {}
+    # You can override the behavior with rules, overriding the parent section
+    # This will set the section to go when you come from the section specified
+    rules:
+      'section-from': 'section-to'
 
   # This gets the country of a player and decides to which server the player should go
   # Country ISO codes: http://dev.maxmind.com/geoip/legacy/codes/iso3166/
@@ -134,10 +133,20 @@ settings:
     unknown: '&cCould not find a section with that name'
 
 # Here you have an example of what you can do with the sections
-# It is recommended to create your own sections
 # The plugin will print out info telling you if your config is right or not
+# If a section does not have a provider it will be inherit from the parent
 # The best way to understand this is to play around with it
-# You can use regex to match a set of servers
+# You can use regex to match a set of servers instead of adding each server
+
+# Providers of this plugin
+# NONE: Returns no server
+# DIRECT: Returns the only server in the list
+# LOCALIZED: Returns the server that matches a region (testing)
+# LOWEST: Returns the server with the least players online
+# RANDOM: Returns a random server
+# PROGRESSIVE: Returns the first server that is not full
+# FILLER: Returns the server with the most players online that is not full
+
 sections:
   general-lobbies:
     principal: true

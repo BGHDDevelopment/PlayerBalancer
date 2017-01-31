@@ -6,9 +6,10 @@ import com.maxmind.geoip2.model.CountryResponse;
 import com.maxmind.geoip2.record.Country;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
+import me.jaimemartz.lobbybalancer.configuration.ConfigHelper;
+import me.jaimemartz.lobbybalancer.manager.NetworkManager;
 import me.jaimemartz.lobbybalancer.ping.ServerStatus;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
-import me.jaimemartz.lobbybalancer.utils.ConfigUtils;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.config.Configuration;
@@ -17,8 +18,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-
-import static me.jaimemartz.lobbybalancer.LobbyBalancer.getPlayerCount;
 
 public enum ProviderType {
     NONE(0, "Returns no server") {
@@ -37,7 +36,7 @@ public enum ProviderType {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             Configuration rules = plugin.getConfig().getSection("settings.geolocation.rules");
-            if (ConfigEntries.GEOLOCATION_ENABLED.get() && ConfigUtils.isSet(rules, section.getName())) {
+            if (ConfigEntries.GEOLOCATION_ENABLED.get() && ConfigHelper.isSet(rules, section.getName())) {
                 Configuration rule = rules.getSection(section.getName());
                 InetAddress address = player.getAddress().getAddress();
 
@@ -77,7 +76,7 @@ public enum ProviderType {
             ServerInfo target = null;
 
             for (ServerInfo server : list) {
-                int count = getPlayerCount(server);
+                int count = NetworkManager.getPlayers(server).size();
 
                 if (count < min) {
                     min = count;
@@ -99,7 +98,7 @@ public enum ProviderType {
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             for (ServerInfo server : list) {
                 ServerStatus status = plugin.getPingManager().getStatus(server);
-                if (getPlayerCount(server) < status.getMaximumPlayers()) {
+                if (NetworkManager.getPlayers(server).size() < status.getMaximumPlayers()) {
                     return server;
                 }
             }
@@ -115,7 +114,7 @@ public enum ProviderType {
 
             for (ServerInfo server : list) {
                 ServerStatus status = plugin.getPingManager().getStatus(server);
-                int count = getPlayerCount(server);
+                int count = NetworkManager.getPlayers(server).size();
 
                 if (count > max && count <= status.getMaximumPlayers()) {
                     max = count;

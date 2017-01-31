@@ -40,6 +40,7 @@ public class MainCommand extends Command {
                     }
                     break;
                 }
+
                 case "reload": {
                     if (sender.hasPermission("lobbybalancer.admin")) {
                         msgr.send(ChatColor.GREEN + "Reloading the configuration, this may take a while...");
@@ -50,6 +51,7 @@ public class MainCommand extends Command {
                     }
                     break;
                 }
+
                 default: {
                     msgr.send(ChatColor.RED + "This is not a valid argument for this command!");
                 }

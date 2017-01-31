@@ -1,8 +1,9 @@
 package me.jaimemartz.lobbybalancer.section;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.configuration.ConfigHelper;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
-import me.jaimemartz.lobbybalancer.utils.ConfigUtils;
+import me.jaimemartz.lobbybalancer.utils.FixedAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
 
@@ -22,7 +23,7 @@ public class ServerSection {
     private boolean principal;
     private boolean dummy;
     private ServerSection parent;
-    private boolean inherit = false;
+    private boolean inherited = false;
     private List<ServerInfo> servers;
     private ProviderType provider;
     private ServerInfo server;
@@ -50,7 +51,7 @@ public class ServerSection {
 
         dummy = section.getBoolean("dummy", false);
 
-        if (ConfigUtils.isSet(section, "parent")) {
+        if (ConfigHelper.isSet(section, "parent")) {
             parent = manager.getByName(section.getString("parent"));
 
             if (parent == null) {
@@ -58,7 +59,7 @@ public class ServerSection {
             }
         }
 
-        if (ConfigUtils.isSet(section, "servers")) {
+        if (ConfigHelper.isSet(section, "servers")) {
             section.getStringList("servers").forEach(entry -> {
                 Pattern pattern = Pattern.compile(entry);
                 AtomicBoolean matches = new AtomicBoolean(false);
@@ -89,12 +90,12 @@ public class ServerSection {
             throw new IllegalStateException(String.format("The section \"%s\" and \"%s\" are parents of each other", this.name, parent.name));
         }
 
-        if (ConfigUtils.isSet(section, "provider")) {
+        if (ConfigHelper.isSet(section, "provider")) {
             try {
                 provider = ProviderType.valueOf(section.getString("provider").toUpperCase());
                 if (provider == ProviderType.LOCALIZED) {
                     Configuration rules = plugin.getConfig().getSection("settings.geolocation.rules");
-                    if (!ConfigUtils.isSet(rules, name)) {
+                    if (!ConfigHelper.isSet(rules, name)) {
                         throw new IllegalStateException(String.format("The section \"%s\" does not have a rule set in the geolocation section", this.name));
                     }
                 }
@@ -117,21 +118,22 @@ public class ServerSection {
 
             plugin.getLogger().info(String.format("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name));
             provider = sect.provider;
-            inherit = true;
+            inherited = true;
         }
 
         if (provider == null) {
             throw new IllegalStateException(String.format("The section \"%s\" does not have a provider", name));
         }
 
-        if (ConfigUtils.isSet(section, "section-server")) {
+        if (ConfigHelper.isSet(section, "section-server")) {
             int port = (int) Math.floor(Math.random() * (0xFFFF + 1)); //Get a random valid port for our fake server
             server = plugin.getProxy().constructServerInfo("@" + section.getString("section-server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
             plugin.getSectionManager().register(server, this);
+            FixedAdapter.getFakeServers().put(server.getName(), server);
             plugin.getProxy().getServers().put(server.getName(), server);
         }
 
-        if (ConfigUtils.isSet(section, "section-command")) {
+        if (ConfigHelper.isSet(section, "section-command")) {
             Configuration other = section.getSection("section-command");
 
             String name = other.getString("name");
@@ -177,8 +179,8 @@ public class ServerSection {
         return provider;
     }
 
-    public boolean isProviderInherit() {
-        return inherit;
+    public boolean isProviderInherited() {
+        return inherited;
     }
 
     public ServerInfo getServer() {

@@ -4,7 +4,6 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
-import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -16,7 +15,6 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class PluginMessageListener implements Listener {
     private final LobbyBalancer plugin;
@@ -41,16 +39,7 @@ public class PluginMessageListener implements Listener {
                             return;
                         }
 
-                        PlayerLocker.lock(player);
-                        new ConnectionIntent(plugin, player, section) {
-                            @Override
-                            public void connect(ServerInfo server) {
-                                player.connect(server);
-                                plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                                    PlayerLocker.unlock(player);
-                                }, 2, TimeUnit.SECONDS);
-                            }
-                        };
+                        ConnectionIntent.simple(plugin, player, section);
                     }
                     break;
                 }
@@ -66,16 +55,7 @@ public class PluginMessageListener implements Listener {
                         return;
                     }
 
-                    PlayerLocker.lock(player);
-                    new ConnectionIntent(plugin, player, section) {
-                        @Override
-                        public void connect(ServerInfo server) {
-                            player.connect(server);
-                            plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                                PlayerLocker.unlock(player);
-                            }, 2, TimeUnit.SECONDS);
-                        }
-                    };
+                    ConnectionIntent.simple(plugin, player, section);
                     break;
                 }
 

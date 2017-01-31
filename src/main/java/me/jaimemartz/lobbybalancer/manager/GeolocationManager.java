@@ -1,6 +1,5 @@
 package me.jaimemartz.lobbybalancer.manager;
 
-import com.fasterxml.jackson.databind.ext.Java7Support;
 import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
@@ -12,16 +11,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 public class GeolocationManager {
     private final DatabaseReader reader;
 
     public GeolocationManager(LobbyBalancer plugin) throws IOException {
-        Logger.getLogger(Java7Support.class.getName()).setLevel(Level.SEVERE);
-
         File dir = new File(plugin.getDataFolder(), "database");
         if (!dir.exists()) {
             dir.mkdir();

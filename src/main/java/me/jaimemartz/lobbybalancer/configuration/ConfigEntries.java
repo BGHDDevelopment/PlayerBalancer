@@ -17,6 +17,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<String> SERVER_CHECK_MODE = new ConfigEntry<>(0, "settings.server-check.tactic", "CUSTOM");
     public static final ConfigEntry<Integer> SERVER_CHECK_ATTEMPTS = new ConfigEntry<>(0, "settings.server-check.attempts", 5);
     public static final ConfigEntry<Integer> SERVER_CHECK_INTERVAL = new ConfigEntry<>(0, "settings.server-check.interval", 10000);
+    public static final ConfigEntry<Integer> SERVER_CHECK_TIMEOUT = new ConfigEntry<>(0, "settings.server-check.timeout", 5000);
     public static final ConfigEntry<Boolean> SERVER_CHECK_PRINT_INFO = new ConfigEntry<>(0, "settings.server-check.print-info", false);
     public static final ConfigEntry<List<String>> SERVER_CHECK_MARKER_DESCS = new ConfigEntry<>(0, "settings.server-check.marker-descs", Arrays.asList("Server is not accessible", "Gamemode has already started"));
 

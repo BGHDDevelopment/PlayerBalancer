@@ -1,10 +1,11 @@
 package me.jaimemartz.lobbybalancer;
 
+import com.fasterxml.jackson.databind.ext.Java7Support;
 import com.google.gson.Gson;
-import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import me.jaimemartz.faucet.ConfigFactory;
 import me.jaimemartz.lobbybalancer.commands.FallbackCommand;
 import me.jaimemartz.lobbybalancer.commands.MainCommand;
+import me.jaimemartz.lobbybalancer.commands.ManageCommand;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.listener.*;
@@ -14,7 +15,6 @@ import me.jaimemartz.lobbybalancer.ping.PingManager;
 import me.jaimemartz.lobbybalancer.section.SectionManager;
 import me.jaimemartz.lobbybalancer.utils.DigitUtils;
 import me.jaimemartz.lobbybalancer.utils.Metrics;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -23,6 +23,7 @@ import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
@@ -36,7 +37,7 @@ public class LobbyBalancer extends Plugin {
     private ConfigFactory factory;
     private PingManager pingManager;
     private SectionManager sectionManager;
-    private Command fallbackCommand, mainCommand;
+    private Command fallbackCommand, mainCommand, manageCommand;
     private GeolocationManager geolocationManager;
     private Listener connectListener, kickListener, messageListener, reloadListener;
 
@@ -110,6 +111,9 @@ public class LobbyBalancer extends Plugin {
                 messageListener = new PluginMessageListener(this);
                 getProxy().getPluginManager().registerListener(this, messageListener);
 
+                manageCommand = new ManageCommand(this);
+                getProxy().getPluginManager().registerCommand(this, manageCommand);
+
                 getProxy().getPluginManager().registerListener(this, new PlayerDisconnectListener(this));
 
                 getProxy().registerChannel("LobbyBalancer");
@@ -119,6 +123,8 @@ public class LobbyBalancer extends Plugin {
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
 
+                //Silence jackson stuff
+                Logger.getLogger(Java7Support.class.getName()).setLevel(Level.SEVERE);
                 if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
                     getLogger().warning("The geolocation feature has not been tested in depth");
                     try {
@@ -172,6 +178,9 @@ public class LobbyBalancer extends Plugin {
             getProxy().getPluginManager().unregisterListener(messageListener);
             messageListener = null;
 
+            getProxy().getPluginManager().unregisterCommand(manageCommand);
+            manageCommand = null;
+
             if (ConfigEntries.RECONNECT_KICK_ENABLED.get()) {
                 getProxy().getPluginManager().unregisterListener(kickListener);
                 kickListener = null;
@@ -196,17 +205,6 @@ public class LobbyBalancer extends Plugin {
 
         long ending = System.currentTimeMillis() - starting;
         getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
-    }
-
-    public static int getPlayerCount(ServerInfo server) {
-        if (ConfigEntries.REDIS_BUNGEE_ENABLED.get()) {
-            try {
-                return RedisBungee.getApi().getPlayersOnServer(server.getName()).size();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return server.getPlayers().size();
     }
 
     public Gson getGson() {
