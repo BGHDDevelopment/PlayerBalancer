@@ -56,10 +56,10 @@ public class LobbyBalancer extends Plugin {
         if (ConfigEntries.SUBMIT_STATS.get()) {
             //Metrics (https://bstats.org/)
             Metrics metrics = new Metrics(this);
-            metrics.addCustomChart(new Metrics.SimplePie("configured_sections") {
+            metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections") {
                 @Override
-                public String getValue() {
-                    return String.valueOf(sectionManager.getSections().size());
+                public int getValue() {
+                    return sectionManager.getSections().size();
                 }
             });
         }
