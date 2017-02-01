@@ -181,7 +181,6 @@ sections:
     provider: RANDOM
     dummy: true
     parent: 'skywars-lobbies'
-    section-server:
     servers: ["DS1"]
   practice:
     provider: LOCALIZED

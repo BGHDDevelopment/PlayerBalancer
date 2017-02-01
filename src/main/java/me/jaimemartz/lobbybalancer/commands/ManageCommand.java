@@ -20,7 +20,6 @@ import net.md_5.bungee.api.plugin.Command;
 import java.util.Iterator;
 import java.util.Set;
 
-
 public class ManageCommand extends Command {
     private final LobbyBalancer plugin;
 
