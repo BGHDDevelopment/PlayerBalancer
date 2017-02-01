@@ -175,7 +175,7 @@ public class ManageCommand extends Command {
                 "&7Available commands:",
                 "&3/section list &7- &cTells you which sections are configured in the plugin",
                 "&3/section info <section> &7- &cTells you info about the section",
-                "&3/section connect [section] <player> &7- &cConnects you or the specified player to that section",
+                "&3/section connect <section> [player] &7- &cConnects you or the specified player to that section",
                 "&7&m-----------------------------------------------------"
         );
     }
