@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class WrappedAdapter implements ConfigurationAdapter {
     private final ConfigurationAdapter adapter;
+
     public WrappedAdapter(ConfigurationAdapter adapter) {
         this.adapter = adapter;
     }

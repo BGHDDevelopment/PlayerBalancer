@@ -123,8 +123,9 @@ public class LobbyBalancer extends Plugin {
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
 
-                //Silence jackson stuff
+                //Silent jackson stuff
                 Logger.getLogger(Java7Support.class.getName()).setLevel(Level.SEVERE);
+
                 if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
                     getLogger().warning("The geolocation feature has not been tested in depth");
                     try {

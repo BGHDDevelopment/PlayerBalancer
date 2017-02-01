@@ -20,13 +20,13 @@ public class MainCommand extends Command {
         Messager msgr = new Messager(sender);
         if (args.length == 0) {
             msgr.send(
-                    "&e=====================================================",
+                    "&7&m-----------------------------------------------------",
                     "&7Information: LobbyBalancer version " + plugin.getDescription().getVersion(),
                     "&7Available commands:",
                     "&3/balancer &7- &cShows this message",
                     "&3/balancer paste &7- &cCreates a paste with the important files",
                     "&3/balancer reload &7- &cReloads the plugin completely",
-                    "&e====================================================="
+                    "&7&m-----------------------------------------------------"
             );
         } else {
             switch (args[0]) {
