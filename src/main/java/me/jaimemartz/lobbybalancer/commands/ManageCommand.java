@@ -73,7 +73,7 @@ public class ManageCommand extends Command {
                                         new Replacement("{name}", ChatColor.RED + section.getName()));
 
                                 msgr.send("&7Principal: &b{status}",
-                                        new Replacement("{status}", format(section.isPrincipal())));
+                                        new Replacement("{status}", section.isPrincipal() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
 
                                 if (section.hasParent()) {
                                     TextComponent message = new TextComponent("Parent: ");
@@ -92,34 +92,40 @@ public class ManageCommand extends Command {
 
                                 msgr.send("&7Provider: &b{name} &7({relation}&7)",
                                         new Replacement("{name}", section.getProvider().name()),
-                                        new Replacement("{relation}", section.isProviderInherited() ? "Inherited" : "Specified"));
+                                        new Replacement("{relation}", section.hasInheritedProvider() ? "Inherited" : "Specified"));
 
-                                msgr.send("&7Dummy: &b{status}", new Replacement("{status}", format(section.isDummy())));
+                                msgr.send("&7Dummy: &b{status}", new Replacement("{status}", section.isDummy() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
 
                                 msgr.send("&7Section Server: &b{name}", new Replacement("{name}", section.hasServer() ? section.getServer().getName() : "None"));
 
                                 if (section.hasCommand()) {
                                     msgr.send("&7Section Command: &b{name}&7, Permission: &b{permission}&7, Aliases: &b{aliases}",
                                             new Replacement("{name}", section.getCommand().getName()),
-                                            new Replacement("{permission}", section.getCommand().getPermission().equals("") ? "none" : section.getCommand().getPermission()),
-                                            new Replacement("{aliases}", StringCombiner.combine(section.getCommand().getAliases(), ", ")));
+                                            new Replacement("{permission}", section.getCommand().getPermission().equals("") ? "None" : section.getCommand().getPermission()),
+                                            new Replacement("{aliases}", section.getCommand().getAliases().length == 0 ? "None" : StringCombiner.combine(section.getCommand().getAliases(), ", ")));
                                 } else {
                                     msgr.send("&7Section Command: &bNone");
                                 }
 
                                 msgr.send("&7Valid: &b{status}",
-                                        new Replacement("{status}", format(section.isValid())));
+                                        new Replacement("{status}", section.isValid() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
 
-                                msgr.send("&7Section Servers: ");
-                                section.getServers().forEach(server -> {
-                                    ServerStatus status = plugin.getPingManager().getStatus(server);
-                                    msgr.send("&7Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
-                                            new Replacement("{name}", server.getName()),
-                                            new Replacement("{connected}", String.valueOf(status.getOnlinePlayers())),
-                                            new Replacement("{maximum}", String.valueOf(status.getMaximumPlayers())),
-                                            new Replacement("{status}", status.isAccessible() ? ChatColor.GREEN + "Accessible" : ChatColor.RED + "Inaccessible")
-                                    );
-                                });
+
+                                if (!section.getServers().isEmpty()) {
+                                    msgr.send("&7Section Servers: ");
+                                    section.getServers().forEach(server -> {
+                                        ServerStatus status = plugin.getPingManager().getStatus(server);
+                                        msgr.send("&7Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
+                                                new Replacement("{name}", server.getName()),
+                                                new Replacement("{connected}", String.valueOf(status.getOnlinePlayers())),
+                                                new Replacement("{maximum}", String.valueOf(status.getMaximumPlayers())),
+                                                new Replacement("{status}", status.isAccessible() ? ChatColor.GREEN + "Accessible" : ChatColor.RED + "Inaccessible")
+                                        );
+                                    });
+                                } else {
+                                    msgr.send("&7Section Servers: &bNone");
+                                }
+
                                 msgr.send("&7&m-----------------------------------------------------");
                             } else {
                                 msgr.send(ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
@@ -136,21 +142,28 @@ public class ManageCommand extends Command {
                         TextComponent message = new TextComponent(String.format("There are %s configured sections:\n", keys.size()));
                         message.setColor(ChatColor.GRAY);
 
-                        while (iterator.hasNext()) {
-                            String name = iterator.next();
-                            TextComponent extra = new TextComponent(name);
-                            extra.setColor(ChatColor.GREEN);
-                            extra.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/section info %s", name)));
-                            extra.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click me for info").color(ChatColor.RED).create()));
+                        if (iterator.hasNext()) {
+                            while (iterator.hasNext()) {
+                                String name = iterator.next();
+                                TextComponent extra = new TextComponent(name);
+                                extra.setColor(ChatColor.GREEN);
+                                extra.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/section info %s", name)));
+                                extra.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click me for info").color(ChatColor.RED).create()));
 
-                            if (iterator.hasNext()) {
-                                TextComponent sep = new TextComponent(", ");
-                                sep.setColor(ChatColor.GRAY);
-                                extra.addExtra(sep);
+                                if (iterator.hasNext()) {
+                                    TextComponent sep = new TextComponent(", ");
+                                    sep.setColor(ChatColor.GRAY);
+                                    extra.addExtra(sep);
+                                }
+
+                                message.addExtra(extra);
                             }
-
+                        } else {
+                            TextComponent extra = new TextComponent("There are no sections to list");
+                            extra.setColor(ChatColor.RED);
                             message.addExtra(extra);
                         }
+
 
                         sender.sendMessage(message);
                         break;
@@ -178,9 +191,5 @@ public class ManageCommand extends Command {
                 "&3/section connect <section> [player] &7- &cConnects you or the specified player to that section",
                 "&7&m-----------------------------------------------------"
         );
-    }
-
-    private String format(boolean reference) {
-        return reference ? ChatColor.GREEN + "yes" : ChatColor.RED + "no";
     }
 }

@@ -128,7 +128,7 @@ settings:
   # Comment a message to disable it
   messages:
     connecting: '&aConnecting to {server}'
-    failure: '&cCould not find a server to connect to'
+    failure: '&cCould not find a server to get connected'
     unavailable: '&cThis command cannot be executed on this server'
     unknown: '&cCould not find a section with that name'
 

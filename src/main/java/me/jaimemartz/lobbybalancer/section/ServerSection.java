@@ -179,7 +179,7 @@ public class ServerSection {
         return provider;
     }
 
-    public boolean isProviderInherited() {
+    public boolean hasInheritedProvider() {
         return inherited;
     }
 
