@@ -8,54 +8,62 @@ import java.util.Collection;
 import java.util.Map;
 
 public class WrappedAdapter implements ConfigurationAdapter {
-    private final ConfigurationAdapter adapter;
+    private final ConfigurationAdapter wrapped;
 
     public WrappedAdapter(ConfigurationAdapter adapter) {
-        this.adapter = adapter;
+        if (adapter instanceof WrappedAdapter) {
+            this.wrapped = ((WrappedAdapter) adapter).wrapped;
+        } else {
+            this.wrapped = adapter;
+        }
     }
 
     @Override
     public void load() {
-        adapter.load();
+        wrapped.load();
     }
 
     @Override
     public int getInt(String path, int def) {
-        return adapter.getInt(path, def);
+        return wrapped.getInt(path, def);
     }
 
     @Override
     public String getString(String path, String def) {
-        return adapter.getString(path, def);
+        return wrapped.getString(path, def);
     }
 
     @Override
     public boolean getBoolean(String path, boolean def) {
-        return adapter.getBoolean(path, def);
+        return wrapped.getBoolean(path, def);
     }
 
     @Override
     public Collection<?> getList(String path, Collection<?> def) {
-        return adapter.getList(path, def);
+        return wrapped.getList(path, def);
     }
 
     @Override
     public Map<String, ServerInfo> getServers() {
-        return adapter.getServers();
+        return wrapped.getServers();
     }
 
     @Override
     public Collection<ListenerInfo> getListeners() {
-        return adapter.getListeners();
+        return wrapped.getListeners();
     }
 
     @Override
     public Collection<String> getGroups(String player) {
-        return adapter.getGroups(player);
+        return wrapped.getGroups(player);
     }
 
     @Override
     public Collection<String> getPermissions(String group) {
-        return adapter.getPermissions(group);
+        return wrapped.getPermissions(group);
+    }
+
+    public ConfigurationAdapter getWrapped() {
+        return wrapped;
     }
 }
