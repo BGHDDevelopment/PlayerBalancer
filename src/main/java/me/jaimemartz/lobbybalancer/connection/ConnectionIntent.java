@@ -97,7 +97,7 @@ public abstract class ConnectionIntent {
                 player.connect(server);
                 plugin.getProxy().getScheduler().schedule(plugin, () -> {
                     PlayerLocker.unlock(player);
-                }, 2, TimeUnit.SECONDS);
+                }, 5, TimeUnit.SECONDS);
             }
         };
     }

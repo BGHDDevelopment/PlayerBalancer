@@ -48,38 +48,38 @@ public class ServerKickListener implements Listener {
         Callable<ServerSection> callable = () -> {
             ServerSection section = plugin.getSectionManager().getByServer(from);
 
-            if (section != null) {
-                if ((ConfigEntries.RECONNECT_KICK_IGNORED_SECTIONS.get()).contains(section.getName())) {
-                    return null;
-                }
+            if (section != null && (ConfigEntries.RECONNECT_KICK_IGNORED_SECTIONS.get()).contains(section.getName())) {
+                return null;
+            }
 
-                AtomicBoolean matches = new AtomicBoolean(false);
-                String reason = TextComponent.toPlainText(event.getKickReasonComponent());
-                for (String string : ConfigEntries.RECONNECT_KICK_REASONS.get()) {
-                    if (reason.matches(string)) {
-                        matches.set(true);
-                        break;
-                    }
+            AtomicBoolean matches = new AtomicBoolean(false);
+            String reason = TextComponent.toPlainText(event.getKickReasonComponent());
+            for (String string : ConfigEntries.RECONNECT_KICK_REASONS.get()) {
+                if (reason.matches(string)) {
+                    matches.set(true);
+                    break;
                 }
+            }
 
-                if (ConfigEntries.RECONNECT_KICK_INVERTED.get()) {
-                    matches.set(!matches.get());
-                }
+            if (ConfigEntries.RECONNECT_KICK_INVERTED.get()) {
+                matches.set(!matches.get());
+            }
 
-                if (ConfigEntries.RECONNECT_KICK_PRINT_INFO.get()) {
-                    plugin.getLogger().info(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches));
-                }
+            if (ConfigEntries.RECONNECT_KICK_PRINT_INFO.get()) {
+                plugin.getLogger().info(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches));
+            }
 
-                if (matches.get()) {
+            if (matches.get()) {
+                if (section != null) {
                     Configuration rules = plugin.getConfig().getSection("settings.reconnect-kick.rules");
                     String name = rules.getString(section.getName());
                     ServerSection target = plugin.getSectionManager().getByName(name);
 
                     return target == null ? section.getParent() : target;
-                }
-            } else {
-                if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
-                    return plugin.getSectionManager().getPrincipal();
+                } else {
+                    if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
+                        return plugin.getSectionManager().getPrincipal();
+                    }
                 }
             }
             return null;

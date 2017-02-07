@@ -47,8 +47,7 @@ public enum ProviderType {
                     if (ConfigEntries.GEOLOCATION_PRINT_INFO.get()) {
                         plugin.getLogger().info(String.format(
                                 "Player Address: \"%s\", Country Code: \"%s\"",
-                                address.toString(),
-                                country.getIsoCode()
+                                address.toString(), country.getIsoCode()
                         ));
                     }
 

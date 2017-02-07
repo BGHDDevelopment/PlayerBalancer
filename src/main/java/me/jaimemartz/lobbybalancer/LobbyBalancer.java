@@ -1,6 +1,5 @@
 package me.jaimemartz.lobbybalancer;
 
-import com.fasterxml.jackson.databind.ext.Java7Support;
 import com.google.gson.Gson;
 import me.jaimemartz.faucet.ConfigFactory;
 import me.jaimemartz.lobbybalancer.commands.FallbackCommand;
@@ -23,7 +22,6 @@ import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
@@ -96,6 +94,14 @@ public class LobbyBalancer extends Plugin {
                 }
             }
 
+            if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
+                try {
+                    geolocationManager = new GeolocationManager(this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
             sectionManager = new SectionManager(this);
 
             try {
@@ -129,18 +135,6 @@ public class LobbyBalancer extends Plugin {
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
 
-                //Silent jackson stuff
-                Logger.getLogger(Java7Support.class.getName()).setLevel(Level.SEVERE);
-
-                if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
-                    getLogger().warning("The geolocation feature has not been tested in depth");
-                    try {
-                        geolocationManager = new GeolocationManager(this);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
                 getLogger().info("The plugin has finished loading without any problems");
             } catch (RuntimeException e) {
                 failed = true;
@@ -168,6 +162,10 @@ public class LobbyBalancer extends Plugin {
             if (ConfigEntries.AUTO_RELOAD_ENABLED.get()) {
                 getProxy().getPluginManager().unregisterListener(reloadListener);
                 reloadListener = null;
+            }
+
+            if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
+                geolocationManager = null;
             }
 
             if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {

@@ -25,6 +25,7 @@ public class ServerConnectListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ServerConnectEvent event) {
         ProxiedPlayer player = event.getPlayer();
+
         ServerInfo target = event.getTarget();
         Messager msgr = new Messager(player);
         ServerSection section = plugin.getSectionManager().getByServer(target);
