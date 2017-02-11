@@ -1,5 +1,6 @@
 package me.jaimemartz.lobbybalancer;
 
+import com.fasterxml.jackson.databind.ext.Java7Support;
 import com.google.gson.Gson;
 import me.jaimemartz.faucet.ConfigFactory;
 import me.jaimemartz.lobbybalancer.commands.FallbackCommand;
@@ -22,6 +23,7 @@ import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
@@ -93,6 +95,8 @@ public class LobbyBalancer extends Plugin {
                     e.printStackTrace();
                 }
             }
+
+            Logger.getLogger(Java7Support.class.getName()).setLevel(Level.SEVERE);
 
             if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
                 try {
