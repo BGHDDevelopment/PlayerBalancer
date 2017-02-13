@@ -5,27 +5,11 @@ import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 public final class ServerStatus {
     private final String description;
     private final int online, maximum;
-    private boolean accessible;
 
     public ServerStatus(String description, int online, int maximum) {
         this.description = description;
         this.online = online;
         this.maximum = maximum;
-        boolean accessible = true;
-        if (maximum != 0) {
-            for (String pattern : ConfigEntries.SERVER_CHECK_MARKER_DESCS.get()) {
-                if (description.matches(pattern)) {
-                    accessible = false;
-                }
-            }
-
-            if (online >= maximum) {
-                accessible = false;
-            }
-        } else {
-            accessible = false;
-        }
-        this.accessible = accessible;
     }
 
     public String getDescription() {
@@ -41,10 +25,20 @@ public final class ServerStatus {
     }
 
     public boolean isAccessible() {
-        return accessible;
-    }
+        if (maximum == 0) {
+            return false;
+        }
 
-    public void setAccessible(boolean accessible) {
-        this.accessible = accessible;
+        for (String pattern : ConfigEntries.SERVER_CHECK_MARKER_DESCS.get()) {
+            if (description.matches(pattern)) {
+                return false;
+            }
+        }
+
+        if (online >= maximum) {
+            return false;
+        }
+
+        return true;
     }
 }
