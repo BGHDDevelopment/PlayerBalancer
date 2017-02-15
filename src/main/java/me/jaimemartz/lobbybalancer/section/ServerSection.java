@@ -103,7 +103,7 @@ public class ServerSection {
                 e.printStackTrace();
             }
         } else {
-            if (principal) {
+            if (principal && parent == null) {
                 throw new IllegalArgumentException(String.format("The principal section \"%s\" does not have a provider set", name));
             }
         }
