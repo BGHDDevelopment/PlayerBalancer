@@ -45,6 +45,7 @@ public class SectionManager {
             section.postInit(plugin);
         });
 
+
         long ending = System.currentTimeMillis() - starting;
         plugin.getLogger().info(String.format("A total of %s section(s) have been loaded in %sms", sectionStorage.size(), ending));
     }

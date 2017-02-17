@@ -51,6 +51,9 @@ settings:
     # Sections where this feature is ignored
     ignored: []
 
+    # If enabled, players will not be able to get back to any server in a section that is parent of the principal section
+    restricted: true
+
     # This will make it so that the server the player is kicked from will be excluded
     exclude-from: true
 
@@ -82,6 +85,9 @@ settings:
 
     # Sections where this command is ignored
     ignored: []
+
+    # If enabled, players will not be able to get back to any server in a section that is parent of the principal section
+    restricted: true
 
     # Whether the command can accept the name of a section as a target
     arguments: false

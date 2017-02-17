@@ -11,14 +11,34 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServerSection {
+    private static transient final Function<ServerSection, Integer> function = (section) -> {
+        if (section.isPrincipal()) {
+            return 0;
+        }
+
+        int iterations = 0;
+        while (true) {
+            section = section.getParent();
+            iterations++;
+
+            if (section == null) {
+                return iterations;
+            } else if (section.isPrincipal()) {
+                return -iterations;
+            }
+        }
+    };
+
     private transient final Configuration section;
 
     private final String name;
     private boolean principal;
+    private int position = Integer.MAX_VALUE;
     private boolean dummy;
     private ServerSection parent;
     private boolean inherited = false;
@@ -107,6 +127,8 @@ public class ServerSection {
     }
 
     void postInit(LobbyBalancer plugin) {
+        position = function.apply(this);
+
         if (provider == null) {
             ServerSection sect = this.parent;
             while (sect.provider == null) {
@@ -154,6 +176,10 @@ public class ServerSection {
 
     public boolean isPrincipal() {
         return principal;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public boolean isDummy() {

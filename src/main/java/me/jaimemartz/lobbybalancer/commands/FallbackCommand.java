@@ -31,8 +31,16 @@ public class FallbackCommand extends Command {
                 ServerSection section = plugin.getSectionManager().getByServer(player.getServer().getInfo());
 
                 if (section != null) {
+                    /* TODO REFERENCE TO ServerKickListener
+                    if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get() && section.isPrincipal()) {
+                        msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                        return null;
+                    }
+                    */
+
                     if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
                         msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                        return null;
                     }
 
                     if (ConfigEntries.FALLBACK_COMMAND_ARGUMENTS.get() && args.length == 1) {
@@ -63,12 +71,9 @@ public class FallbackCommand extends Command {
                 ServerSection section = callable.call();
                 if (section != null) {
                     ConnectionIntent.connect(plugin, player, section);
-                } else {
-                    msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                msgr.send(ConfigEntries.FAILURE_MESSAGE.get());
+                //Nothing to do
             }
         } else {
             msgr.send(ChatColor.RED + "This command can only be executed by a player");

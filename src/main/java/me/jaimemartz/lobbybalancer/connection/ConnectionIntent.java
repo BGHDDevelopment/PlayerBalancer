@@ -19,18 +19,6 @@ public abstract class ConnectionIntent {
     protected final ProxiedPlayer player;
     protected final ServerSection section;
 
-    public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
-        this(plugin, player, section.getProvider(), section);
-    }
-
-    public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ProviderType type, ServerSection section) {
-        this(plugin, player, type, section, new ArrayList<>(section.getServers()));
-    }
-
-    public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
-        this(plugin, player, section.getProvider(), section, servers);
-    }
-
     public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ProviderType provider, ServerSection section, List<ServerInfo> servers) {
         this.plugin = plugin;
         this.player = player;
@@ -50,6 +38,18 @@ public abstract class ConnectionIntent {
                 this.failure();
             }
         }
+    }
+
+    public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
+        this(plugin, player, section.getProvider(), section);
+    }
+
+    public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ProviderType type, ServerSection section) {
+        this(plugin, player, type, section, new ArrayList<>(section.getServers()));
+    }
+
+    public ConnectionIntent(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
+        this(plugin, player, section.getProvider(), section, servers);
     }
 
     private ServerInfo fetchServer(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {

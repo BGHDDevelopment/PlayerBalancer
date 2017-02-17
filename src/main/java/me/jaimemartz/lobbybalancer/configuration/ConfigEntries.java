@@ -28,6 +28,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<List<String>> RECONNECT_KICK_REASONS = new ConfigEntry<>(0, "settings.reconnect-kick.reasons", Collections.emptyList());
     public static final ConfigEntry<Boolean> RECONNECT_KICK_PRINT_INFO = new ConfigEntry<>(0, "settings.reconnect-kick.print-info", false);
     public static final ConfigEntry<List<String>> RECONNECT_KICK_IGNORED_SECTIONS = new ConfigEntry<>(0, "settings.reconnect-kick.ignored", Collections.emptyList());
+    public static final ConfigEntry<Boolean> RECONNECT_KICK_RESTRICTED = new ConfigEntry<>(0, "settings.reconnect-kick.restricted", true);
     public static final ConfigEntry<Boolean> RECONNECT_KICK_EXCLUDE_FROM = new ConfigEntry<>(0, "settings.reconnect-kick.exclude-from", true);
     public static final ConfigEntry<String> RECONNECT_KICK_MESSAGE = new ConfigEntry<>(0, "settings.reconnect-kick.message", "&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}");
 
@@ -36,8 +37,8 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<List<String>> FALLBACK_COMMAND_ALIASES = new ConfigEntry<>(0, "settings.fallback-command.aliases", Arrays.asList("lobby", "hub", "back"));
     public static final ConfigEntry<String> FALLBACK_COMMAND_PERMISSION = new ConfigEntry<>(0, "settings.fallback-command.permission", "");
     public static final ConfigEntry<List<String>> FALLBACK_COMMAND_IGNORED_SECTIONS = new ConfigEntry<>(0, "settings.fallback-command.ignored", Collections.emptyList());
+    public static final ConfigEntry<Boolean> FALLBACK_COMMAND_RESTRICTED = new ConfigEntry<>(0, "settings.fallback-command.restricted", true);
     public static final ConfigEntry<Boolean> FALLBACK_COMMAND_ARGUMENTS = new ConfigEntry<>(0, "settings.fallback-command.arguments", true);
-
     public static final ConfigEntry<Boolean> AUTO_RELOAD_ENABLED = new ConfigEntry<>(0, "settings.auto-reload", true);
     public static final ConfigEntry<Boolean> REDIS_BUNGEE_ENABLED = new ConfigEntry<>(0, "settings.redis-bungee", false);
     public static final ConfigEntry<Boolean> ASSIGN_TARGETS_ENABLED = new ConfigEntry<>(0, "settings.assign-targets", false);

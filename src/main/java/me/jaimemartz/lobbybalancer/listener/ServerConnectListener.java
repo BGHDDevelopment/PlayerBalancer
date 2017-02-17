@@ -30,41 +30,39 @@ public class ServerConnectListener implements Listener {
 
         ServerSection section = plugin.getSectionManager().getByServer(target);
 
-        if (section == null) {
-            return;
-        }
-
-        if (PlayerLocker.isLocked(player)) {
-            return;
-        }
-
-        if (section.getServers().contains(target)) {
-            if (section.isDummy()) {
+        if (section != null) {
+            if (PlayerLocker.isLocked(player)) {
                 return;
             }
 
-            if (player.hasPermission("lobbybalancer.bypass")) {
-                msgr.send(ChatColor.RED + "You have not been moved because you have the lobbybalancer.bypass permission");
-                return;
-            }
-
-            if (player.getServer() != null && section.getServers().contains(player.getServer().getInfo())) {
-                if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
-                    ServerAssignRegistry.assignTarget(player, section, target);
-                }
-                return;
-            }
-        }
-
-        new ConnectionIntent(plugin, player, section) {
-            @Override
-            public void connect(ServerInfo server) {
-                if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
-                    ServerAssignRegistry.assignTarget(player, section, server);
+            if (section.getServers().contains(target)) {
+                if (section.isDummy()) {
+                    return;
                 }
 
-                event.setTarget(server);
+                if (player.hasPermission("lobbybalancer.bypass")) {
+                    msgr.send(ChatColor.RED + "You have not been moved because you have the lobbybalancer.bypass permission");
+                    return;
+                }
+
+                if (player.getServer() != null && section.getServers().contains(player.getServer().getInfo())) {
+                    if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
+                        ServerAssignRegistry.assignTarget(player, section, target);
+                    }
+                    return;
+                }
             }
-        };
+
+            new ConnectionIntent(plugin, player, section) {
+                @Override
+                public void connect(ServerInfo server) {
+                    if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
+                        ServerAssignRegistry.assignTarget(player, section, server);
+                    }
+
+                    event.setTarget(server);
+                }
+            };
+        }
     }
 }

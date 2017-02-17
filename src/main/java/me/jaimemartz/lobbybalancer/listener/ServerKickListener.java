@@ -33,6 +33,7 @@ public class ServerKickListener implements Listener {
     public void onKick(ServerKickEvent event) {
         ProxiedPlayer player = event.getPlayer();
         ServerInfo from = event.getKickedFrom();
+        Messager msgr = new Messager(player);
 
         //Player is not connected to any server
         if (player.getServer() == null) {
@@ -48,8 +49,10 @@ public class ServerKickListener implements Listener {
         Callable<ServerSection> callable = () -> {
             ServerSection section = plugin.getSectionManager().getByServer(from);
 
-            if (section != null && (ConfigEntries.RECONNECT_KICK_IGNORED_SECTIONS.get()).contains(section.getName())) {
-                return null;
+            if (section != null) {
+                if ((ConfigEntries.RECONNECT_KICK_IGNORED_SECTIONS.get()).contains(section.getName())) {
+                    return null;
+                }
             }
 
             AtomicBoolean matches = new AtomicBoolean(false);
@@ -75,7 +78,30 @@ public class ServerKickListener implements Listener {
                     String name = rules.getString(section.getName());
                     ServerSection target = plugin.getSectionManager().getByName(name);
 
-                    return target == null ? section.getParent() : target;
+                    if (target == null) {
+                        target = section.getParent();
+                    }
+
+                    if (ConfigEntries.RECONNECT_KICK_RESTRICTED.get()) {
+                        //todo 0 is principal section
+                        //todo -1 is parent of principal
+                        //todo 1 is child of principal
+                        if (target.getPosition() < 0) {
+                            return null;
+                        }
+
+                        /*
+                        if (section.isPrincipal()) {
+                            todo: check if target is parent of section (or more parents of section)
+                            todo: I think that instead of checking if the player is in a principal section we should check
+                            todo: if the target section is above the parent section
+
+                            return null;
+                        }
+                        */
+                    }
+
+                    return target;
                 } else {
                     if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
                         return plugin.getSectionManager().getPrincipal();
@@ -101,7 +127,6 @@ public class ServerKickListener implements Listener {
                 new ConnectionIntent(plugin, player, section, servers) {
                     @Override
                     public void connect(ServerInfo server) {
-                        Messager msgr = new Messager(player);
                         PlayerLocker.lock(player);
                         msgr.send(ConfigEntries.RECONNECT_KICK_MESSAGE.get(),
                                 new Replacement("{from}", from.getName()),
