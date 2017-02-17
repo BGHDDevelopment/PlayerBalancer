@@ -6,7 +6,6 @@ import com.maxmind.geoip2.model.CountryResponse;
 import com.maxmind.geoip2.record.Country;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
-import me.jaimemartz.lobbybalancer.configuration.ConfigHelper;
 import me.jaimemartz.lobbybalancer.manager.NetworkManager;
 import me.jaimemartz.lobbybalancer.ping.ServerStatus;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
@@ -36,7 +35,7 @@ public enum ProviderType {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             Configuration rules = plugin.getConfig().getSection("settings.geolocation.rules");
-            if (ConfigEntries.GEOLOCATION_ENABLED.get() && ConfigHelper.isSet(rules, section.getName())) {
+            if (ConfigEntries.GEOLOCATION_ENABLED.get() && rules.contains(section.getName())) {
                 Configuration rule = rules.getSection(section.getName());
                 InetAddress address = player.getAddress().getAddress();
 

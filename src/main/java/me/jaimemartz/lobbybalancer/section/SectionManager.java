@@ -26,7 +26,7 @@ public class SectionManager {
         sections.getKeys().forEach(name -> {
             plugin.getLogger().info(String.format("Construction of section with name \"%s\"", name));
             Configuration section = sections.getSection(name);
-            ServerSection object = new ServerSection(name, section, this);
+            ServerSection object = new ServerSection(name, section);
             sectionStorage.put(name, object);
         });
 
