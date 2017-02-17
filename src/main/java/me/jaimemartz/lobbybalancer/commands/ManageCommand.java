@@ -42,13 +42,13 @@ public class ManageCommand extends Command {
                                 if (args.length == 3) {
                                     ProxiedPlayer player = plugin.getProxy().getPlayer(args[2]);
                                     if (player != null) {
-                                        ConnectionIntent.simple(plugin, player, section);
+                                        ConnectionIntent.connect(plugin, player, section);
                                     } else {
                                         msgr.send("&cThere is no player with that name connected to this proxy");
                                     }
                                 } else {
                                     if (sender instanceof ProxiedPlayer) {
-                                        ConnectionIntent.simple(plugin, (ProxiedPlayer) sender, section);
+                                        ConnectionIntent.connect(plugin, (ProxiedPlayer) sender, section);
                                     } else {
                                         msgr.send("&cThis command can only be executed by a player");
                                     }
@@ -110,7 +110,6 @@ public class ManageCommand extends Command {
                                 msgr.send("&7Valid: &b{status}",
                                         new Replacement("{status}", section.isValid() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
 
-
                                 if (!section.getServers().isEmpty()) {
                                     msgr.send("&7Section Servers: ");
                                     section.getServers().forEach(server -> {
@@ -163,7 +162,6 @@ public class ManageCommand extends Command {
                             extra.setColor(ChatColor.RED);
                             message.addExtra(extra);
                         }
-
 
                         sender.sendMessage(message);
                         break;

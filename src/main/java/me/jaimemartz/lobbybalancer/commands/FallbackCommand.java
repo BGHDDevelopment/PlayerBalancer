@@ -62,7 +62,7 @@ public class FallbackCommand extends Command {
             try {
                 ServerSection section = callable.call();
                 if (section != null) {
-                    ConnectionIntent.simple(plugin, player, section);
+                    ConnectionIntent.connect(plugin, player, section);
                 } else {
                     msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                 }

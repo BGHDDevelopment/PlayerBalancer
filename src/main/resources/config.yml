@@ -14,9 +14,6 @@ settings:
   # Whether the plugin should ask you to update or not
   check-updates: true
 
-  # Disable this to opt-out of the plugin sending stats
-  submit-stats: true
-
   # Pings to the servers to see if they can be accessed or not
   server-check:
     # If this is disabled the players will connect to the first server available

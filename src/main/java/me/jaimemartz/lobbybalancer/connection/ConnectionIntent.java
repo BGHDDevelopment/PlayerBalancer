@@ -52,7 +52,7 @@ public abstract class ConnectionIntent {
         }
     }
 
-    final ServerInfo fetchServer(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {
+    private ServerInfo fetchServer(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {
         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
@@ -66,7 +66,7 @@ public abstract class ConnectionIntent {
         }
 
         int intents = ConfigEntries.SERVER_CHECK_ATTEMPTS.get();
-        while (intents-- >= 1) {
+        for (int intent = 1; intent <= intents; intent++) {
             if (servers.size() == 0) return null;
             if (servers.size() == 1) return servers.get(0);
 
@@ -80,6 +80,7 @@ public abstract class ConnectionIntent {
                 servers.remove(target);
             }
         }
+
         return null;
     }
 
@@ -89,7 +90,7 @@ public abstract class ConnectionIntent {
         //Nothing to do
     }
 
-    public static void simple(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
+    public static void connect(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
         new ConnectionIntent(plugin, player, section) {
             @Override
             public void connect(ServerInfo server) {

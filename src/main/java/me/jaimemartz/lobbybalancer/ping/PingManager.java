@@ -11,17 +11,12 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PingManager {
-    private final LobbyBalancer plugin;
     private boolean stopped = true;
     private PingTactic tactic;
     private ScheduledTask task;
     private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
 
     public PingManager(LobbyBalancer plugin) {
-        this.plugin = plugin;
-    }
-
-    public void start() {
         if (task != null) {
             stop();
         }
@@ -41,7 +36,7 @@ public class PingManager {
                         continue;
                     }
 
-                    track(server);
+                    track(plugin, server);
                 }
             }
         }, 0L, ConfigEntries.SERVER_CHECK_INTERVAL.get(), TimeUnit.MILLISECONDS);
@@ -55,17 +50,15 @@ public class PingManager {
         }
     }
 
-    private void track(ServerInfo server) {
+    private void track(LobbyBalancer plugin, ServerInfo server) {
         tactic.ping(server, (status, throwable) -> {
             if (status == null) {
                 status = new ServerStatus("Server Unreachable", 0, 0);
             }
 
             if (ConfigEntries.SERVER_CHECK_PRINT_INFO.get()) {
-                plugin.getLogger().info(String.format(
-                        "Tracking server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
-                        server.getName(), status.getDescription(), status.getOnlinePlayers(), status.getMaximumPlayers(), status.isAccessible()
-                ));
+                plugin.getLogger().info(String.format("Tracking server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
+                        server.getName(), status.getDescription(), status.getOnlinePlayers(), status.getMaximumPlayers(), status.isAccessible()));
             }
 
             storage.put(server, status);

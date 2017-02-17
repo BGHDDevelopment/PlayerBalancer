@@ -39,7 +39,7 @@ public class PluginMessageListener implements Listener {
                             return;
                         }
 
-                        ConnectionIntent.simple(plugin, player, section);
+                        ConnectionIntent.connect(plugin, player, section);
                     }
                     break;
                 }
@@ -55,7 +55,7 @@ public class PluginMessageListener implements Listener {
                         return;
                     }
 
-                    ConnectionIntent.simple(plugin, player, section);
+                    ConnectionIntent.connect(plugin, player, section);
                     break;
                 }
 

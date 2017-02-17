@@ -26,7 +26,7 @@ public class SectionCommand extends Command {
         Messager msgr = new Messager(sender);
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-            ConnectionIntent.simple(plugin, player, section);
+            ConnectionIntent.connect(plugin, player, section);
         } else {
             msgr.send(ChatColor.RED + "This command can only be executed by a player");
         }

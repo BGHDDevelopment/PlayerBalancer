@@ -14,11 +14,11 @@ import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.ping.PingManager;
 import me.jaimemartz.lobbybalancer.section.SectionManager;
 import me.jaimemartz.lobbybalancer.utils.DigitUtils;
-import me.jaimemartz.lobbybalancer.utils.Metrics;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
+import org.bstats.Metrics;
 import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
@@ -53,16 +53,14 @@ public class LobbyBalancer extends Plugin {
 
         this.enable();
 
-        if (ConfigEntries.SUBMIT_STATS.get()) {
-            //Metrics (https://bstats.org/)
-            Metrics metrics = new Metrics(this);
-            metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections") {
-                @Override
-                public int getValue() {
-                    return sectionManager.getSections().size();
-                }
-            });
-        }
+        //Metrics (https://bstats.org/)
+        Metrics metrics = new Metrics(this);
+        metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections") {
+            @Override
+            public int getValue() {
+                return sectionManager.getSections().size();
+            }
+        });
     }
 
     private void enable() {
@@ -113,7 +111,6 @@ public class LobbyBalancer extends Plugin {
 
                 if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
                     pingManager = new PingManager(this);
-                    pingManager.start();
                 }
 
                 if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
@@ -174,6 +171,7 @@ public class LobbyBalancer extends Plugin {
 
             if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
                 pingManager.stop();
+                pingManager = null;
             }
 
             if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
