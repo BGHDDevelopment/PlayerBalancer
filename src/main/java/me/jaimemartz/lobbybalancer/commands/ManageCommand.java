@@ -90,6 +90,9 @@ public class ManageCommand extends Command {
                                     msgr.send("&7Parent: &bNone");
                                 }
 
+                                msgr.send("&7Position: &b{position}",
+                                        new Replacement("{position}", String.valueOf(section.getPosition())));
+
                                 msgr.send("&7Provider: &b{name} &7({relation}&7)",
                                         new Replacement("{name}", section.getProvider().name()),
                                         new Replacement("{relation}", section.hasInheritedProvider() ? "Inherited" : "Specified"));

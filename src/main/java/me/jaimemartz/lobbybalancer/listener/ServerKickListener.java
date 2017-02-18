@@ -83,22 +83,9 @@ public class ServerKickListener implements Listener {
                     }
 
                     if (ConfigEntries.RECONNECT_KICK_RESTRICTED.get()) {
-                        //todo 0 is principal section
-                        //todo -1 is parent of principal
-                        //todo 1 is child of principal
                         if (target.getPosition() < 0) {
                             return null;
                         }
-
-                        /*
-                        if (section.isPrincipal()) {
-                            todo: check if target is parent of section (or more parents of section)
-                            todo: I think that instead of checking if the player is in a principal section we should check
-                            todo: if the target section is above the parent section
-
-                            return null;
-                        }
-                        */
                     }
 
                     return target;

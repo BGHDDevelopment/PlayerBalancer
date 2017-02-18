@@ -31,13 +31,6 @@ public class FallbackCommand extends Command {
                 ServerSection section = plugin.getSectionManager().getByServer(player.getServer().getInfo());
 
                 if (section != null) {
-                    /* TODO REFERENCE TO ServerKickListener
-                    if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get() && section.isPrincipal()) {
-                        msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
-                        return null;
-                    }
-                    */
-
                     if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
                         msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                         return null;
@@ -56,7 +49,17 @@ public class FallbackCommand extends Command {
                         String bind = rules.getString(section.getName());
                         ServerSection target = plugin.getSectionManager().getByName(bind);
 
-                        return target == null ? section.getParent() : target;
+                        if (target == null) {
+                            target = section.getParent();
+                        }
+
+                        if (ConfigEntries.RECONNECT_KICK_RESTRICTED.get()) {
+                            if (target.getPosition() < 0) {
+                                return null;
+                            }
+                        }
+
+                        return target;
                     }
                 } else {
                     if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {

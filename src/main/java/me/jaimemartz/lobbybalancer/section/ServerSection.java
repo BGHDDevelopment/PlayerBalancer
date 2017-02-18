@@ -10,30 +10,12 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServerSection {
-    private static transient final Function<ServerSection, Integer> function = (section) -> {
-        if (section.isPrincipal()) {
-            return 0;
-        }
-
-        int iterations = 0;
-        while (true) {
-            section = section.getParent();
-            iterations++;
-
-            if (section == null) {
-                return iterations;
-            } else if (section.isPrincipal()) {
-                return -iterations;
-            }
-        }
-    };
-
     private transient final Configuration section;
 
     private final String name;
@@ -127,7 +109,40 @@ public class ServerSection {
     }
 
     void postInit(LobbyBalancer plugin) {
-        position = function.apply(this);
+        Callable<Integer> callable = () -> {
+            int iterations = 0;
+
+            //Calculate above principal
+            ServerSection current = this;
+            while (current != null) {
+                if (current.isPrincipal()) {
+                    return iterations;
+                }
+
+                current = current.getParent();
+                iterations++;
+            }
+
+            //Calculate below principal
+            iterations = 0;
+            current = plugin.getSectionManager().getPrincipal();
+            while (current != null) {
+                if (current.equals(this)) {
+                    return iterations;
+                }
+
+                current = current.getParent();
+                iterations--;
+            }
+
+            return 0;
+        };
+
+        try {
+            position = callable.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (provider == null) {
             ServerSection sect = this.parent;
