@@ -141,7 +141,9 @@ public class ManageCommand extends Command {
                     case "list": {
                         Set<String> keys = plugin.getSectionManager().getSections().keySet();
                         Iterator<String> iterator = keys.iterator();
-                        TextComponent message = new TextComponent(String.format("There are %s configured sections:\n", keys.size()));
+                        TextComponent message = new TextComponent("There are ");
+                        message.addExtra(new TextComponent(new ComponentBuilder(String.valueOf(keys.size())).color(ChatColor.AQUA).create()));
+                        message.addExtra(" configured sections:\n");
                         message.setColor(ChatColor.GRAY);
 
                         if (iterator.hasNext()) {

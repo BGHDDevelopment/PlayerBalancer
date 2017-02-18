@@ -20,7 +20,7 @@ public class ServerSection {
 
     private final String name;
     private boolean principal;
-    private int position = Integer.MAX_VALUE;
+    private int position;
     private boolean dummy;
     private ServerSection parent;
     private boolean inherited = false;
