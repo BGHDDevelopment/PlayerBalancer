@@ -124,18 +124,21 @@ public class ServerSection {
             }
 
             //Calculate below principal
-            iterations = 0;
-            current = plugin.getSectionManager().getPrincipal();
-            while (current != null) {
-                if (current.equals(this)) {
-                    return iterations;
-                }
+            if (plugin.getSectionManager().hasPrincipal()) {
+                iterations = 0;
+                current = plugin.getSectionManager().getPrincipal();
+                while (current != null) {
+                    if (current.equals(this)) {
+                        return iterations;
+                    }
 
-                current = current.getParent();
-                iterations--;
+                    current = current.getParent();
+                    iterations--;
+                }
             }
 
-            return 0;
+            //Returns iterations above parents
+            return iterations;
         };
 
         try {

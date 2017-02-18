@@ -99,7 +99,11 @@ public class SectionManager {
         return principal;
     }
 
-    protected void setPrincipal(ServerSection principal) {
+    void setPrincipal(ServerSection principal) {
         this.principal = principal;
+    }
+
+    boolean hasPrincipal() {
+        return principal != null;
     }
 }
