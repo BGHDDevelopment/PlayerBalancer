@@ -137,7 +137,7 @@ public class ServerSection {
                 }
             }
 
-            //Returns iterations above parents
+            //Calculated iterations above parents
             return iterations;
         };
 

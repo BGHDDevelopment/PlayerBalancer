@@ -54,7 +54,7 @@ public class FallbackCommand extends Command {
                         }
 
                         if (ConfigEntries.RECONNECT_KICK_RESTRICTED.get()) {
-                            if (target.getPosition() < 0) {
+                            if (section.getPosition() >= 0 && target.getPosition() < 0) {
                                 return null;
                             }
                         }
