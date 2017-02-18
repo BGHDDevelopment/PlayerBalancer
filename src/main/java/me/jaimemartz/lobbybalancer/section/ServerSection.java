@@ -86,7 +86,7 @@ public class ServerSection {
 
     void load(LobbyBalancer plugin) {
         if (parent != null && parent.parent == this) {
-            throw new IllegalStateException(String.format("The section \"%s\" and \"%s\" are parents of each other", this.name, parent.name));
+            throw new IllegalStateException(String.format("The sections \"%s\" and \"%s\" are parents of each other", this.name, parent.name));
         }
 
         if (section.contains("provider")) {
@@ -149,13 +149,15 @@ public class ServerSection {
 
         if (provider == null) {
             ServerSection sect = this.parent;
-            while (sect.provider == null) {
-                sect = sect.parent;
-            }
+            if (sect != null) {
+                while (sect.provider == null) {
+                    sect = sect.parent;
+                }
 
-            plugin.getLogger().info(String.format("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name));
-            provider = sect.provider;
-            inherited = true;
+                plugin.getLogger().info(String.format("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name));
+                provider = sect.provider;
+                inherited = true;
+            }
         }
 
         if (provider == null) {

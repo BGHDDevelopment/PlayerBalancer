@@ -53,8 +53,9 @@ public class FallbackCommand extends Command {
                             target = section.getParent();
                         }
 
-                        if (ConfigEntries.RECONNECT_KICK_RESTRICTED.get()) {
+                        if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get()) {
                             if (section.getPosition() >= 0 && target.getPosition() < 0) {
+                                msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                                 return null;
                             }
                         }
