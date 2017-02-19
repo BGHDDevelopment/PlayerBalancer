@@ -14,7 +14,7 @@ public class SectionCommand extends Command {
     private transient final LobbyBalancer plugin;
     private transient final ServerSection section;
 
-    SectionCommand(LobbyBalancer plugin, String name, String permission, List<String> aliases, ServerSection section) {
+    public SectionCommand(LobbyBalancer plugin, String name, String permission, List<String> aliases, ServerSection section) {
         super(name, permission, aliases.stream().toArray(String[]::new));
         this.plugin = plugin;
         this.section = section;

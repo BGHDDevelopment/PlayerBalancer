@@ -71,7 +71,7 @@ public class SectionManager {
         sectionServers.clear();
     }
 
-    void register(ServerInfo server, ServerSection section) {
+    public void register(ServerInfo server, ServerSection section) {
         if (sectionServers.containsKey(server)) {
             ServerSection other = sectionServers.get(server);
             throw new IllegalArgumentException(String.format("The server \"%s\" is already in the section \"%s\"", server.getName(), other.getName()));
@@ -79,6 +79,7 @@ public class SectionManager {
 
         plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"", server.getName(), section.getName()));
         sectionServers.put(server, section);
+
     }
 
     public ServerSection getByName(String name) {
@@ -99,11 +100,11 @@ public class SectionManager {
         return principal;
     }
 
-    void setPrincipal(ServerSection principal) {
+    public void setPrincipal(ServerSection principal) {
         this.principal = principal;
     }
 
-    boolean hasPrincipal() {
+    public boolean hasPrincipal() {
         return principal != null;
     }
 }

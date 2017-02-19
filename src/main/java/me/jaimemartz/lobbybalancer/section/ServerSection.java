@@ -30,13 +30,32 @@ public class ServerSection {
     private SectionCommand command;
     private boolean valid = false;
 
-    ServerSection(String name, Configuration section) {
+    public ServerSection(String name, Configuration section) {
         this.name = name;
         this.section = section;
         this.servers = new ArrayList<>();
     }
 
-    void preInit(LobbyBalancer plugin) {
+    public ServerSection(String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherited, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
+        this.section = null;
+        this.name = name;
+        this.principal = principal;
+        this.position = position;
+        this.dummy = dummy;
+        this.parent = parent;
+        this.inherited = inherited;
+        this.servers = servers;
+        this.provider = provider;
+        this.server = server;
+        this.command = command;
+        this.valid = valid;
+    }
+
+    public void preInit(LobbyBalancer plugin) {
+        if (section == null) {
+            throw new IllegalStateException("Tried to call an init method with null configuration section");
+        }
+
         principal = section.getBoolean("principal", false);
 
         if (principal) {
@@ -84,7 +103,11 @@ public class ServerSection {
 
     }
 
-    void load(LobbyBalancer plugin) {
+    public void load(LobbyBalancer plugin) {
+        if (section == null) {
+            throw new IllegalStateException("Tried to call an init method with null configuration section");
+        }
+
         if (parent != null && parent.parent == this) {
             throw new IllegalStateException(String.format("The sections \"%s\" and \"%s\" are parents of each other", this.name, parent.name));
         }
@@ -108,7 +131,11 @@ public class ServerSection {
         }
     }
 
-    void postInit(LobbyBalancer plugin) {
+    public void postInit(LobbyBalancer plugin) {
+        if (section == null) {
+            throw new IllegalStateException("Tried to call an init method with null configuration section");
+        }
+
         Callable<Integer> callable = () -> {
             int iterations = 0;
 
