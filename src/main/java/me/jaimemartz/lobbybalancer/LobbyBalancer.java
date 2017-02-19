@@ -1,7 +1,6 @@
 package me.jaimemartz.lobbybalancer;
 
 import com.fasterxml.jackson.databind.ext.Java7Support;
-import com.google.gson.Gson;
 import me.jaimemartz.faucet.ConfigFactory;
 import me.jaimemartz.lobbybalancer.commands.FallbackCommand;
 import me.jaimemartz.lobbybalancer.commands.MainCommand;
@@ -31,7 +30,6 @@ public class LobbyBalancer extends Plugin {
     public static final String NONCE_ID = "%%__NONCE__%%";
     private static final int LAST_VER_CONFIG_UPDATE = 20600;
 
-    private final Gson gson = new Gson();
     private boolean failed = false;
 
     private ConfigFactory factory;
@@ -210,10 +208,6 @@ public class LobbyBalancer extends Plugin {
 
         long ending = System.currentTimeMillis() - starting;
         getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
-    }
-
-    public Gson getGson() {
-        return gson;
     }
 
     public GeolocationManager getGeolocationManager() {

@@ -1,15 +1,20 @@
 package me.jaimemartz.lobbybalancer.section;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SectionManager {
     private ServerSection principal;
+    private ScheduledTask updateTask;
     private final LobbyBalancer plugin;
     private final Map<String, ServerSection> sectionStorage = new ConcurrentHashMap<>();
     private final Map<ServerInfo, ServerSection> sectionServers = new ConcurrentHashMap<>();
@@ -26,25 +31,44 @@ public class SectionManager {
         sections.getKeys().forEach(name -> {
             plugin.getLogger().info(String.format("Construction of section with name \"%s\"", name));
             Configuration section = sections.getSection(name);
-            ServerSection object = new ServerSection(name, section);
+            ServerSection object = new ServerSection(plugin, name, section);
             sectionStorage.put(name, object);
         });
 
         sectionStorage.forEach((name, section) -> {
             plugin.getLogger().info(String.format("Pre-Initialization of section with name \"%s\"", name));
-            section.preInit(plugin);
+            section.preInit();
         });
 
         sectionStorage.forEach((name, section) -> {
             plugin.getLogger().info(String.format("Initialization of section with name \"%s\"", name));
-            section.load(plugin);
+            section.load();
         });
 
         sectionStorage.forEach((name, section) -> {
             plugin.getLogger().info(String.format("Post-Initialization of section with name \"%s\"", name));
-            section.postInit(plugin);
+            section.postInit();
         });
 
+        if (ConfigEntries.SERVERS_UPDATE.get()) {
+            updateTask = plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                sectionStorage.forEach((name, section) -> {
+                    section.getConfiguration().getStringList("servers").forEach(entry -> {
+                        Pattern pattern = Pattern.compile(entry);
+                        plugin.getProxy().getServers().forEach((key, value) -> {
+                            Matcher matcher = pattern.matcher(key);
+                            if (matcher.matches()) {
+                                if (!section.getServers().contains(value)) {
+                                    plugin.getLogger().info(String.format("Found a new match with \"%s\" for entry \"%s\"", key, entry));
+                                    this.register(value, section);
+                                    section.getServers().add(value);
+                                }
+                            }
+                        });
+                    });
+                });
+            }, 1, 1, TimeUnit.MINUTES);
+        }
 
         long ending = System.currentTimeMillis() - starting;
         plugin.getLogger().info(String.format("A total of %s section(s) have been loaded in %sms", sectionStorage.size(), ending));
@@ -67,6 +91,10 @@ public class SectionManager {
         });
 
         principal = null;
+        if (updateTask != null) {
+            updateTask.cancel();
+            updateTask = null;
+        }
         sectionStorage.clear();
         sectionServers.clear();
     }

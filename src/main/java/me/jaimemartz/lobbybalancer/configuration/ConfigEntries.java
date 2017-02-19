@@ -44,6 +44,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<Boolean> REDIS_BUNGEE_ENABLED = new ConfigEntry<>(0, "settings.redis-bungee", false);
     public static final ConfigEntry<Boolean> ASSIGN_TARGETS_ENABLED = new ConfigEntry<>(0, "settings.assign-targets", false);
     public static final ConfigEntry<Boolean> FALLBACK_PRINCIPAL_ENABLED = new ConfigEntry<>(0, "settings.fallback-principal", true);
+    public static final ConfigEntry<Boolean> SERVERS_UPDATE = new ConfigEntry<>(0, "settings.servers-update", true);
 
     public static final ConfigEntry<String> CONNECTING_MESSAGE = new ConfigEntry<>(0, "settings.messages.connecting", null);
     public static final ConfigEntry<String> FAILURE_MESSAGE = new ConfigEntry<>(0, "settings.messages.failure", null);

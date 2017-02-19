@@ -1,5 +1,6 @@
 package me.jaimemartz.lobbybalancer.section;
 
+import com.google.gson.annotations.Expose;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
 import me.jaimemartz.lobbybalancer.utils.FixedAdapter;
@@ -8,7 +9,6 @@ import net.md_5.bungee.config.Configuration;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -16,28 +16,30 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ServerSection {
-    private transient final Configuration section;
+    private final LobbyBalancer plugin;
+    private Configuration configuration;
+    @Expose private final String name;
+    @Expose private boolean principal;
+    @Expose private int position;
+    @Expose private boolean dummy;
+    @Expose private ServerSection parent;
+    @Expose private boolean inherited = false;
+    @Expose private List<ServerInfo> servers;
+    @Expose private ProviderType provider;
+    @Expose private ServerInfo server;
+    @Expose private SectionCommand command;
+    @Expose private boolean valid = false;
 
-    private final String name;
-    private boolean principal;
-    private int position;
-    private boolean dummy;
-    private ServerSection parent;
-    private boolean inherited = false;
-    private List<ServerInfo> servers;
-    private ProviderType provider;
-    private ServerInfo server;
-    private SectionCommand command;
-    private boolean valid = false;
-
-    public ServerSection(String name, Configuration section) {
+    public ServerSection(LobbyBalancer plugin, String name, Configuration configuration) {
+        this.plugin = plugin;
         this.name = name;
-        this.section = section;
+        this.configuration = configuration;
         this.servers = new ArrayList<>();
     }
 
-    public ServerSection(String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherited, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
-        this.section = null;
+    public ServerSection(LobbyBalancer plugin, String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherited, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
+        this.plugin = plugin;
+        this.configuration = null;
         this.name = name;
         this.principal = principal;
         this.position = position;
@@ -51,12 +53,12 @@ public class ServerSection {
         this.valid = valid;
     }
 
-    public void preInit(LobbyBalancer plugin) {
-        if (section == null) {
+    public void preInit() {
+        if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
 
-        principal = section.getBoolean("principal", false);
+        principal = configuration.getBoolean("principal", false);
 
         if (principal) {
             ServerSection section = plugin.getSectionManager().getPrincipal();
@@ -67,18 +69,18 @@ public class ServerSection {
             }
         }
 
-        dummy = section.getBoolean("dummy", false);
+        dummy = configuration.getBoolean("dummy", false);
 
-        if (section.contains("parent")) {
-            parent = plugin.getSectionManager().getByName(section.getString("parent"));
+        if (configuration.contains("parent")) {
+            parent = plugin.getSectionManager().getByName(configuration.getString("parent"));
 
             if (parent == null) {
                 throw new IllegalArgumentException(String.format("The section \"%s\" has an invalid parent set", name));
             }
         }
 
-        if (section.contains("servers")) {
-            section.getStringList("servers").forEach(entry -> {
+        if (configuration.contains("servers")) {
+            configuration.getStringList("servers").forEach(entry -> {
                 Pattern pattern = Pattern.compile(entry);
                 AtomicBoolean matches = new AtomicBoolean(false);
                 plugin.getProxy().getServers().forEach((key, value) -> {
@@ -96,15 +98,15 @@ public class ServerSection {
                 }
             });
 
-            plugin.getLogger().info(String.format("Recognized %s server(s) out of %s entries on the section \"%s\"", servers.size(), section.getStringList("servers").size(), this.name));
+            plugin.getLogger().info(String.format("Recognized %s server(s) out of %s entries on the section \"%s\"", servers.size(), configuration.getStringList("servers").size(), this.name));
         } else {
             throw new IllegalArgumentException(String.format("The section \"%s\" does not have any servers set", name));
         }
 
     }
 
-    public void load(LobbyBalancer plugin) {
-        if (section == null) {
+    public void load() {
+        if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
 
@@ -112,9 +114,9 @@ public class ServerSection {
             throw new IllegalStateException(String.format("The sections \"%s\" and \"%s\" are parents of each other", this.name, parent.name));
         }
 
-        if (section.contains("provider")) {
+        if (configuration.contains("provider")) {
             try {
-                provider = ProviderType.valueOf(section.getString("provider").toUpperCase());
+                provider = ProviderType.valueOf(configuration.getString("provider").toUpperCase());
                 if (provider == ProviderType.LOCALIZED) {
                     Configuration rules = plugin.getConfig().getSection("settings.geolocation.rules");
                     if (!rules.contains(name)) {
@@ -131,15 +133,14 @@ public class ServerSection {
         }
     }
 
-    public void postInit(LobbyBalancer plugin) {
-        if (section == null) {
+    public void postInit() {
+        if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
 
         Callable<Integer> callable = () -> {
-            int iterations = 0;
-
             //Calculate above principal
+            int iterations = 0;
             ServerSection current = this;
             while (current != null) {
                 if (current.isPrincipal()) {
@@ -191,16 +192,16 @@ public class ServerSection {
             throw new IllegalStateException(String.format("The section \"%s\" does not have a provider", name));
         }
 
-        if (section.contains("section-server")) {
+        if (configuration.contains("section-server")) {
             int port = (int) Math.floor(Math.random() * (0xFFFF + 1)); //Get a random valid port for our fake server
-            server = plugin.getProxy().constructServerInfo("@" + section.getString("section-server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
+            server = plugin.getProxy().constructServerInfo("@" + configuration.getString("section-server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
             plugin.getSectionManager().register(server, this);
             FixedAdapter.getFakeServers().put(server.getName(), server);
             plugin.getProxy().getServers().put(server.getName(), server);
         }
 
-        if (section.contains("section-command")) {
-            Configuration other = section.getSection("section-command");
+        if (configuration.contains("section-command")) {
+            Configuration other = configuration.getSection("section-command");
 
             String name = other.getString("name");
             String permission = other.getString("permission");
@@ -217,8 +218,8 @@ public class ServerSection {
         return name;
     }
 
-    protected Configuration getSection() {
-        return section;
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     public boolean isPrincipal() {
@@ -275,5 +276,41 @@ public class ServerSection {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    public void setPrincipal(boolean principal) {
+        this.principal = principal;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public void setDummy(boolean dummy) {
+        this.dummy = dummy;
+    }
+
+    public void setParent(ServerSection parent) {
+        this.parent = parent;
+    }
+
+    public void setInherited(boolean inherited) {
+        this.inherited = inherited;
+    }
+
+    public void setServers(List<ServerInfo> servers) {
+        this.servers = servers;
+    }
+
+    public void setProvider(ProviderType provider) {
+        this.provider = provider;
+    }
+
+    public void setServer(ServerInfo server) {
+        this.server = server;
+    }
+
+    public void setCommand(SectionCommand command) {
+        this.command = command;
     }
 }

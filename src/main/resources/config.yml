@@ -128,6 +128,9 @@ settings:
   # This affects both the fallback command and reconnect kick features
   fallback-principal: true
 
+  # This will update the recognized servers every minute
+  servers-update: true
+
   # Comment a message to disable it
   messages:
     connecting: '&aConnecting to {server}'

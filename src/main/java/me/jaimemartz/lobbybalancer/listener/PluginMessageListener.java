@@ -2,6 +2,8 @@ package me.jaimemartz.lobbybalancer.listener;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
@@ -18,9 +20,14 @@ import java.io.IOException;
 
 public class PluginMessageListener implements Listener {
     private final LobbyBalancer plugin;
+    private final Gson gson;
 
     public PluginMessageListener(LobbyBalancer plugin) {
         this.plugin = plugin;
+        GsonBuilder builder = new GsonBuilder();
+        builder.serializeNulls();
+        builder.excludeFieldsWithoutExposeAnnotation();
+        gson = builder.create();
     }
 
     @EventHandler
@@ -69,7 +76,7 @@ public class PluginMessageListener implements Listener {
                     }
 
                     try {
-                        String output = plugin.getGson().toJson(section);
+                        String output = gson.toJson(section);
                         out.writeUTF(output);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -94,7 +101,7 @@ public class PluginMessageListener implements Listener {
                     }
 
                     try {
-                        String output = plugin.getGson().toJson(section);
+                        String output = gson.toJson(section);
                         out.writeUTF(output);
                     } catch (IOException e) {
                         e.printStackTrace();

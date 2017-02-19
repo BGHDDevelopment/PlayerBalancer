@@ -19,6 +19,7 @@ import net.md_5.bungee.api.plugin.Command;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class ManageCommand extends Command {
     private final LobbyBalancer plugin;
@@ -57,7 +58,7 @@ public class ManageCommand extends Command {
                                 msgr.send(ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
                             }
                         } else {
-                            sendHelper(msgr);
+                            help.accept(msgr);
                         }
                         break;
                     }
@@ -133,7 +134,7 @@ public class ManageCommand extends Command {
                                 msgr.send(ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
                             }
                         } else {
-                            sendHelper(msgr);
+                            help.accept(msgr);
                         }
                         break;
                     }
@@ -174,25 +175,23 @@ public class ManageCommand extends Command {
 
                     default: {
                         msgr.send("&cThis is not a valid argument for this command!");
-                        sendHelper(msgr);
+                        help.accept(msgr);
                     }
                 }
             } else {
-                sendHelper(msgr);
+                help.accept(msgr);
             }
         } else {
             msgr.send(ChatColor.RED + "You do not have permission to execute this command!");
         }
     }
 
-    private void sendHelper(Messager msgr) {
-        msgr.send(
-                "&7&m-----------------------------------------------------",
-                "&7Available commands:",
-                "&3/section list &7- &cTells you which sections are configured in the plugin",
-                "&3/section info <section> &7- &cTells you info about the section",
-                "&3/section connect <section> [player] &7- &cConnects you or the specified player to that section",
-                "&7&m-----------------------------------------------------"
-        );
-    }
+    private static final Consumer<Messager> help = (msgr) -> msgr.send(
+            "&7&m-----------------------------------------------------",
+            "&7Available commands:",
+            "&3/section list &7- &cTells you which sections are configured in the plugin",
+            "&3/section info <section> &7- &cTells you info about the section",
+            "&3/section connect <section> [player] &7- &cConnects you or the specified player to that section",
+            "&7&m-----------------------------------------------------"
+    );
 }
