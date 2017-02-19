@@ -11,9 +11,6 @@ settings:
   # Disable the messages the plugin prints out when loading
   silent-startup: false
 
-  # Whether the plugin should ask you to update or not
-  check-updates: true
-
   # Pings to the servers to see if they can be accessed or not
   server-check:
     # If this is disabled the players will connect to the first server available

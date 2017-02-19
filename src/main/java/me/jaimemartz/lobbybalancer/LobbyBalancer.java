@@ -86,12 +86,10 @@ public class LobbyBalancer extends Plugin {
                 getProxy().getPluginManager().registerListener(this, reloadListener);
             }
 
-            if (ConfigEntries.CHECK_UPDATES_ENABLED.get()) {
-                try {
-                    new BungeeUpdater(this, 10788);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            try {
+                new BungeeUpdater(this, 10788);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
             Logger.getLogger(Java7Support.class.getName()).setLevel(Level.SEVERE);

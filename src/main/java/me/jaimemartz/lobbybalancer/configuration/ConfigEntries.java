@@ -10,7 +10,6 @@ import java.util.List;
 public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<Boolean> PLUGIN_ENABLED = new ConfigEntry<>(0, "settings.enabled", false);
     public static final ConfigEntry<Boolean> SILENT_STARTUP = new ConfigEntry<>(0, "settings.silent-startup", false);
-    public static final ConfigEntry<Boolean> CHECK_UPDATES_ENABLED = new ConfigEntry<>(0, "settings.check-updates", true);
 
     public static final ConfigEntry<Boolean> SERVER_CHECK_ENABLED = new ConfigEntry<>(0, "settings.server-check.enabled", true);
     public static final ConfigEntry<String> SERVER_CHECK_MODE = new ConfigEntry<>(0, "settings.server-check.tactic", "CUSTOM");
