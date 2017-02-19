@@ -215,7 +215,7 @@ public class ServerSection {
     }
 
     public List<ServerInfo> getServers() {
-        return Collections.unmodifiableList(servers);
+        return servers;
     }
 
     public ProviderType getProvider() {
