@@ -93,7 +93,7 @@ public class SectionManager {
     }
 
     public Map<String, ServerSection> getSections() {
-        return Collections.unmodifiableMap(sectionStorage);
+        return sectionStorage;
     }
 
     public ServerSection getPrincipal() {

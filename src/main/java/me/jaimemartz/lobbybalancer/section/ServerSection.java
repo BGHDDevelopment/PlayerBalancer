@@ -273,7 +273,7 @@ public class ServerSection {
         return valid;
     }
 
-    void setValid(boolean valid) {
+    public void setValid(boolean valid) {
         this.valid = valid;
     }
 }
