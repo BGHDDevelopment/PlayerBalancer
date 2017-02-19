@@ -57,6 +57,9 @@ settings:
     # This will make it so that the server the player is kicked from will be excluded
     exclude-from: true
 
+    # If enabled, players that are kicked while connecting to the proxy will be forced to reconnect to the principal section
+    force-principal: false
+
     # This prints info every time a player gets kicked telling you the reason and if it matches the reasons
     print-info: false
 

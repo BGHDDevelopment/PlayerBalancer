@@ -35,18 +35,20 @@ public class ServerKickListener implements Listener {
         ServerInfo from = event.getKickedFrom();
         Messager msgr = new Messager(player);
 
-        //Player is not connected to any server
-        if (player.getServer() == null) {
-            return;
-        }
-
-        //Player is not connected to the server he is kicked from
-        if (!player.getServer().getInfo().equals(from)) {
-            return;
-        }
-
         //Section the player is going to be reconnected
         Callable<ServerSection> callable = () -> {
+            if (player.getServer() == null) {
+                if (ConfigEntries.RECONNECT_KICK_FORCE_PRINCIPAL.get()) {
+                    return plugin.getSectionManager().getPrincipal();
+                } else {
+                    return null;
+                }
+            }
+
+            if (!player.getServer().getInfo().equals(from)) {
+                return null;
+            }
+
             ServerSection section = plugin.getSectionManager().getByServer(from);
 
             if (section != null) {

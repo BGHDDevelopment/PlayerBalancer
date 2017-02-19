@@ -15,6 +15,8 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
+import java.util.concurrent.Callable;
+
 public class ServerConnectListener implements Listener {
     private final LobbyBalancer plugin;
 
@@ -28,41 +30,52 @@ public class ServerConnectListener implements Listener {
         ServerInfo target = event.getTarget();
         Messager msgr = new Messager(player);
 
-        ServerSection section = plugin.getSectionManager().getByServer(target);
+        Callable<ServerSection> callable = () -> {
+            ServerSection section = plugin.getSectionManager().getByServer(target);
 
-        if (section != null) {
-            if (PlayerLocker.isLocked(player)) {
-                return;
-            }
-
-            if (section.getServers().contains(target)) {
-                if (section.isDummy()) {
-                    return;
+            if (section != null) {
+                if (PlayerLocker.isLocked(player)) {
+                    return null;
                 }
 
-                if (player.hasPermission("lobbybalancer.bypass")) {
-                    msgr.send(ChatColor.RED + "You have not been moved because you have the lobbybalancer.bypass permission");
-                    return;
-                }
-
-                if (player.getServer() != null && section.getServers().contains(player.getServer().getInfo())) {
-                    if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
-                        ServerAssignRegistry.assignTarget(player, section, target);
-                    }
-                    return;
-                }
-            }
-
-            new ConnectionIntent(plugin, player, section) {
-                @Override
-                public void connect(ServerInfo server) {
-                    if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
-                        ServerAssignRegistry.assignTarget(player, section, server);
+                if (section.getServers().contains(target)) {
+                    if (section.isDummy()) {
+                        return null;
                     }
 
-                    event.setTarget(server);
+                    if (player.hasPermission("lobbybalancer.bypass")) {
+                        msgr.send(ChatColor.RED + "You have not been moved because you have the lobbybalancer.bypass permission");
+                        return null;
+                    }
+
+                    if (player.getServer() != null && section.getServers().contains(player.getServer().getInfo())) {
+                        if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
+                            ServerAssignRegistry.assignTarget(player, section, target);
+                        }
+                        return null;
+                    }
                 }
-            };
+            }
+
+            return section;
+        };
+
+        try {
+            ServerSection section = callable.call();
+            if (section != null) {
+                new ConnectionIntent(plugin, player, section) {
+                    @Override
+                    public void connect(ServerInfo server) {
+                        if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
+                            ServerAssignRegistry.assignTarget(player, section, server);
+                        }
+
+                        event.setTarget(server);
+                    }
+                };
+            }
+        } catch (Exception e) {
+            //Nothing to do
         }
     }
 }

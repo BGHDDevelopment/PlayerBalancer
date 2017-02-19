@@ -30,6 +30,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<List<String>> RECONNECT_KICK_IGNORED_SECTIONS = new ConfigEntry<>(0, "settings.reconnect-kick.ignored", Collections.emptyList());
     public static final ConfigEntry<Boolean> RECONNECT_KICK_RESTRICTED = new ConfigEntry<>(0, "settings.reconnect-kick.restricted", true);
     public static final ConfigEntry<Boolean> RECONNECT_KICK_EXCLUDE_FROM = new ConfigEntry<>(0, "settings.reconnect-kick.exclude-from", true);
+    public static final ConfigEntry<Boolean> RECONNECT_KICK_FORCE_PRINCIPAL = new ConfigEntry<>(0, "settings.reconnect-kick.force-principal", false);
     public static final ConfigEntry<String> RECONNECT_KICK_MESSAGE = new ConfigEntry<>(0, "settings.reconnect-kick.message", "&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}");
 
     public static final ConfigEntry<Boolean> FALLBACK_COMMAND_ENABLED = new ConfigEntry<>(0, "settings.fallback-command.enabled", true);
