@@ -118,7 +118,7 @@ public class ManageCommand extends Command {
                                     msgr.send("&7Section Servers: ");
                                     section.getServers().forEach(server -> {
                                         ServerStatus status = plugin.getPingManager().getStatus(server);
-                                        msgr.send("&7Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
+                                        msgr.send("&7> Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
                                                 new Replacement("{name}", server.getName()),
                                                 new Replacement("{connected}", String.valueOf(status.getOnlinePlayers())),
                                                 new Replacement("{maximum}", String.valueOf(status.getMaximumPlayers())),
