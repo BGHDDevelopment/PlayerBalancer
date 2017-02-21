@@ -60,9 +60,6 @@ settings:
     # This prints info every time a player gets kicked telling you the reason and if it matches the reasons
     print-info: false
 
-    # The message the player is sent when kicked, comment it out to remove the message
-    message: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
-
     # You can override the behavior with rules, overriding the parent section
     # This will set the section to go when you come from the section specified
     # This will still require the kick reasons to match
@@ -137,6 +134,7 @@ settings:
     failure: '&cCould not find a server to get connected'
     unavailable: '&cThis command cannot be executed on this server'
     unknown: '&cCould not find a section with that name'
+    kick: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
 
 # Here you have an example of what you can do with the sections
 # The plugin will print out info telling you if your config is right or not

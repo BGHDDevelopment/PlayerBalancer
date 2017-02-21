@@ -117,7 +117,7 @@ public class ServerKickListener implements Listener {
                     @Override
                     public void connect(ServerInfo server) {
                         PlayerLocker.lock(player);
-                        msgr.send(ConfigEntries.RECONNECT_KICK_MESSAGE.get(),
+                        msgr.send(ConfigEntries.KICK_MESSAGE.get(),
                                 new Replacement("{from}", from.getName()),
                                 new Replacement("{to}", server.getName()),
                                 new Replacement("{reason}", TextComponent.toPlainText(event.getKickReasonComponent())));

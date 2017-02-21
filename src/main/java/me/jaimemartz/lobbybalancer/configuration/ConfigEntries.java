@@ -30,7 +30,6 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<Boolean> RECONNECT_KICK_RESTRICTED = new ConfigEntry<>(0, "settings.reconnect-kick.restricted", true);
     public static final ConfigEntry<Boolean> RECONNECT_KICK_EXCLUDE_FROM = new ConfigEntry<>(0, "settings.reconnect-kick.exclude-from", true);
     public static final ConfigEntry<Boolean> RECONNECT_KICK_FORCE_PRINCIPAL = new ConfigEntry<>(0, "settings.reconnect-kick.force-principal", false);
-    public static final ConfigEntry<String> RECONNECT_KICK_MESSAGE = new ConfigEntry<>(0, "settings.reconnect-kick.message", "&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}");
 
     public static final ConfigEntry<Boolean> FALLBACK_COMMAND_ENABLED = new ConfigEntry<>(0, "settings.fallback-command.enabled", true);
     public static final ConfigEntry<String> FALLBACK_COMMAND_NAME = new ConfigEntry<>(0, "settings.fallback-command.name", "fallback");
@@ -50,6 +49,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<String> FAILURE_MESSAGE = new ConfigEntry<>(0, "settings.messages.failure", null);
     public static final ConfigEntry<String> UNAVAILABLE_MESSAGE = new ConfigEntry<>(0, "settings.messages.unavailable", null);
     public static final ConfigEntry<String> UNKNOWN_SECTION_MESSAGE = new ConfigEntry<>(0, "settings.messages.unknown", null);
+    public static final ConfigEntry<String> KICK_MESSAGE = new ConfigEntry<>(0, "settings.messages.kick", null);
 
     public static final ConfigEntry<String> CONFIG_VERSION = new ConfigEntry<>(0, "version", null);
 }

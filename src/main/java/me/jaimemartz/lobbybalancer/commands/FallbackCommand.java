@@ -44,24 +44,29 @@ public class FallbackCommand extends Command {
                         }
 
                         return target;
-                    } else {
-                        Configuration rules = plugin.getConfig().getSection("settings.fallback-command.rules");
-                        String bind = rules.getString(section.getName());
-                        ServerSection target = plugin.getSectionManager().getByName(bind);
-
-                        if (target == null) {
-                            target = section.getParent();
-                        }
-
-                        if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get()) {
-                            if (section.getPosition() >= 0 && target.getPosition() < 0) {
-                                msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
-                                return null;
-                            }
-                        }
-
-                        return target;
                     }
+
+                    Configuration rules = plugin.getConfig().getSection("settings.fallback-command.rules");
+                    String bind = rules.getString(section.getName());
+                    ServerSection target = plugin.getSectionManager().getByName(bind);
+
+                    if (target == null) {
+                        if (section.hasParent()) {
+                            target = section.getParent();
+                        } else {
+                            msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                            return null;
+                        }
+                    }
+
+                    if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get()) {
+                        if (section.getPosition() >= 0 && target.getPosition() < 0) {
+                            msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                            return null;
+                        }
+                    }
+
+                    return target;
                 } else {
                     if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
                         return plugin.getSectionManager().getPrincipal();
