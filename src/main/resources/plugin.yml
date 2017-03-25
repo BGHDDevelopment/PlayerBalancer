@@ -2,4 +2,4 @@ name: LobbyBalancer
 main: me.jaimemartz.lobbybalancer.LobbyBalancer
 version: ${project.version}
 author: jaime29010
-softdepend: [RedisBungee, LibraryLoader]
+softdepend: [RedisBungee]
