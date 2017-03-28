@@ -28,17 +28,15 @@ public class SectionCommand extends Command {
         Messager msgr = new Messager(sender);
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-
             if (args.length == 1) {
                 try {
                     int number = Integer.parseInt(args[0]);
-
                     if (number <= 0) {
                         msgr.send(ConfigEntries.INVALID_INPUT_MESSAGE.get());
                     } else if (number > section.getServers().size()) {
                         msgr.send(ConfigEntries.FAILURE_MESSAGE.get());
                     } else {
-                        ServerInfo server = section.getSortedServers().get(number);
+                        ServerInfo server = section.getSortedServers().get(number - 1);
                         ConnectionIntent.direct(plugin, player, server);
                     }
                 } catch (NumberFormatException e) {

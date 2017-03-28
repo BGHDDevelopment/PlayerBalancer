@@ -35,7 +35,7 @@ public class ManageCommand extends Command {
         if (sender.hasPermission("lobbybalancer.admin")) {
             if (args.length != 0) {
                 switch (args[0].toLowerCase()) {
-                    case "simple": {
+                    case "connect": {
                         if (args.length >= 2) {
                             String input = args[1];
                             ServerSection section = plugin.getSectionManager().getByName(input);
@@ -191,7 +191,7 @@ public class ManageCommand extends Command {
             "&7Available commands:",
             "&3/section list &7- &cTells you which sections are configured in the plugin",
             "&3/section info <section> &7- &cTells you info about the section",
-            "&3/section simple <section> [player] &7- &cConnects you or the specified player to that section",
+            "&3/section connect <section> [player] &7- &cConnects you or the specified player to that section",
             "&7&m-----------------------------------------------------"
     );
 }

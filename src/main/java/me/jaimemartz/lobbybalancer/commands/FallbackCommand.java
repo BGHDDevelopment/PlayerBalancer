@@ -7,6 +7,7 @@ import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.config.Configuration;
@@ -34,16 +35,6 @@ public class FallbackCommand extends Command {
                     if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
                         msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
                         return null;
-                    }
-
-                    if (ConfigEntries.FALLBACK_COMMAND_ARGUMENTS.get() && args.length == 1) {
-                        ServerSection target = plugin.getSectionManager().getByName(args[0]);
-
-                        if (target == null) {
-                            msgr.send(ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
-                        }
-
-                        return target;
                     }
 
                     Configuration rules = plugin.getConfig().getSection("settings.fallback-command.rules");
@@ -79,7 +70,23 @@ public class FallbackCommand extends Command {
             try {
                 ServerSection section = callable.call();
                 if (section != null) {
-                    ConnectionIntent.simple(plugin, player, section);
+                    if (args.length == 1) {
+                        try {
+                            int number = Integer.parseInt(args[0]);
+                            if (number <= 0) {
+                                msgr.send(ConfigEntries.INVALID_INPUT_MESSAGE.get());
+                            } else if (number > section.getServers().size()) {
+                                msgr.send(ConfigEntries.FAILURE_MESSAGE.get());
+                            } else {
+                                ServerInfo server = section.getSortedServers().get(number - 1);
+                                ConnectionIntent.direct(plugin, player, server);
+                            }
+                        } catch (NumberFormatException e) {
+                            msgr.send(ConfigEntries.INVALID_INPUT_MESSAGE.get());
+                        }
+                    } else {
+                        ConnectionIntent.simple(plugin, player, section);
+                    }
                 }
             } catch (Exception e) {
                 //Nothing to do

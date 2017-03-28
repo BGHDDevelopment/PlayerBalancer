@@ -37,7 +37,6 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<String> FALLBACK_COMMAND_PERMISSION = new ConfigEntry<>(0, "settings.fallback-command.permission", "");
     public static final ConfigEntry<List<String>> FALLBACK_COMMAND_IGNORED_SECTIONS = new ConfigEntry<>(0, "settings.fallback-command.ignored", Collections.emptyList());
     public static final ConfigEntry<Boolean> FALLBACK_COMMAND_RESTRICTED = new ConfigEntry<>(0, "settings.fallback-command.restricted", true);
-    public static final ConfigEntry<Boolean> FALLBACK_COMMAND_ARGUMENTS = new ConfigEntry<>(0, "settings.fallback-command.arguments", true);
 
     public static final ConfigEntry<Boolean> AUTO_RELOAD_ENABLED = new ConfigEntry<>(0, "settings.auto-reload", true);
     public static final ConfigEntry<Boolean> REDIS_BUNGEE_ENABLED = new ConfigEntry<>(0, "settings.redis-bungee", false);

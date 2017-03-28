@@ -31,11 +31,12 @@ public abstract class ConnectionIntent {
         if (section.getProvider() != ProviderType.NONE) {
             ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
             if (target != null) {
-                new Messager(player).send(ConfigEntries.CONNECTING_MESSAGE.get(), new Replacement("{server}", target.getName()));
-                this.simple(target);
+                new Messager(player).send(ConfigEntries.CONNECTING_MESSAGE.get(),
+                        new Replacement("{server}", target.getName())
+                );
+                this.connect(target);
             } else {
                 new Messager(player).send(ConfigEntries.FAILURE_MESSAGE.get());
-                this.failure();
             }
         }
     }
@@ -84,16 +85,12 @@ public abstract class ConnectionIntent {
         return null;
     }
 
-    public abstract void simple(ServerInfo server);
-
-    public void failure() {
-        //Nothing to do
-    }
+    public abstract void connect(ServerInfo server);
 
     public static void simple(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
         new ConnectionIntent(plugin, player, section) {
             @Override
-            public void simple(ServerInfo server) {
+            public void connect(ServerInfo server) {
                 direct(plugin, player, server);
             }
         };

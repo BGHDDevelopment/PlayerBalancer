@@ -115,7 +115,7 @@ public class ServerKickListener implements Listener {
 
                 new ConnectionIntent(plugin, player, section, servers) {
                     @Override
-                    public void simple(ServerInfo server) {
+                    public void connect(ServerInfo server) {
                         PlayerLocker.lock(player);
                         msgr.send(ConfigEntries.KICK_MESSAGE.get(),
                                 new Replacement("{from}", from.getName()),

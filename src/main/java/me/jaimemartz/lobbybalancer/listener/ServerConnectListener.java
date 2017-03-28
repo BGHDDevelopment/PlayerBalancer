@@ -65,7 +65,7 @@ public class ServerConnectListener implements Listener {
             if (section != null) {
                 new ConnectionIntent(plugin, player, section) {
                     @Override
-                    public void simple(ServerInfo server) {
+                    public void connect(ServerInfo server) {
                         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
                             ServerAssignRegistry.assignTarget(player, section, server);
                         }
