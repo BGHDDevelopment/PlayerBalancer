@@ -1,10 +1,10 @@
 package me.jaimemartz.lobbybalancer.manager;
 
 import com.google.common.io.CharStreams;
+import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import org.jpaste.exceptions.PasteException;
 import org.jpaste.pastebin.PasteExpireDate;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public enum PasteHelper {
     PLUGIN {
         @Override
-        public String paste(Plugin plugin) throws Exception {
+        public String paste(LobbyBalancer plugin) throws Exception {
             File file = new File(plugin.getDataFolder(), "config.yml");
             if (!file.exists()) {
                 return "File does not exist";
@@ -44,8 +44,8 @@ public enum PasteHelper {
     },
     BUNGEE {
         @Override
-        public String paste(Plugin plugin) throws Exception {
-            File file = new File(plugin.getDataFolder().getParentFile().getParentFile(), "config.yml");
+        public String paste(LobbyBalancer plugin) throws Exception {
+            File file = new File("config.yml");
             if (!file.exists()) {
                 return "File does not exist";
             }
@@ -65,38 +65,13 @@ public enum PasteHelper {
             PastebinLink link = paste.paste();
             return link.getLink().toString();
         }
-    },
-    LOGS {
-        @Override
-        public String paste(Plugin plugin) throws Exception {
-            //TODO Do not assume location and name of the latest log file
-            File file = new File(plugin.getDataFolder().getParentFile().getParentFile(), "proxy.log.0");
-            if (!file.exists()) {
-                return "File does not exist";
-            }
-
-            PastebinPaste paste = new PastebinPaste();
-            paste.setPasteTitle("{name} ({version}) Last Logs"
-                    .replace("{name}", plugin.getProxy().getName())
-                    .replace("{version}", plugin.getProxy().getVersion())
-            );
-            paste.setDeveloperKey(DEVELOPER_KEY);
-            paste.setPasteExpireDate(PasteExpireDate.ONE_MONTH);
-            paste.setVisibility(PastebinPaste.VISIBILITY_UNLISTED);
-            paste.setPasteFormat("text");
-            try (FileInputStream stream = new FileInputStream(file)) {
-                paste.setContents(CharStreams.toString(new InputStreamReader(stream, "UTF-8")));
-            }
-            PastebinLink link = paste.paste();
-            return link.getLink().toString();
-        }
     };
 
     public static final String DEVELOPER_KEY = "e3ff18d8fb001a3ece08ae0d7d4a87bd";
     private String link;
     private ScheduledTask task = null;
 
-    public void send(Plugin plugin, CommandSender sender, String message) {
+    public void send(LobbyBalancer plugin, CommandSender sender, String message) {
         try {
             sender.sendMessage(new ComponentBuilder(message.replace("{link}", link == null ? link = paste(plugin) : link)
             ).color(ChatColor.GREEN).create());
@@ -117,5 +92,5 @@ public enum PasteHelper {
         }
     }
 
-    public abstract String paste(Plugin plugin) throws Exception;
+    public abstract String paste(LobbyBalancer plugin) throws Exception;
 }

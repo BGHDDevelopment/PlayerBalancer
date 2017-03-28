@@ -2,7 +2,7 @@ package me.jaimemartz.lobbybalancer.ping;
 
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
-import me.jaimemartz.lobbybalancer.utils.FixedAdapter;
+import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
@@ -14,7 +14,7 @@ public class PingManager {
     private boolean stopped = true;
     private PingTactic tactic;
     private ScheduledTask task;
-    private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
+    private final Map<ServerInfo, PingStatus> storage = new HashMap<>();
 
     public PingManager(LobbyBalancer plugin) {
         if (task != null) {
@@ -26,18 +26,17 @@ public class PingManager {
         plugin.getLogger().info(String.format("Starting the ping task, the interval is %s", ConfigEntries.SERVER_CHECK_INTERVAL.get()));
 
         task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
-            for (ServerInfo server : plugin.getProxy().getServers().values()) {
-                if (stopped) {
+            storage.forEach((k, v) -> v.setOutdated(true));
+
+            for (ServerSection section : plugin.getSectionManager().getSections().values()) {
+                if (stopped)
                     break;
-                }
 
-                if (server != null) {
-                    if (FixedAdapter.getFakeServers().containsKey(server.getName())) {
-                        continue;
+                section.getServers().forEach(server -> {
+                    if (getStatus(server).isOutdated()) {
+                        track(plugin, server);
                     }
-
-                    track(plugin, server);
-                }
+                });
             }
         }, 0L, ConfigEntries.SERVER_CHECK_INTERVAL.get(), TimeUnit.MILLISECONDS);
     }
@@ -53,7 +52,7 @@ public class PingManager {
     private void track(LobbyBalancer plugin, ServerInfo server) {
         tactic.ping(server, (status, throwable) -> {
             if (status == null) {
-                status = new ServerStatus("Server Unreachable", 0, 0);
+                status = new PingStatus("Server Unreachable", 0, 0);
             }
 
             if (ConfigEntries.SERVER_CHECK_PRINT_INFO.get()) {
@@ -61,15 +60,16 @@ public class PingManager {
                         server.getName(), status.getDescription(), status.getOnlinePlayers(), status.getMaximumPlayers(), status.isAccessible()));
             }
 
+            status.setOutdated(false);
             storage.put(server, status);
         }, plugin);
     }
 
-    public ServerStatus getStatus(ServerInfo server) {
-        ServerStatus status = storage.get(server);
+    public PingStatus getStatus(ServerInfo server) {
+        PingStatus status = storage.get(server);
 
         if (status == null) {
-            status = new ServerStatus(server.getMotd(), server.getPlayers().size(), Integer.MAX_VALUE);
+            status = new PingStatus(server.getMotd(), server.getPlayers().size(), Integer.MAX_VALUE);
         }
 
         return status;

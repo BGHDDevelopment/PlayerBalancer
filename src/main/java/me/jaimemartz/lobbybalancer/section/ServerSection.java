@@ -3,13 +3,13 @@ package me.jaimemartz.lobbybalancer.section;
 import com.google.gson.annotations.Expose;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
+import me.jaimemartz.lobbybalancer.utils.AlphanumComparator;
 import me.jaimemartz.lobbybalancer.utils.FixedAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 public class ServerSection {
     private final LobbyBalancer plugin;
     private Configuration configuration;
+    private List<ServerInfo> sortedServers;
+
     @Expose private final String name;
     @Expose private boolean principal;
     @Expose private int position;
@@ -54,6 +56,8 @@ public class ServerSection {
     }
 
     public void preInit() {
+        checkInit();
+
         if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
@@ -106,6 +110,8 @@ public class ServerSection {
     }
 
     public void load() {
+        checkInit();
+
         if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
@@ -134,6 +140,8 @@ public class ServerSection {
     }
 
     public void postInit() {
+        checkInit();
+
         if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
@@ -211,7 +219,16 @@ public class ServerSection {
             plugin.getProxy().getPluginManager().registerCommand(plugin, command);
         }
 
-        this.setValid(true);
+        sortedServers = new ArrayList<>();
+        sortedServers.addAll(servers);
+        sortedServers.sort(new AlphanumComparator());
+
+        valid = true;
+    }
+
+    private void checkInit() {
+        if (!valid) return;
+        throw new IllegalStateException("Tried to init a section that is already valid");
     }
 
     public String getName() {
@@ -244,6 +261,10 @@ public class ServerSection {
 
     public List<ServerInfo> getServers() {
         return servers;
+    }
+
+    public List<ServerInfo> getSortedServers() {
+        return sortedServers;
     }
 
     public ProviderType getProvider() {
@@ -300,6 +321,10 @@ public class ServerSection {
 
     public void setServers(List<ServerInfo> servers) {
         this.servers = servers;
+    }
+
+    public void setSortedServers(List<ServerInfo> sortedServers) {
+        this.sortedServers = sortedServers;
     }
 
     public void setProvider(ProviderType provider) {

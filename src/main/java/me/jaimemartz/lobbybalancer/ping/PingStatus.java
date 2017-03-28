@@ -2,11 +2,12 @@ package me.jaimemartz.lobbybalancer.ping;
 
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 
-public final class ServerStatus {
+public final class PingStatus {
     private final String description;
     private final int online, maximum;
+    private boolean outdated = true;
 
-    public ServerStatus(String description, int online, int maximum) {
+    public PingStatus(String description, int online, int maximum) {
         this.description = description;
         this.online = online;
         this.maximum = maximum;
@@ -22,6 +23,14 @@ public final class ServerStatus {
 
     public int getMaximumPlayers() {
         return maximum;
+    }
+
+    public void setOutdated(boolean outdated) {
+        this.outdated = outdated;
+    }
+
+    public boolean isOutdated() {
+        return outdated;
     }
 
     public boolean isAccessible() {

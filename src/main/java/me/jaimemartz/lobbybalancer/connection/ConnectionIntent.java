@@ -5,7 +5,7 @@ import me.jaimemartz.faucet.Replacement;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
-import me.jaimemartz.lobbybalancer.ping.ServerStatus;
+import me.jaimemartz.lobbybalancer.ping.PingStatus;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -32,7 +32,7 @@ public abstract class ConnectionIntent {
             ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
             if (target != null) {
                 new Messager(player).send(ConfigEntries.CONNECTING_MESSAGE.get(), new Replacement("{server}", target.getName()));
-                this.connect(target);
+                this.simple(target);
             } else {
                 new Messager(player).send(ConfigEntries.FAILURE_MESSAGE.get());
                 this.failure();
@@ -56,7 +56,7 @@ public abstract class ConnectionIntent {
         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
-                ServerStatus status = plugin.getPingManager().getStatus(target);
+                PingStatus status = plugin.getPingManager().getStatus(target);
                 if (status.isAccessible()) {
                     return target;
                 } else {
@@ -73,7 +73,7 @@ public abstract class ConnectionIntent {
             ServerInfo target = provider.requestTarget(plugin, section, servers, player);
             if (target == null) continue;
 
-            ServerStatus status = plugin.getPingManager().getStatus(target);
+            PingStatus status = plugin.getPingManager().getStatus(target);
             if (status.isAccessible()) {
                 return target;
             } else {
@@ -84,22 +84,26 @@ public abstract class ConnectionIntent {
         return null;
     }
 
-    public abstract void connect(ServerInfo server);
+    public abstract void simple(ServerInfo server);
 
     public void failure() {
         //Nothing to do
     }
 
-    public static void connect(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
+    public static void simple(LobbyBalancer plugin, ProxiedPlayer player, ServerSection section) {
         new ConnectionIntent(plugin, player, section) {
             @Override
-            public void connect(ServerInfo server) {
-                PlayerLocker.lock(player);
-                player.connect(server);
-                plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                    PlayerLocker.unlock(player);
-                }, 5, TimeUnit.SECONDS);
+            public void simple(ServerInfo server) {
+                direct(plugin, player, server);
             }
         };
+    }
+
+    public static void direct(LobbyBalancer plugin, ProxiedPlayer player, ServerInfo server) {
+        PlayerLocker.lock(player);
+        player.connect(server);
+        plugin.getProxy().getScheduler().schedule(plugin, () -> {
+            PlayerLocker.unlock(player);
+        }, 5, TimeUnit.SECONDS);
     }
 }

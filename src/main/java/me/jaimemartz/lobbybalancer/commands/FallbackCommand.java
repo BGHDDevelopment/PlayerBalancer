@@ -79,7 +79,7 @@ public class FallbackCommand extends Command {
             try {
                 ServerSection section = callable.call();
                 if (section != null) {
-                    ConnectionIntent.connect(plugin, player, section);
+                    ConnectionIntent.simple(plugin, player, section);
                 }
             } catch (Exception e) {
                 //Nothing to do

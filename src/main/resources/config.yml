@@ -13,7 +13,7 @@ settings:
 
   # Pings to the servers to see if they can be accessed or not
   server-check:
-    # If this is disabled the players will connect to the first server available
+    # If this is disabled the players will simple to the first server available
     enabled: true
 
     # Use either CUSTOM or GENERIC, the first one generally works the best
@@ -34,7 +34,7 @@ settings:
     # The descriptions that mark a server as non accessible
     marker-descs: ["Server is not accessible", "Gamemode has already started"]
 
-  # This will connect the player to a server of the parent of the section the player is kicked from
+  # This will simple the player to a server of the parent of the section the player is kicked from
   reconnect-kick:
     # If this is enabled the kick reasons must still match for this to work
     enabled: true
@@ -66,7 +66,7 @@ settings:
     rules:
       'section-from': 'section-to'
 
-  # This will connect the player to a server of the parent of the section the player is currently on
+  # This will simple the player to a server of the parent of the section the player is currently on
   fallback-command:
     # If this is disabled the command will not be registered
     enabled: true
@@ -132,8 +132,9 @@ settings:
   messages:
     connecting: '&aConnecting to {server}'
     failure: '&cCould not find a server to get connected'
-    unavailable: '&cThis command cannot be executed on this server'
-    unknown: '&cCould not find a section with that name'
+    unknown-section: '&cCould not find a section with that name'
+    invalid-input: '&cThis is an invalid input type for this command'
+    unavailable-server: '&cThis command cannot be executed on this server'
     kick: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
 
 # Here you have an example of what you can do with the sections

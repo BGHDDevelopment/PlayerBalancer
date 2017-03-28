@@ -6,7 +6,7 @@ import me.jaimemartz.faucet.StringCombiner;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
-import me.jaimemartz.lobbybalancer.ping.ServerStatus;
+import me.jaimemartz.lobbybalancer.ping.PingStatus;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -35,7 +35,7 @@ public class ManageCommand extends Command {
         if (sender.hasPermission("lobbybalancer.admin")) {
             if (args.length != 0) {
                 switch (args[0].toLowerCase()) {
-                    case "connect": {
+                    case "simple": {
                         if (args.length >= 2) {
                             String input = args[1];
                             ServerSection section = plugin.getSectionManager().getByName(input);
@@ -43,13 +43,13 @@ public class ManageCommand extends Command {
                                 if (args.length == 3) {
                                     ProxiedPlayer player = plugin.getProxy().getPlayer(args[2]);
                                     if (player != null) {
-                                        ConnectionIntent.connect(plugin, player, section);
+                                        ConnectionIntent.simple(plugin, player, section);
                                     } else {
                                         msgr.send("&cThere is no player with that name connected to this proxy");
                                     }
                                 } else {
                                     if (sender instanceof ProxiedPlayer) {
-                                        ConnectionIntent.connect(plugin, (ProxiedPlayer) sender, section);
+                                        ConnectionIntent.simple(plugin, (ProxiedPlayer) sender, section);
                                     } else {
                                         msgr.send("&cThis command can only be executed by a player");
                                     }
@@ -117,7 +117,7 @@ public class ManageCommand extends Command {
                                 if (!section.getServers().isEmpty()) {
                                     msgr.send("&7Section Servers: ");
                                     section.getServers().forEach(server -> {
-                                        ServerStatus status = plugin.getPingManager().getStatus(server);
+                                        PingStatus status = plugin.getPingManager().getStatus(server);
                                         msgr.send("&7> Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
                                                 new Replacement("{name}", server.getName()),
                                                 new Replacement("{connected}", String.valueOf(status.getOnlinePlayers())),
@@ -191,7 +191,7 @@ public class ManageCommand extends Command {
             "&7Available commands:",
             "&3/section list &7- &cTells you which sections are configured in the plugin",
             "&3/section info <section> &7- &cTells you info about the section",
-            "&3/section connect <section> [player] &7- &cConnects you or the specified player to that section",
+            "&3/section simple <section> [player] &7- &cConnects you or the specified player to that section",
             "&7&m-----------------------------------------------------"
     );
 }

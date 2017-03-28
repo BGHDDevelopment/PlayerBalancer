@@ -7,7 +7,7 @@ import com.maxmind.geoip2.record.Country;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.manager.NetworkManager;
-import me.jaimemartz.lobbybalancer.ping.ServerStatus;
+import me.jaimemartz.lobbybalancer.ping.PingStatus;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -95,7 +95,7 @@ public enum ProviderType {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             for (ServerInfo server : list) {
-                ServerStatus status = plugin.getPingManager().getStatus(server);
+                PingStatus status = plugin.getPingManager().getStatus(server);
                 if (NetworkManager.getPlayers(server).size() < status.getMaximumPlayers()) {
                     return server;
                 }
@@ -111,7 +111,7 @@ public enum ProviderType {
             ServerInfo target = null;
 
             for (ServerInfo server : list) {
-                ServerStatus status = plugin.getPingManager().getStatus(server);
+                PingStatus status = plugin.getPingManager().getStatus(server);
                 int count = NetworkManager.getPlayers(server).size();
 
                 if (count > max && count <= status.getMaximumPlayers()) {

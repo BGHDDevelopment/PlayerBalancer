@@ -32,7 +32,6 @@ public class MainCommand extends Command {
             switch (args[0]) {
                 case "paste": {
                     if (sender.hasPermission("lobbybalancer.admin")) {
-                        PasteHelper.LOGS.send(plugin, sender, "Last log file paste link: {link}");
                         PasteHelper.PLUGIN.send(plugin, sender, "Plugin config paste link: {link}");
                         PasteHelper.BUNGEE.send(plugin, sender, "Bungee config paste link (sensitive): {link}");
                     } else {
