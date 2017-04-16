@@ -1,20 +1,13 @@
 package me.jaimemartz.lobbybalancer.connection;
 
 import com.google.common.collect.Iterables;
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.maxmind.geoip2.model.CountryResponse;
-import com.maxmind.geoip2.record.Country;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
-import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.manager.NetworkManager;
 import me.jaimemartz.lobbybalancer.ping.PingStatus;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.config.Configuration;
 
-import java.io.IOException;
-import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -25,48 +18,14 @@ public enum ProviderType {
             return null;
         }
     },
+
     DIRECT(1, "Returns the only server in the list") {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             return Iterables.getOnlyElement(list);
         }
     },
-    LOCALIZED(2, "Returns the server that matches a region") {
-        @Override
-        public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
-            Configuration rules = plugin.getConfig().getSection("settings.geolocation.rules");
-            if (ConfigEntries.GEOLOCATION_ENABLED.get() && rules.contains(section.getName())) {
-                Configuration rule = rules.getSection(section.getName());
-                InetAddress address = player.getAddress().getAddress();
 
-                try {
-                    CountryResponse response = plugin.getGeolocationManager().getReader().country(address);
-                    Country country = response.getCountry();
-
-                    if (ConfigEntries.GEOLOCATION_PRINT_INFO.get()) {
-                        plugin.getLogger().info(String.format(
-                                "Player Address: \"%s\", Country Code: \"%s\"",
-                                address.toString(), country.getIsoCode()
-                        ));
-                    }
-
-                    for (String name : rule.getKeys()) {
-                        List<String> countries = rule.getStringList(name);
-                        if (countries.contains(country.getIsoCode())) {
-                            ServerInfo server = plugin.getProxy().getServerInfo(name);
-                            if (server != null) {
-                                return server;
-                            }
-                            break;
-                        }
-                    }
-                } catch (IOException | GeoIp2Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return list.get(ThreadLocalRandom.current().nextInt(list.size()));
-        }
-    },
     LOWEST(3, "Returns the server with the least players online") {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
@@ -85,12 +44,14 @@ public enum ProviderType {
             return target;
         }
     },
+
     RANDOM(4, "Returns a random server") {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             return list.get(ThreadLocalRandom.current().nextInt(list.size()));
         }
     },
+
     PROGRESSIVE(5, "Returns the first server that is not full") {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
@@ -104,6 +65,7 @@ public enum ProviderType {
             return list.get(ThreadLocalRandom.current().nextInt(list.size()));
         }
     },
+
     FILLER(6, "Returns the server with the most players online that is not full") {
         @Override
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {

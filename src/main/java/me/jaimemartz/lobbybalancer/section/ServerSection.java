@@ -123,12 +123,6 @@ public class ServerSection {
         if (configuration.contains("provider")) {
             try {
                 provider = ProviderType.valueOf(configuration.getString("provider").toUpperCase());
-                if (provider == ProviderType.LOCALIZED) {
-                    Configuration rules = plugin.getConfig().getSection("settings.geolocation.rules");
-                    if (!rules.contains(name)) {
-                        throw new IllegalStateException(String.format("The section \"%s\" does not have a rule set in the geolocation section", this.name));
-                    }
-                }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }

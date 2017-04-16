@@ -29,15 +29,17 @@ public class PingManager {
             storage.forEach((k, v) -> v.setOutdated(true));
 
             for (ServerSection section : plugin.getSectionManager().getSections().values()) {
-                if (stopped)
-                    break;
-
-                section.getServers().forEach(server -> {
-                    if (getStatus(server).isOutdated()) {
-                        track(plugin, server);
+                for (ServerInfo server : section.getServers()) {
+                    if (stopped) {
+                        break;
                     }
-                });
+
+                    if (getStatus(server).isOutdated()) {
+                        update(plugin, server);
+                    }
+                }
             }
+
         }, 0L, ConfigEntries.SERVER_CHECK_INTERVAL.get(), TimeUnit.MILLISECONDS);
     }
 
@@ -49,15 +51,10 @@ public class PingManager {
         }
     }
 
-    private void track(LobbyBalancer plugin, ServerInfo server) {
+    private void update(LobbyBalancer plugin, ServerInfo server) {
         tactic.ping(server, (status, throwable) -> {
             if (status == null) {
-                status = new PingStatus("Server Unreachable", 0, 0);
-            }
-
-            if (ConfigEntries.SERVER_CHECK_PRINT_INFO.get()) {
-                plugin.getLogger().info(String.format("Tracking server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
-                        server.getName(), status.getDescription(), status.getOnlinePlayers(), status.getMaximumPlayers(), status.isAccessible()));
+                status = new PingStatus();
             }
 
             status.setOutdated(false);
@@ -69,9 +66,9 @@ public class PingManager {
         PingStatus status = storage.get(server);
 
         if (status == null) {
-            status = new PingStatus(server.getMotd(), server.getPlayers().size(), Integer.MAX_VALUE);
+            return new PingStatus(server);
+        } else {
+            return status;
         }
-
-        return status;
     }
 }

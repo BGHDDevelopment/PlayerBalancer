@@ -1,11 +1,20 @@
 package me.jaimemartz.lobbybalancer.ping;
 
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
+import net.md_5.bungee.api.config.ServerInfo;
 
 public final class PingStatus {
     private final String description;
     private final int online, maximum;
     private boolean outdated = true;
+
+    public PingStatus() {
+        this("Server Unreachable", 0, 0);
+    }
+
+    public PingStatus(ServerInfo server) {
+        this(server.getMotd(), server.getPlayers().size(), Integer.MAX_VALUE);
+    }
 
     public PingStatus(String description, int online, int maximum) {
         this.description = description;
@@ -44,10 +53,6 @@ public final class PingStatus {
             }
         }
 
-        if (online >= maximum) {
-            return false;
-        }
-
-        return true;
+        return online < maximum;
     }
 }

@@ -1,6 +1,5 @@
 package me.jaimemartz.lobbybalancer;
 
-import com.fasterxml.jackson.databind.ext.Java7Support;
 import me.jaimemartz.faucet.ConfigFactory;
 import me.jaimemartz.lobbybalancer.commands.FallbackCommand;
 import me.jaimemartz.lobbybalancer.commands.MainCommand;
@@ -8,7 +7,6 @@ import me.jaimemartz.lobbybalancer.commands.ManageCommand;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.listener.*;
-import me.jaimemartz.lobbybalancer.manager.GeolocationManager;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.ping.PingManager;
 import me.jaimemartz.lobbybalancer.section.SectionManager;
@@ -36,7 +34,6 @@ public class LobbyBalancer extends Plugin {
     private PingManager pingManager;
     private SectionManager sectionManager;
     private Command fallbackCommand, mainCommand, manageCommand;
-    private GeolocationManager geolocationManager;
     private Listener connectListener, kickListener, messageListener, reloadListener;
 
     @Override
@@ -88,16 +85,6 @@ public class LobbyBalancer extends Plugin {
                 new BungeeUpdater(this, 10788);
             } catch (IOException e) {
                 e.printStackTrace();
-            }
-
-            Logger.getLogger(Java7Support.class.getName()).setLevel(Level.SEVERE);
-
-            if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
-                try {
-                    geolocationManager = new GeolocationManager(this);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
 
             sectionManager = new SectionManager(this);
@@ -161,10 +148,6 @@ public class LobbyBalancer extends Plugin {
                 reloadListener = null;
             }
 
-            if (ConfigEntries.GEOLOCATION_ENABLED.get()) {
-                geolocationManager = null;
-            }
-
             if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
                 pingManager.stop();
                 pingManager = null;
@@ -208,10 +191,6 @@ public class LobbyBalancer extends Plugin {
 
         long ending = System.currentTimeMillis() - starting;
         getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
-    }
-
-    public GeolocationManager getGeolocationManager() {
-        return geolocationManager;
     }
 
     public PingManager getPingManager() {

@@ -91,23 +91,6 @@ settings:
     rules:
       'section-from': 'section-to'
 
-  # This gets the country of a player and decides to which server the player should go
-  # Country ISO codes: http://dev.maxmind.com/geoip/legacy/codes/iso3166/
-  # WARNING: In testing stage
-  geolocation:
-    # If disabled the localized provider will choose a random server
-    enabled: false
-
-    # This prints info every time the plugin checks the country of a player (while being used)
-    print-info: true
-
-    # The rules for the localized provider, every section using it has to have a rule
-    # The country must be the code as specified in the link above
-    rules:
-      practice:
-        'EUPractice': ["Country1", "Country2"]
-        'USPractice': ["Country3", "Country4"]
-
   # This will reload the plugin every time you execute /greload
   auto-reload: true
 
