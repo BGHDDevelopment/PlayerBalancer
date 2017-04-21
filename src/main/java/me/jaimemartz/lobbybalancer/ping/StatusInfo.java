@@ -1,12 +1,14 @@
 package me.jaimemartz.lobbybalancer.ping;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public final class StatusInfo {
-    private final String description;
-    private final int online, maximum;
-    private boolean outdated = true;
+    @Getter private final String description;
+    @Getter private final int online, maximum;
+    @Getter @Setter private boolean outdated = true;
 
     public StatusInfo() {
         this("Server Unreachable", 0, 0);
@@ -20,26 +22,6 @@ public final class StatusInfo {
         this.description = description;
         this.online = online;
         this.maximum = maximum;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getOnlinePlayers() {
-        return online;
-    }
-
-    public int getMaximumPlayers() {
-        return maximum;
-    }
-
-    public void setOutdated(boolean outdated) {
-        this.outdated = outdated;
-    }
-
-    public boolean isOutdated() {
-        return outdated;
     }
 
     public boolean isAccessible() {

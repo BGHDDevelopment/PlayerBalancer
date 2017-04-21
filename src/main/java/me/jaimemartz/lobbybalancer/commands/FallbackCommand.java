@@ -42,7 +42,7 @@ public class FallbackCommand extends Command {
                     ServerSection target = plugin.getSectionManager().getByName(bind);
 
                     if (target == null) {
-                        if (section.hasParent()) {
+                        if (section.getParent() != null) {
                             target = section.getParent();
                         } else {
                             msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());

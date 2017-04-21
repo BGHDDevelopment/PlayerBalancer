@@ -1,6 +1,7 @@
 package me.jaimemartz.lobbybalancer.connection;
 
 import com.google.common.collect.Iterables;
+import lombok.Getter;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.manager.NetworkManager;
 import me.jaimemartz.lobbybalancer.ping.StatusInfo;
@@ -57,7 +58,7 @@ public enum ProviderType {
         public ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
             for (ServerInfo server : list) {
                 StatusInfo status = plugin.getStatusManager().getStatus(server);
-                if (NetworkManager.getPlayers(server).size() < status.getMaximumPlayers()) {
+                if (NetworkManager.getPlayers(server).size() < status.getMaximum()) {
                     return server;
                 }
             }
@@ -76,7 +77,7 @@ public enum ProviderType {
                 StatusInfo status = plugin.getStatusManager().getStatus(server);
                 int count = NetworkManager.getPlayers(server).size();
 
-                if (count > max && count <= status.getMaximumPlayers()) {
+                if (count > max && count <= status.getMaximum()) {
                     max = count;
                     target = server;
                 }
@@ -86,20 +87,12 @@ public enum ProviderType {
         }
     };
 
-    private final int id;
-    private final String description;
+    @Getter private final int id;
+    @Getter private final String description;
 
     ProviderType(int id, String description) {
         this.id = id;
         this.description = description;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public abstract ServerInfo requestTarget(LobbyBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player);

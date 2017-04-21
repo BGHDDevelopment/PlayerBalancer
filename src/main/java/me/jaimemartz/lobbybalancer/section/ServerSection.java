@@ -1,6 +1,9 @@
 package me.jaimemartz.lobbybalancer.section;
 
 import com.google.gson.annotations.Expose;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
 import me.jaimemartz.lobbybalancer.utils.AlphanumComparator;
@@ -16,17 +19,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Getter
+@Setter
 public class ServerSection {
+    @Getter(AccessLevel.NONE)
     private final LobbyBalancer plugin;
+
     private Configuration configuration;
     private List<ServerInfo> sortedServers;
-
     @Expose private final String name;
     @Expose private boolean principal;
     @Expose private int position;
     @Expose private boolean dummy;
     @Expose private ServerSection parent;
-    @Expose private boolean inherited = false;
+    @Expose private boolean inherit = false;
     @Expose private List<ServerInfo> servers;
     @Expose private ProviderType provider;
     @Expose private ServerInfo server;
@@ -40,7 +46,7 @@ public class ServerSection {
         this.servers = new ArrayList<>();
     }
 
-    public ServerSection(LobbyBalancer plugin, String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherited, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
+    public ServerSection(LobbyBalancer plugin, String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherit, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
         this.plugin = plugin;
         this.configuration = null;
         this.name = name;
@@ -48,7 +54,7 @@ public class ServerSection {
         this.position = position;
         this.dummy = dummy;
         this.parent = parent;
-        this.inherited = inherited;
+        this.inherit = inherit;
         this.servers = servers;
         this.provider = provider;
         this.server = server;
@@ -155,9 +161,10 @@ public class ServerSection {
             }
 
             //Calculate below principal
-            if (plugin.getSectionManager().hasPrincipal()) {
+            ServerSection principal = plugin.getSectionManager().getPrincipal();
+            if (principal != null) {
                 iterations = 0;
-                current = plugin.getSectionManager().getPrincipal();
+                current = principal;
                 while (current != null) {
                     if (current.equals(this)) {
                         return iterations;
@@ -187,7 +194,7 @@ public class ServerSection {
 
                 plugin.getLogger().info(String.format("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name));
                 provider = sect.provider;
-                inherited = true;
+                inherit = true;
             }
         }
 
@@ -224,113 +231,5 @@ public class ServerSection {
     private void checkInit() {
         if (!valid) return;
         throw new IllegalStateException("Tried to init a section that is already valid");
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
-    }
-
-    public boolean isPrincipal() {
-        return principal;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public boolean isDummy() {
-        return dummy;
-    }
-
-    public boolean hasParent() {
-        return parent != null;
-    }
-
-    public ServerSection getParent() {
-        return parent;
-    }
-
-    public List<ServerInfo> getServers() {
-        return servers;
-    }
-
-    public List<ServerInfo> getSortedServers() {
-        return sortedServers;
-    }
-
-    public ProviderType getProvider() {
-        return provider;
-    }
-
-    public boolean hasInheritedProvider() {
-        return inherited;
-    }
-
-    public ServerInfo getServer() {
-        return server;
-    }
-
-    public SectionCommand getCommand() {
-        return command;
-    }
-
-    public boolean hasServer() {
-        return server != null;
-    }
-
-    public boolean hasCommand() {
-        return command != null;
-    }
-
-    public boolean isValid() {
-        return valid;
-    }
-
-    public void setValid(boolean valid) {
-        this.valid = valid;
-    }
-
-    public void setPrincipal(boolean principal) {
-        this.principal = principal;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public void setDummy(boolean dummy) {
-        this.dummy = dummy;
-    }
-
-    public void setParent(ServerSection parent) {
-        this.parent = parent;
-    }
-
-    public void setInherited(boolean inherited) {
-        this.inherited = inherited;
-    }
-
-    public void setServers(List<ServerInfo> servers) {
-        this.servers = servers;
-    }
-
-    public void setSortedServers(List<ServerInfo> sortedServers) {
-        this.sortedServers = sortedServers;
-    }
-
-    public void setProvider(ProviderType provider) {
-        this.provider = provider;
-    }
-
-    public void setServer(ServerInfo server) {
-        this.server = server;
-    }
-
-    public void setCommand(SectionCommand command) {
-        this.command = command;
     }
 }

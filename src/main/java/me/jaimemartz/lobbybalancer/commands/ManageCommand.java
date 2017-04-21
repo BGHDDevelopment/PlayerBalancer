@@ -76,7 +76,7 @@ public class ManageCommand extends Command {
                                 msgr.send("&7Principal: &b{status}",
                                         new Replacement("{status}", section.isPrincipal() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
 
-                                if (section.hasParent()) {
+                                if (section.getParent() != null) {
                                     TextComponent message = new TextComponent("Parent: ");
                                     message.setColor(ChatColor.GRAY);
 
@@ -96,13 +96,13 @@ public class ManageCommand extends Command {
 
                                 msgr.send("&7Provider: &b{name} &7({relation}&7)",
                                         new Replacement("{name}", section.getProvider().name()),
-                                        new Replacement("{relation}", section.hasInheritedProvider() ? "Inherited" : "Specified"));
+                                        new Replacement("{relation}", section.isInherit() ? "Inherited" : "Specified"));
 
                                 msgr.send("&7Dummy: &b{status}", new Replacement("{status}", section.isDummy() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
 
-                                msgr.send("&7Section Server: &b{name}", new Replacement("{name}", section.hasServer() ? section.getServer().getName() : "None"));
+                                msgr.send("&7Section Server: &b{name}", new Replacement("{name}", section.getServer() != null ? section.getServer().getName() : "None"));
 
-                                if (section.hasCommand()) {
+                                if (section.getCommand() != null) {
                                     msgr.send("&7Section Command: &b{name}&7, Permission: &b{permission}&7, Aliases: &b{aliases}",
                                             new Replacement("{name}", section.getCommand().getName()),
                                             new Replacement("{permission}", section.getCommand().getPermission().equals("") ? "None" : section.getCommand().getPermission()),
@@ -120,8 +120,8 @@ public class ManageCommand extends Command {
                                         StatusInfo status = plugin.getStatusManager().getStatus(server);
                                         msgr.send("&7> Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
                                                 new Replacement("{name}", server.getName()),
-                                                new Replacement("{connected}", String.valueOf(status.getOnlinePlayers())),
-                                                new Replacement("{maximum}", String.valueOf(status.getMaximumPlayers())),
+                                                new Replacement("{connected}", String.valueOf(status.getOnline())),
+                                                new Replacement("{maximum}", String.valueOf(status.getMaximum())),
                                                 new Replacement("{status}", status.isAccessible() ? ChatColor.GREEN + "Accessible" : ChatColor.RED + "Inaccessible")
                                         );
                                     });

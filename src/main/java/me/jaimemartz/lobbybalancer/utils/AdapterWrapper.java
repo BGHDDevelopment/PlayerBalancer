@@ -63,8 +63,4 @@ public class AdapterWrapper implements ConfigurationAdapter {
     public Collection<String> getPermissions(String group) {
         return wrapped.getPermissions(group);
     }
-
-    public ConfigurationAdapter getWrapped() {
-        return wrapped;
-    }
 }
