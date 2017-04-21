@@ -19,14 +19,13 @@ import org.bstats.Metrics;
 import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
     public static final String RESOURCE_ID = "%%__RESOURCE__%%";
     public static final String NONCE_ID = "%%__NONCE__%%";
-    private static final int LAST_VER_CONFIG_UPDATE = 20600;
+    private static final int LAST_VER_CONFIG_UPDATE = 20950;
 
     private boolean failed = false;
 
@@ -50,7 +49,7 @@ public class LobbyBalancer extends Plugin {
 
         //Metrics (https://bstats.org/)
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SingleLineChart("configred_sections", () -> sectionManager.getSections().size()));
+        metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
     }
 
     private void enable() {
@@ -122,7 +121,10 @@ public class LobbyBalancer extends Plugin {
                 e.printStackTrace();
             }
         } else {
-            getLogger().warning("The plugin is disabled, so nothing will work except the main command");
+            getLogger().warning("-----------------------------------------------------");
+            getLogger().warning("WARNING: This plugin is disabled, do not forget to set enabled on the config to true");
+            getLogger().warning("Nothing is going to work until you do that, you can reload me by using the /balancer command");
+            getLogger().warning("-----------------------------------------------------");
         }
     }
 

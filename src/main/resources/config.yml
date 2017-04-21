@@ -110,12 +110,12 @@ settings:
 
   # Comment a message to disable it
   messages:
-    connecting: '&aConnecting to {server}'
-    failure: '&cCould not find a server to get connected'
+    connecting-server: '&aConnecting to {server}'
+    misc-failure: '&cCould not find a server to get connected'
     unknown-section: '&cCould not find a section with that name'
     invalid-input: '&cThis is an invalid input type for this command'
     unavailable-server: '&cThis command cannot be executed on this server'
-    kick: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
+    player-kicked: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
 
 # Here you have an example of what you can do with the sections
 # The plugin will print out info telling you if your config is right or not
