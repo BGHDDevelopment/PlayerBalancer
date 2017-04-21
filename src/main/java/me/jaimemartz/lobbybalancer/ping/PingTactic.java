@@ -14,12 +14,12 @@ public enum PingTactic {
         ServerListPing utility = new ServerListPing();
 
         @Override
-        public void ping(ServerInfo server, Callback<PingStatus> callback, LobbyBalancer plugin) {
+        public void ping(ServerInfo server, Callback<StatusInfo> callback, LobbyBalancer plugin) {
             utility.setTimeout(ConfigEntries.SERVER_CHECK_TIMEOUT.get());
             plugin.getProxy().getScheduler().runAsync(plugin, () -> {
                 try {
                     StatusResponse response = utility.ping(server.getAddress());
-                    callback.done(new PingStatus(
+                    callback.done(new StatusInfo(
                             response.getDescription().toLegacyText(),
                             response.getPlayers().getOnline(),
                             response.getPlayers().getMax()),
@@ -33,11 +33,11 @@ public enum PingTactic {
 
     GENERIC {
         @Override
-        public void ping(ServerInfo server, Callback<PingStatus> callback, LobbyBalancer plugin) {
+        public void ping(ServerInfo server, Callback<StatusInfo> callback, LobbyBalancer plugin) {
             try {
                 server.ping((ping, throwable) -> {
                     if (ping != null) {
-                        callback.done(new PingStatus(
+                        callback.done(new StatusInfo(
                                 ping.getDescription(),
                                 ping.getPlayers().getOnline(),
                                 ping.getPlayers().getMax()
@@ -52,5 +52,5 @@ public enum PingTactic {
         }
     };
 
-    public abstract void ping(ServerInfo server, Callback<PingStatus> callback, LobbyBalancer plugin);
+    public abstract void ping(ServerInfo server, Callback<StatusInfo> callback, LobbyBalancer plugin);
 }

@@ -8,7 +8,7 @@ import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.listener.*;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
-import me.jaimemartz.lobbybalancer.ping.PingManager;
+import me.jaimemartz.lobbybalancer.ping.StatusManager;
 import me.jaimemartz.lobbybalancer.section.SectionManager;
 import me.jaimemartz.lobbybalancer.utils.DigitUtils;
 import net.md_5.bungee.api.plugin.Command;
@@ -20,7 +20,6 @@ import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class LobbyBalancer extends Plugin {
     public static final String USER_ID = "%%__USER__%%";
@@ -31,7 +30,7 @@ public class LobbyBalancer extends Plugin {
     private boolean failed = false;
 
     private ConfigFactory factory;
-    private PingManager pingManager;
+    private StatusManager statusManager;
     private SectionManager sectionManager;
     private Command fallbackCommand, mainCommand, manageCommand;
     private Listener connectListener, kickListener, messageListener, reloadListener;
@@ -92,8 +91,9 @@ public class LobbyBalancer extends Plugin {
             try {
                 sectionManager.load();
 
+                statusManager = new StatusManager();
                 if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
-                    pingManager = new PingManager(this);
+                    statusManager.start(this);
                 }
 
                 if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
@@ -149,8 +149,7 @@ public class LobbyBalancer extends Plugin {
             }
 
             if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
-                pingManager.stop();
-                pingManager = null;
+                statusManager.stop();
             }
 
             if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
@@ -193,8 +192,8 @@ public class LobbyBalancer extends Plugin {
         getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
     }
 
-    public PingManager getPingManager() {
-        return pingManager;
+    public StatusManager getStatusManager() {
+        return statusManager;
     }
 
     public SectionManager getSectionManager() {

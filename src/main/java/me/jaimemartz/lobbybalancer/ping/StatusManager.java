@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class PingManager {
+public class StatusManager {
     private boolean stopped = true;
     private PingTactic tactic;
     private ScheduledTask task;
-    private final Map<ServerInfo, PingStatus> storage = new HashMap<>();
+    private final Map<ServerInfo, StatusInfo> storage = new HashMap<>();
 
-    public PingManager(LobbyBalancer plugin) {
+    public void start(LobbyBalancer plugin) {
         if (task != null) {
             stop();
         }
@@ -54,7 +54,7 @@ public class PingManager {
     private void update(LobbyBalancer plugin, ServerInfo server) {
         tactic.ping(server, (status, throwable) -> {
             if (status == null) {
-                status = new PingStatus();
+                status = new StatusInfo();
             }
 
             status.setOutdated(false);
@@ -62,11 +62,11 @@ public class PingManager {
         }, plugin);
     }
 
-    public PingStatus getStatus(ServerInfo server) {
-        PingStatus status = storage.get(server);
+    public StatusInfo getStatus(ServerInfo server) {
+        StatusInfo status = storage.get(server);
 
         if (status == null) {
-            return new PingStatus(server);
+            return new StatusInfo(server);
         } else {
             return status;
         }

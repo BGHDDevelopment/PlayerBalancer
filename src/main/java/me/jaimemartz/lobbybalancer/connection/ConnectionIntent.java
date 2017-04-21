@@ -5,7 +5,7 @@ import me.jaimemartz.faucet.Replacement;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
-import me.jaimemartz.lobbybalancer.ping.PingStatus;
+import me.jaimemartz.lobbybalancer.ping.StatusInfo;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -57,7 +57,7 @@ public abstract class ConnectionIntent {
         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
-                PingStatus status = plugin.getPingManager().getStatus(target);
+                StatusInfo status = plugin.getStatusManager().getStatus(target);
                 if (status.isAccessible()) {
                     return target;
                 } else {
@@ -74,7 +74,7 @@ public abstract class ConnectionIntent {
             ServerInfo target = provider.requestTarget(plugin, section, servers, player);
             if (target == null) continue;
 
-            PingStatus status = plugin.getPingManager().getStatus(target);
+            StatusInfo status = plugin.getStatusManager().getStatus(target);
             if (status.isAccessible()) {
                 return target;
             } else {

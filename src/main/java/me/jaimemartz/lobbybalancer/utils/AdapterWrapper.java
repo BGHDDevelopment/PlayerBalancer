@@ -7,12 +7,13 @@ import net.md_5.bungee.api.config.ServerInfo;
 import java.util.Collection;
 import java.util.Map;
 
-public class WrappedAdapter implements ConfigurationAdapter {
+public class AdapterWrapper implements ConfigurationAdapter {
     private final ConfigurationAdapter wrapped;
 
-    public WrappedAdapter(ConfigurationAdapter adapter) {
-        if (adapter instanceof WrappedAdapter) {
-            this.wrapped = ((WrappedAdapter) adapter).wrapped;
+    public AdapterWrapper(ConfigurationAdapter adapter) {
+        //Prevents memory leak
+        if (adapter instanceof AdapterWrapper) {
+            this.wrapped = ((AdapterWrapper) adapter).wrapped;
         } else {
             this.wrapped = adapter;
         }

@@ -6,7 +6,7 @@ import me.jaimemartz.faucet.StringCombiner;
 import me.jaimemartz.lobbybalancer.LobbyBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
-import me.jaimemartz.lobbybalancer.ping.PingStatus;
+import me.jaimemartz.lobbybalancer.ping.StatusInfo;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -117,7 +117,7 @@ public class ManageCommand extends Command {
                                 if (!section.getServers().isEmpty()) {
                                     msgr.send("&7Section Servers: ");
                                     section.getServers().forEach(server -> {
-                                        PingStatus status = plugin.getPingManager().getStatus(server);
+                                        StatusInfo status = plugin.getStatusManager().getStatus(server);
                                         msgr.send("&7> Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
                                                 new Replacement("{name}", server.getName()),
                                                 new Replacement("{connected}", String.valueOf(status.getOnlinePlayers())),
