@@ -1,5 +1,6 @@
 package me.jaimemartz.lobbybalancer;
 
+import lombok.Getter;
 import me.jaimemartz.faucet.ConfigFactory;
 import me.jaimemartz.lobbybalancer.commands.FallbackCommand;
 import me.jaimemartz.lobbybalancer.commands.MainCommand;
@@ -27,11 +28,12 @@ public class LobbyBalancer extends Plugin {
     public static final String NONCE_ID = "%%__NONCE__%%";
     private static final int LAST_VER_CONFIG_UPDATE = 20950;
 
-    private boolean failed = false;
+    @Getter private ConfigFactory factory;
+    @Getter private boolean failed = false;
+    @Getter private StatusManager statusManager;
+    @Getter private SectionManager sectionManager;
+    @Getter private static LobbyBalancer instance;
 
-    private ConfigFactory factory;
-    private StatusManager statusManager;
-    private SectionManager sectionManager;
     private Command fallbackCommand, mainCommand, manageCommand;
     private Listener connectListener, kickListener, messageListener, reloadListener;
 
@@ -139,7 +141,7 @@ public class LobbyBalancer extends Plugin {
 
         if (ConfigEntries.PLUGIN_ENABLED.get()) {
             //Do not try to do anything if the plugin has not loaded correctly
-            if (hasFailed()) return;
+            if (isFailed()) return;
 
             if (ConfigEntries.AUTO_RELOAD_ENABLED.get()) {
                 getProxy().getPluginManager().unregisterListener(reloadListener);
@@ -190,24 +192,7 @@ public class LobbyBalancer extends Plugin {
         getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
     }
 
-    public StatusManager getStatusManager() {
-        return statusManager;
-    }
-
-    public SectionManager getSectionManager() {
-        return sectionManager;
-    }
-
-    public boolean hasFailed() {
-        return failed;
-    }
-
-    public Configuration getConfig() {
-        return factory.get(0).getHandle();
-    }
-
-    private static LobbyBalancer instance;
-    public static LobbyBalancer getInstance() {
-        return instance;
+    public Configuration getConfigHandle() {
+        return factory.get("config.yml").getHandle();
     }
 }

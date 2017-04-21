@@ -29,7 +29,8 @@ public class SectionManager {
         plugin.getLogger().info("Loading sections from the config, this may take a while...");
         long starting = System.currentTimeMillis();
 
-        Configuration sections = plugin.getConfig().getSection("sections");
+        Configuration sections = plugin.getConfigHandle().getSection("sections");
+
         sections.getKeys().forEach(name -> {
             plugin.getLogger().info(String.format("Construction of section with name \"%s\"", name));
             Configuration section = sections.getSection(name);

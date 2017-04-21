@@ -76,7 +76,7 @@ public class ServerKickListener implements Listener {
 
             if (matches.get()) {
                 if (section != null) {
-                    Configuration rules = plugin.getConfig().getSection("settings.reconnect-kick.rules");
+                    Configuration rules = plugin.getConfigHandle().getSection("settings.reconnect-kick.rules");
                     String name = rules.getString(section.getName());
                     ServerSection target = plugin.getSectionManager().getByName(name);
 

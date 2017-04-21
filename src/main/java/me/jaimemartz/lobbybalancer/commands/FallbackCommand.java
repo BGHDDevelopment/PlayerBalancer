@@ -37,7 +37,7 @@ public class FallbackCommand extends Command {
                         return null;
                     }
 
-                    Configuration rules = plugin.getConfig().getSection("settings.fallback-command.rules");
+                    Configuration rules = plugin.getConfigHandle().getSection("settings.fallback-command.rules");
                     String bind = rules.getString(section.getName());
                     ServerSection target = plugin.getSectionManager().getByName(bind);
 
