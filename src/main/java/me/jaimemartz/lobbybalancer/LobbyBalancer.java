@@ -19,6 +19,7 @@ import org.bstats.Metrics;
 import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 public class LobbyBalancer extends Plugin {
@@ -49,12 +50,7 @@ public class LobbyBalancer extends Plugin {
 
         //Metrics (https://bstats.org/)
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections") {
-            @Override
-            public int getValue() {
-                return sectionManager.getSections().size();
-            }
-        });
+        metrics.addCustomChart(new Metrics.SingleLineChart("configred_sections", () -> sectionManager.getSections().size()));
     }
 
     private void enable() {
