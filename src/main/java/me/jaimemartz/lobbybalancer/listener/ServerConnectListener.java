@@ -7,7 +7,6 @@ import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;
@@ -44,7 +43,7 @@ public class ServerConnectListener implements Listener {
                     }
 
                     if (player.hasPermission("lobbybalancer.bypass")) {
-                        msgr.send(ConfigEntries.BYPASS_MESAGE.get());
+                        msgr.send(ConfigEntries.BYPASS_MESSAGE.get());
                         return null;
                     }
 
