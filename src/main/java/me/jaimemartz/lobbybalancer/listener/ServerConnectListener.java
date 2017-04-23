@@ -44,7 +44,7 @@ public class ServerConnectListener implements Listener {
                     }
 
                     if (player.hasPermission("lobbybalancer.bypass")) {
-                        msgr.send(ChatColor.RED + "You have not been moved because you have the lobbybalancer.bypass permission");
+                        msgr.send(ConfigEntries.BYPASS_MESAGE.get());
                         return null;
                     }
 

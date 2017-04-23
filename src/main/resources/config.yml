@@ -116,6 +116,7 @@ settings:
     invalid-input: '&cThis is an invalid input type for this command'
     unavailable-server: '&cThis command cannot be executed on this server'
     player-kicked: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
+    player-bypass: '&cYou have not been moved because you have the lobbybalancer.bypass permission'
 
 # Here you have an example of what you can do with the sections
 # The plugin will print out info telling you if your config is right or not
