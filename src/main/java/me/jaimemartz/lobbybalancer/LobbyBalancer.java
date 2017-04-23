@@ -193,6 +193,6 @@ public class LobbyBalancer extends Plugin {
     }
 
     public Configuration getConfigHandle() {
-        return factory.get("config.yml").getHandle();
+        return factory.get(0).getHandle();
     }
 }
