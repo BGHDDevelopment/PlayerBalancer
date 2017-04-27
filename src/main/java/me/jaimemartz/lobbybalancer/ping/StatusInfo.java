@@ -30,7 +30,7 @@ public final class StatusInfo {
         }
 
         for (String pattern : ConfigEntries.SERVER_CHECK_MARKER_DESCS.get()) {
-            if (description.matches(pattern)) {
+            if (description.matches(pattern) || description.contains(pattern)) {
                 return false;
             }
         }

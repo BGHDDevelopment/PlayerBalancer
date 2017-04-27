@@ -60,7 +60,7 @@ public class ServerKickListener implements Listener {
             AtomicBoolean matches = new AtomicBoolean(false);
             String reason = TextComponent.toPlainText(event.getKickReasonComponent());
             for (String string : ConfigEntries.RECONNECT_KICK_REASONS.get()) {
-                if (reason.matches(string)) {
+                if (reason.matches(string) || reason.contains(string)) {
                     matches.set(true);
                     break;
                 }
