@@ -165,4 +165,8 @@ dist/
 nbdist/
 .nb-gradle/
 
+## Custom ###
+.idea/
+*.iml
+
 # End of https://www.gitignore.io/api/netbeans,jetbrains,maven,intellij,eclipse,cloud9

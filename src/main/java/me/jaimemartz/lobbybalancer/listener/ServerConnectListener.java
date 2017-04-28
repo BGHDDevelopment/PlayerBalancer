@@ -37,6 +37,7 @@ public class ServerConnectListener implements Listener {
                     return null;
                 }
 
+                //Checks only for servers (not the section server)
                 if (section.getServers().contains(target)) {
                     if (section.isDummy()) {
                         return null;
