@@ -23,9 +23,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class LobbyBalancer extends Plugin {
-    public static final String USER_ID = "%%__USER__%%";
-    public static final String RESOURCE_ID = "%%__RESOURCE__%%";
-    public static final String NONCE_ID = "%%__NONCE__%%";
     private static final int LAST_VER_CONFIG_UPDATE = 20950;
 
     @Getter private ConfigFactory factory;

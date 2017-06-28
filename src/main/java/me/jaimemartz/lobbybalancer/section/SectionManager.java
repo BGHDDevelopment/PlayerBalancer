@@ -104,6 +104,10 @@ public class SectionManager {
 
     public void register(ServerInfo server, ServerSection section) {
         if (servers.containsKey(server)) {
+            if (section.isDummy()) {
+                return;
+            }
+
             ServerSection other = servers.get(server);
             throw new IllegalArgumentException(String.format("The server \"%s\" is already in the section \"%s\"", server.getName(), other.getName()));
         }

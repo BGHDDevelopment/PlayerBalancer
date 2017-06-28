@@ -134,48 +134,43 @@ settings:
 # FILLER: Returns the server with the most players online that is not full
 
 sections:
+  auth-lobbies:
+    provider: RANDOM
+    servers: ["Auth1", "Auth2", "Auth3"]
+
   general-lobbies:
+    parent: 'auth-lobbies'
     principal: true
     provider: RANDOM
-    section-server: 'general-lobbies'
     servers: ["Lobby1", "Lobby2", "Lobby3"]
-  eggwars-lobbies:
-    parent: 'general-lobbies'
-    section-server: 'eggwars-lobbies'
-    servers: ["EWLobby1", "EWLobby2", "EWLobby3"]
-  eggwars-games:
-    provider: FILLER
-    parent: 'eggwars-lobbies'
-    servers: ["EW1", "EW2", "EW3", "EW4", "EW5"]
-    section-command:
-      name: 'playeggwars'
-      permission: ''
-      aliases: []
+
   skywars-lobbies:
     parent: 'general-lobbies'
-    section-server: 'skywars-lobbies'
+    parent: LOWEST
     servers: ["SWLobby1", "SWLobby2", "SWLobby3"]
+
   skywars-games:
     provider: FILLER
     parent: 'skywars-lobbies'
-    servers: ["SW1", "SW2", "SW3", "SW4", "SW5"]
+    servers: [
+    "SW_A1", "SW_A2", "SW_A3", "SW_A4", "SW_A5",
+    "SW_B1", "SW_B2", "SW_B3", "SW_B4", "SW_B5"
+    ]
+    section-server: 'randomskywars'
     section-command:
       name: 'playskywars'
       permission: ''
-      aliases: []
-  dummy-section:
-    provider: RANDOM
+      aliases: ["skywars"]
+  skywars-typea:
     dummy: true
     parent: 'skywars-lobbies'
-    servers: ["DS1"]
-  practice:
-    provider: LOCALIZED
-    parent: 'general-lobbies'
-    servers: ["EUPractice", "USPractice"]
-    section-command:
-      name: 'practice'
-      permission: ''
-      aliases: ["rektnoobs"]
+    servers: ["SW_A1", "SW_A2", "SW_A3", "SW_A4", "SW_A5"]
+    section-server: 'skywarstypea'
+  skywars-typeb:
+    dummy: true
+    parent: 'skywars-lobbies'
+    servers: ["SW_B1", "SW_B2", "SW_B3", "SW_B4", "SW_B5"]
+    section-server: 'skywarstypeb'
 
 # Do not modify this
 version: '${project.version}'
