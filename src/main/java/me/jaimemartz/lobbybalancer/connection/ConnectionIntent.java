@@ -24,6 +24,10 @@ public abstract class ConnectionIntent {
         this.player = player;
         this.section = section;
 
+        new Messager(player).send(ConfigEntries.CONNECTING_MESSAGE.get(),
+                new Replacement("{section}", section.getName())
+        );
+
         if (servers == section.getServers()) {
             throw new IllegalStateException("The servers list parameter is the same object as the section servers list, this cannot happen");
         }
@@ -31,10 +35,10 @@ public abstract class ConnectionIntent {
         if (section.getProvider() != ProviderType.NONE) {
             ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
             if (target != null) {
-                new Messager(player).send(ConfigEntries.CONNECTING_MESSAGE.get(),
+                this.connect(target);
+                new Messager(player).send(ConfigEntries.CONNECTED_MESSAGE.get(),
                         new Replacement("{server}", target.getName())
                 );
-                this.connect(target);
             } else {
                 new Messager(player).send(ConfigEntries.FAILURE_MESSAGE.get());
             }

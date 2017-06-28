@@ -91,6 +91,23 @@ settings:
     rules:
       'section-from': 'section-to'
 
+  # This will determine how the plugin if a string matches other string
+  string-matcher:
+    # Matches when the string is like the other string
+    # ? for one character, * for any number of characters
+    wildcard: true
+
+    # Matches when the string contains the other string
+    contains: false
+
+    # Matches when the string matches the pattern of the other string
+    regex: false
+
+    # Matches when both strings are very similar
+    # See https://en.wikipedia.org/wiki/Levenshtein_distance
+    # Set to 100 to disable it, or other value to match when the result is higher than it
+    similar: 100
+
   # This will reload the plugin every time you execute /greload
   auto-reload: true
 
@@ -110,7 +127,8 @@ settings:
 
   # Comment a message to disable it
   messages:
-    connecting-server: '&aConnecting to {server}'
+    # connecting-server: '&aConnecting to a {section} server'
+    connected-server: '&aConnected to {server}'
     misc-failure: '&cCould not find a server to get connected'
     unknown-section: '&cCould not find a section with that name'
     invalid-input: '&cThis is an invalid input type for this command'
@@ -137,32 +155,29 @@ sections:
   auth-lobbies:
     provider: RANDOM
     servers: ["Auth1", "Auth2", "Auth3"]
-
   general-lobbies:
     parent: 'auth-lobbies'
-    principal: true
+    principal: true # Cannot get above the principal section
     provider: RANDOM
     servers: ["Lobby1", "Lobby2", "Lobby3"]
-
   skywars-lobbies:
     parent: 'general-lobbies'
     parent: LOWEST
     servers: ["SWLobby1", "SWLobby2", "SWLobby3"]
-
   skywars-games:
     provider: FILLER
     parent: 'skywars-lobbies'
     servers: [
-    "SW_A1", "SW_A2", "SW_A3", "SW_A4", "SW_A5",
-    "SW_B1", "SW_B2", "SW_B3", "SW_B4", "SW_B5"
+      "SW_A1", "SW_A2", "SW_A3", "SW_A4", "SW_A5",
+      "SW_B1", "SW_B2", "SW_B3", "SW_B4", "SW_B5"
     ]
-    section-server: 'randomskywars'
+    section-server: 'randomskywars' # Creates a fake server you can use, ex: @randomskywars
     section-command:
       name: 'playskywars'
       permission: ''
       aliases: ["skywars"]
   skywars-typea:
-    dummy: true
+    dummy: true # Use servers already registered on skywars-games
     parent: 'skywars-lobbies'
     servers: ["SW_A1", "SW_A2", "SW_A3", "SW_A4", "SW_A5"]
     section-server: 'skywarstypea'
