@@ -91,23 +91,6 @@ settings:
     rules:
       'section-from': 'section-to'
 
-  # This will determine how the plugin if a string matches other string
-  string-matcher:
-    # Matches when the string is like the other string
-    # ? for one character, * for any number of characters
-    wildcard: true
-
-    # Matches when the string contains the other string
-    contains: false
-
-    # Matches when the string matches the pattern of the other string
-    regex: false
-
-    # Matches when both strings are very similar
-    # See https://en.wikipedia.org/wiki/Levenshtein_distance
-    # Set to 100 to disable it, or other value to match when the result is higher than it
-    similar: 100
-
   # This will reload the plugin every time you execute /greload
   auto-reload: true
 

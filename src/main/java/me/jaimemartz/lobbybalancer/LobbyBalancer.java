@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 public class LobbyBalancer extends Plugin {
-    private static final int LAST_VER_CONFIG_UPDATE = 20950;
+    private static final int LAST_VER_CONFIG_UPDATE = 20950000;
 
     @Getter private ConfigFactory factory;
     @Getter private boolean failed = false;
@@ -58,7 +58,7 @@ public class LobbyBalancer extends Plugin {
         getProxy().getPluginManager().registerCommand(this, mainCommand);
 
         String text = ConfigEntries.CONFIG_VERSION.get();
-        int configVersion = DigitUtils.getDigits(text, 5);
+        int configVersion = DigitUtils.getDigits(text, 8);
         if (configVersion < LAST_VER_CONFIG_UPDATE) {
             failed = true;
             throw new IllegalStateException("Your config is outdated, please reset it and configure it again");
