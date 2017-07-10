@@ -128,7 +128,6 @@ settings:
 # Providers of this plugin
 # NONE: Returns no server
 # DIRECT: Returns the only server in the list
-# LOCALIZED: Returns the server that matches a region (testing)
 # LOWEST: Returns the server with the least players online
 # RANDOM: Returns a random server
 # PROGRESSIVE: Returns the first server that is not full
