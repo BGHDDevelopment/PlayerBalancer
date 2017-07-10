@@ -8,6 +8,7 @@
 - [x] Add a new message for when a player gets connected to a server and repurpose the connecting one
 - [ ] Add support for wildcards, contains, equalsIgnoreCase and regex at the same time
 - [ ] Add a identifier to get the servers of a section (auto complete)
+- [ ] Add tooltip when you hover about a server in /section info
 - [ ] Create a LobbyBalancer spigot addon that adds connector signs and placeholders
 - [ ] Separate the types of connections in classes instead of being in ConnectionIntent
 - [ ] Make the plugin API be not so dependent on a instance of LobbyBalancer
