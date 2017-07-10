@@ -6,6 +6,7 @@
 ### Things to do:
 - [x] Get dummy sections able to have already registered servers on other sections
 - [x] Add a new message for when a player gets connected to a server and repurpose the connecting one
+- [ ] Add support for wildcards, contains, equalsIgnoreCase and regex at the same time
 - [ ] Add a identifier to get the servers of a section (auto complete)
 - [ ] Create a LobbyBalancer spigot addon that adds connector signs and placeholders
 - [ ] Separate the types of connections in classes instead of being in ConnectionIntent
