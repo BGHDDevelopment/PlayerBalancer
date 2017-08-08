@@ -56,7 +56,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>me.jaimemartz.lobbybalancer</shadedPattern>
+                            <shadedPattern>me.jaimemartz.playerbalancer</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
