@@ -6,7 +6,7 @@
 
     <groupId>com.jaimemartz</groupId>
     <artifactId>playerbalancer</artifactId>
-    <version>2.1</version>
+    <version>2.1-dev</version>
     <name>LobbyBalancer</name>
 
     <properties>
@@ -85,18 +85,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.imaginarycode.minecraft</groupId>
-            <artifactId>RedisBungee</artifactId>
-            <version>0.3.8-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.inventivetalent.update</groupId>
-            <artifactId>bungee</artifactId>
-            <version>1.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>ch.jalu</groupId>
             <artifactId>configme</artifactId>
             <version>0.4</version>
@@ -108,12 +96,33 @@
             <version>1.2.0</version>
             <scope>compile</scope>
         </dependency>
+
+
+        <!-- TODO Ditch this dependency, move to ConfigMe -->
         <dependency>
             <groupId>me.jaimemartz</groupId>
             <artifactId>faucet-bungee</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- TODO Replace with HTTP call to Spigot's API -->
+        <dependency>
+            <groupId>org.inventivetalent.update</groupId>
+            <artifactId>bungee</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- TODO Replace with our own alternative to "RedisBunge" (maybe) -->
+        <dependency>
+            <groupId>com.imaginarycode.minecraft</groupId>
+            <artifactId>RedisBungee</artifactId>
+            <version>0.3.8-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bungeecord</artifactId>
@@ -121,16 +130,16 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.16</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

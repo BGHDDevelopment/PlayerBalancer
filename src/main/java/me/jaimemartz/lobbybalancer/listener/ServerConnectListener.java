@@ -1,12 +1,12 @@
 package me.jaimemartz.lobbybalancer.listener;
 
-import me.jaimemartz.faucet.Messager;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
+import me.jaimemartz.lobbybalancer.utils.MessageUtils;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;
@@ -17,9 +17,9 @@ import net.md_5.bungee.event.EventPriority;
 import java.util.concurrent.Callable;
 
 public class ServerConnectListener implements Listener {
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
 
-    public ServerConnectListener(LobbyBalancer plugin) {
+    public ServerConnectListener(PlayerBalancer plugin) {
         this.plugin = plugin;
     }
 
@@ -27,7 +27,6 @@ public class ServerConnectListener implements Listener {
     public void onConnect(ServerConnectEvent event) {
         ProxiedPlayer player = event.getPlayer();
         ServerInfo target = event.getTarget();
-        Messager msgr = new Messager(player);
 
         Callable<ServerSection> callable = () -> {
             ServerSection section = plugin.getSectionManager().getByServer(target);
@@ -43,8 +42,8 @@ public class ServerConnectListener implements Listener {
                         return null;
                     }
 
-                    if (player.hasPermission("lobbybalancer.bypass")) {
-                        msgr.send(ConfigEntries.BYPASS_MESSAGE.get());
+                    if (player.hasPermission("playerbalancer.bypass")) {
+                        MessageUtils.send(player, ConfigEntries.BYPASS_MESSAGE.get());
                         return null;
                     }
 

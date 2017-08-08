@@ -2,26 +2,26 @@ package me.jaimemartz.lobbybalancer.section;
 
 import lombok.Getter;
 import lombok.Setter;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SectionManager {
     private ScheduledTask updateTask;
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
     @Getter @Setter private ServerSection principal;
-    @Getter private final Map<String, ServerSection> sections = new ConcurrentHashMap<>();
-    @Getter private final Map<ServerInfo, ServerSection> servers = new ConcurrentHashMap<>();
+    @Getter private final Map<String, ServerSection> sections = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    @Getter private final Map<ServerInfo, ServerSection> servers = new TreeMap<>();
 
-    public SectionManager(LobbyBalancer plugin) {
+    public SectionManager(PlayerBalancer plugin) {
         this.plugin = plugin;
     }
 

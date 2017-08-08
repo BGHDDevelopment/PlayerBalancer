@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+//TODO improve this
 public class PlayerLocker {
     private static final Set<UUID> storage = Collections.synchronizedSet(new HashSet<UUID>());
 

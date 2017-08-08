@@ -1,13 +1,11 @@
 package me.jaimemartz.lobbybalancer.commands;
 
-import me.jaimemartz.faucet.Messager;
-import me.jaimemartz.faucet.Replacement;
-import me.jaimemartz.faucet.StringCombiner;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
-import me.jaimemartz.lobbybalancer.ping.StatusInfo;
+import me.jaimemartz.lobbybalancer.ping.ServerStatus;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
+import me.jaimemartz.lobbybalancer.utils.MessageUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -16,22 +14,21 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
 import java.util.Set;
-import java.util.function.Consumer;
 
 public class ManageCommand extends Command {
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
 
-    public ManageCommand(LobbyBalancer plugin) {
+    public ManageCommand(PlayerBalancer plugin) {
         super("section");
         this.plugin = plugin;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messager msgr = new Messager(sender);
         if (sender.hasPermission("lobbybalancer.admin")) {
             if (args.length != 0) {
                 switch (args[0].toLowerCase()) {
@@ -45,20 +42,20 @@ public class ManageCommand extends Command {
                                     if (player != null) {
                                         ConnectionIntent.simple(plugin, player, section);
                                     } else {
-                                        msgr.send("&cThere is no player with that name connected to this proxy");
+                                        sender.sendMessage(new ComponentBuilder("There is no player with that name connected to this proxy").color(ChatColor.RED).create());
                                     }
                                 } else {
                                     if (sender instanceof ProxiedPlayer) {
                                         ConnectionIntent.simple(plugin, (ProxiedPlayer) sender, section);
                                     } else {
-                                        msgr.send("&cThis command can only be executed by a player");
+                                        sender.sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());
                                     }
                                 }
                             } else {
-                                msgr.send(ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
+                                MessageUtils.send(sender, ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
                             }
                         } else {
-                            help.accept(msgr);
+                            sender.sendMessage(new ComponentBuilder("Usage: /balancer connect <section> [player]").color(ChatColor.RED).create());
                         }
                         break;
                     }
@@ -68,73 +65,132 @@ public class ManageCommand extends Command {
                             String input = args[1];
                             ServerSection section = plugin.getSectionManager().getByName(input);
                             if (section != null) {
-                                msgr.send("&7&m-----------------------------------------------------");
+                                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
 
-                                msgr.send("&7Information of section &b{name}",
-                                        new Replacement("{name}", ChatColor.RED + section.getName()));
+                                sender.sendMessage(new ComponentBuilder("Information of section: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(section.getName())
+                                        .color(ChatColor.RED)
+                                        .create());
 
-                                msgr.send("&7Principal: &b{status}",
-                                        new Replacement("{status}", section.isPrincipal() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
+                                sender.sendMessage(new ComponentBuilder("Principal: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(section.isPrincipal() ? "yes" : "no")
+                                        .color(section.isPrincipal() ? ChatColor.GREEN : ChatColor.RED)
+                                        .create());
 
                                 if (section.getParent() != null) {
-                                    TextComponent message = new TextComponent("Parent: ");
-                                    message.setColor(ChatColor.GRAY);
-
-                                    TextComponent extra = new TextComponent(section.getParent().getName());
-                                    extra.setColor(ChatColor.AQUA);
-                                    extra.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/section info %s", section.getParent().getName())));
-                                    extra.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click me for info").color(ChatColor.RED).create()));
-
-                                    message.addExtra(extra);
-                                    sender.sendMessage(message);
+                                    sender.sendMessage(new ComponentBuilder("Parent: ")
+                                            .color(ChatColor.GRAY)
+                                            .append(section.getParent().getName())
+                                            .color(ChatColor.AQUA)
+                                            .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/section info %s", section.getParent().getName())))
+                                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click me for info").color(ChatColor.RED).create()))
+                                            .create());
                                 } else {
-                                    msgr.send("&7Parent: &bNone");
+                                    sender.sendMessage(new ComponentBuilder("Parent: ")
+                                            .color(ChatColor.GRAY)
+                                            .append("None")
+                                            .color(ChatColor.AQUA)
+                                            .create());
                                 }
 
-                                msgr.send("&7Position: &b{position}",
-                                        new Replacement("{position}", String.valueOf(section.getPosition())));
+                                sender.sendMessage(new ComponentBuilder("Position: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(String.valueOf(section.getPosition()))
+                                        .color(ChatColor.AQUA)
+                                        .create()
+                                );
 
-                                msgr.send("&7Provider: &b{name} &7({relation}&7)",
-                                        new Replacement("{name}", section.getProvider().name()),
-                                        new Replacement("{relation}", section.isInherit() ? "Inherited" : "Specified"));
+                                sender.sendMessage(new ComponentBuilder("Provider: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(section.getProvider().name())
+                                        .color(ChatColor.AQUA)
+                                        .append(String.format("(%s)", section.isInherited() ? "Inherited" : "Specified"))
+                                        .color(ChatColor.GRAY)
+                                        .create()
+                                );
 
-                                msgr.send("&7Dummy: &b{status}", new Replacement("{status}", section.isDummy() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
+                                sender.sendMessage(new ComponentBuilder("Dummy: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(section.isDummy() ? "yes" : "no")
+                                        .color(section.isDummy() ? ChatColor.GREEN : ChatColor.RED)
+                                        .create()
+                                );
 
-                                msgr.send("&7Section Server: &b{name}", new Replacement("{name}", section.getServer() != null ? section.getServer().getName() : "None"));
+                                if (section.getServer() != null) {
+                                    sender.sendMessage(new ComponentBuilder("Section Server: ")
+                                            .color(ChatColor.GRAY)
+                                            .append(section.getServer().getName())
+                                            .color(ChatColor.AQUA)
+                                            .create()
+                                    );
+                                } else {
+                                    sender.sendMessage(new ComponentBuilder("Section Server: ")
+                                            .color(ChatColor.GRAY)
+                                            .append("None")
+                                            .color(ChatColor.AQUA)
+                                            .create()
+                                    );
+                                }
 
                                 if (section.getCommand() != null) {
-                                    msgr.send("&7Section Command: &b{name}&7, Permission: &b{permission}&7, Aliases: &b{aliases}",
-                                            new Replacement("{name}", section.getCommand().getName()),
-                                            new Replacement("{permission}", section.getCommand().getPermission().equals("") ? "None" : section.getCommand().getPermission()),
-                                            new Replacement("{aliases}", section.getCommand().getAliases().length == 0 ? "None" : StringCombiner.combine(section.getCommand().getAliases(), ", ")));
+                                    sender.sendMessage(new ComponentBuilder("Section Command: ")
+                                            .color(ChatColor.GRAY)
+                                            .append(section.getCommand().getName())
+                                            .color(ChatColor.AQUA)
+                                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                    new ComponentBuilder("Extra Information: ") //todo implement this
+                                                            .create()
+                                                    )
+                                            )
+                                            .create()
+                                    );
                                 } else {
-                                    msgr.send("&7Section Command: &bNone");
+                                    sender.sendMessage(new ComponentBuilder("Section Command: ")
+                                            .color(ChatColor.GRAY)
+                                            .append("None")
+                                            .color(ChatColor.AQUA)
+                                            .create()
+                                    );
                                 }
 
-                                msgr.send("&7Valid: &b{status}",
-                                        new Replacement("{status}", section.isValid() ? ChatColor.GREEN + "yes" : ChatColor.RED + "no"));
-
                                 if (!section.getServers().isEmpty()) {
-                                    msgr.send("&7Section Servers: ");
+                                    sender.sendMessage(new ComponentBuilder("Section Servers: ")
+                                            .color(ChatColor.GRAY)
+                                            .create()
+                                    );
+
+                                    //todo show status when hovering over server
                                     section.getServers().forEach(server -> {
-                                        StatusInfo status = plugin.getStatusManager().getStatus(server);
-                                        msgr.send("&7> Server &b{name} &c({connected}/{maximum}) &7({status}&7)",
-                                                new Replacement("{name}", server.getName()),
-                                                new Replacement("{connected}", String.valueOf(status.getOnline())),
-                                                new Replacement("{maximum}", String.valueOf(status.getMaximum())),
-                                                new Replacement("{status}", status.isAccessible() ? ChatColor.GREEN + "Accessible" : ChatColor.RED + "Inaccessible")
+                                        ServerStatus status = plugin.getStatusManager().getStatus(server);
+                                        sender.sendMessage(new ComponentBuilder("|> Server: ")
+                                                .color(ChatColor.GRAY)
+                                                .append(server.getName())
+                                                .color(ChatColor.AQUA)
+                                                .append(String.format(" (%d/%d) ",
+                                                        status.getOnline(),
+                                                        status.getMaximum()))
+                                                .color(ChatColor.RED)
+                                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("This is a test\nThis is a test").create()))
+                                                .create()
                                         );
                                     });
                                 } else {
-                                    msgr.send("&7Section Servers: &bNone");
+                                    sender.sendMessage(new ComponentBuilder("Section Servers: ")
+                                            .color(ChatColor.GRAY)
+                                            .append("None")
+                                            .color(ChatColor.AQUA)
+                                            .create()
+                                    );
                                 }
 
-                                msgr.send("&7&m-----------------------------------------------------");
+                                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
                             } else {
-                                msgr.send(ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
+                                MessageUtils.send(sender, ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
                             }
                         } else {
-                            help.accept(msgr);
+                            sender.sendMessage(new ComponentBuilder("Usage: /balancer info <section>").color(ChatColor.RED).create());
                         }
                         break;
                     }
@@ -174,24 +230,20 @@ public class ManageCommand extends Command {
                     }
 
                     default: {
-                        msgr.send("&cThis is not a valid argument for this command!");
-                        help.accept(msgr);
+                        sender.sendMessage(new ComponentBuilder("This is not a valid argument for this command!").color(ChatColor.RED).create());
                     }
                 }
             } else {
-                help.accept(msgr);
+                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
+                sender.sendMessage(new ComponentBuilder("Available commands:").color(ChatColor.GRAY).create());
+                sender.sendMessage(new ComponentBuilder("/section").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Shows you this message").color(ChatColor.RED).create());
+                sender.sendMessage(new ComponentBuilder("/section list").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Tells you which sections are configured in the plugin").color(ChatColor.RED).create());
+                sender.sendMessage(new ComponentBuilder("/section info <section>").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Tells you info about the specified section").color(ChatColor.RED).create());
+                sender.sendMessage(new ComponentBuilder("/section connect <section> [player]").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Connects you or the specified player to that section").color(ChatColor.RED).create());
+                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
             }
         } else {
-            msgr.send(ChatColor.RED + "You do not have permission to execute this command!");
+            sender.sendMessage(new ComponentBuilder("You do not have permission to execute this command!").color(ChatColor.RED).create());
         }
     }
-
-    private static final Consumer<Messager> help = (msgr) -> msgr.send(
-            "&7&m-----------------------------------------------------",
-            "&7Available commands:",
-            "&3/section list &7- &cTells you which sections are configured in the plugin",
-            "&3/section info <section> &7- &cTells you info about the section",
-            "&3/section connect <section> [player] &7- &cConnects you or the specified player to that section",
-            "&7&m-----------------------------------------------------"
-    );
 }

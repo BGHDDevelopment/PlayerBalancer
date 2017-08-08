@@ -23,14 +23,16 @@ import org.inventivetalent.update.bungee.BungeeUpdater;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class LobbyBalancer extends Plugin {
+public class PlayerBalancer extends Plugin {
     private static final int LAST_VER_CONFIG_UPDATE = 20950000;
 
     @Getter private ConfigFactory factory;
+
     @Getter private boolean failed = false;
+
     @Getter private StatusManager statusManager;
     @Getter private SectionManager sectionManager;
-    @Getter private static LobbyBalancer instance;
+    @Getter private static PlayerBalancer instance;
 
     private Command fallbackCommand, mainCommand, manageCommand;
     private Listener connectListener, kickListener, messageListener, reloadListener;
@@ -116,7 +118,7 @@ public class LobbyBalancer extends Plugin {
 
                 getLogger().info("The plugin has finished loading without any problems");
             } catch (RuntimeException e) {
-                failed = true;
+                this.failed = true;
                 getLogger().severe("The plugin could not continue loading due to an unexpected exception");
                 e.printStackTrace();
             }
@@ -175,11 +177,12 @@ public class LobbyBalancer extends Plugin {
                 ServerAssignRegistry.getTable().clear();
             }
         }
+
         PlayerLocker.flush();
         failed = false;
     }
 
-    public void reloadPlugin() {
+    public boolean reloadPlugin() {
         getLogger().info("Reloading the plugin...");
         long starting = System.currentTimeMillis();
 
@@ -188,6 +191,8 @@ public class LobbyBalancer extends Plugin {
 
         long ending = System.currentTimeMillis() - starting;
         getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
+
+        return !failed;
     }
 
     public Configuration getConfigHandle() {

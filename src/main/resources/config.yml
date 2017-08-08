@@ -1,4 +1,4 @@
-# LobbyBalancer Configuration (https://www.spigotmc.org/resources/10788/)
+# PlayerBalancer Configuration (https://www.spigotmc.org/resources/10788/)
 # Read the comments, they are a very important part of the configuration
 # To get support send me a private message with a description of the problem and the config file
 # To easily paste the config file (and other relevant files) use the command /balancer paste
@@ -117,7 +117,7 @@ settings:
     invalid-input: '&cThis is an invalid input type for this command'
     unavailable-server: '&cThis command cannot be executed on this server'
     player-kicked: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
-    player-bypass: '&cYou have not been moved because you have the lobbybalancer.bypass permission'
+    player-bypass: '&cYou have not been moved because you have the playerbalancer.bypass permission'
 
 # Here you have an example of what you can do with the sections
 # The plugin will print out info telling you if your config is right or not
@@ -125,13 +125,12 @@ settings:
 # The best way to understand this is to play around with it
 # You can use regex to match a set of servers instead of adding each server
 
-# Providers of this plugin
-# NONE: Returns no server
-# DIRECT: Returns the only server in the list
-# LOWEST: Returns the server with the least players online
-# RANDOM: Returns a random server
-# PROGRESSIVE: Returns the first server that is not full
-# FILLER: Returns the server with the most players online that is not full
+# Providers you can use in the sections
+#  NONE: Does not return a server, effectively disables the section
+#  LOWEST: Returns the first server found that has least players online
+#  RANDOM: Returns a random server based on a computer generated number
+#  PROGRESSIVE: Returns the first server found that is not full
+#  FILLER: Returns the first server found with the most players online and not full
 
 sections:
   auth-lobbies:

@@ -1,6 +1,6 @@
 package me.jaimemartz.lobbybalancer.ping;
 
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -14,9 +14,9 @@ public class StatusManager {
     private boolean stopped = true;
     private PingTactic tactic;
     private ScheduledTask task;
-    private final Map<ServerInfo, StatusInfo> storage = new HashMap<>();
+    private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
 
-    public void start(LobbyBalancer plugin) {
+    public void start(PlayerBalancer plugin) {
         if (task != null) {
             stop();
         }
@@ -51,10 +51,10 @@ public class StatusManager {
         }
     }
 
-    private void update(LobbyBalancer plugin, ServerInfo server) {
+    private void update(PlayerBalancer plugin, ServerInfo server) {
         tactic.ping(server, (status, throwable) -> {
             if (status == null) {
-                status = new StatusInfo();
+                status = new ServerStatus();
             }
 
             if (ConfigEntries.SERVER_CHECK_PRINT_INFO.get()) {
@@ -68,11 +68,11 @@ public class StatusManager {
         }, plugin);
     }
 
-    public StatusInfo getStatus(ServerInfo server) {
-        StatusInfo status = storage.get(server);
+    public ServerStatus getStatus(ServerInfo server) {
+        ServerStatus status = storage.get(server);
 
         if (status == null) {
-            return new StatusInfo(server);
+            return new ServerStatus(server);
         } else {
             return status;
         }

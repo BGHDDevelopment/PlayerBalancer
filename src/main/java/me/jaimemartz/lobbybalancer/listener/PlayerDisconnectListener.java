@@ -1,6 +1,6 @@
 package me.jaimemartz.lobbybalancer.listener;
 
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ServerAssignRegistry;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
@@ -11,9 +11,9 @@ import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
 public class PlayerDisconnectListener implements Listener {
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
 
-    public PlayerDisconnectListener(LobbyBalancer plugin) {
+    public PlayerDisconnectListener(PlayerBalancer plugin) {
         this.plugin = plugin;
     }
 

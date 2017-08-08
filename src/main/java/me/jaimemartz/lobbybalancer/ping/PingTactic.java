@@ -2,7 +2,7 @@ package me.jaimemartz.lobbybalancer.ping;
 
 import me.jaimemartz.faucet.ServerListPing;
 import me.jaimemartz.faucet.StatusResponse;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -14,12 +14,12 @@ public enum PingTactic {
         ServerListPing utility = new ServerListPing();
 
         @Override
-        public void ping(ServerInfo server, Callback<StatusInfo> callback, LobbyBalancer plugin) {
+        public void ping(ServerInfo server, Callback<ServerStatus> callback, PlayerBalancer plugin) {
             utility.setTimeout(ConfigEntries.SERVER_CHECK_TIMEOUT.get());
             plugin.getProxy().getScheduler().runAsync(plugin, () -> {
                 try {
                     StatusResponse response = utility.ping(server.getAddress());
-                    callback.done(new StatusInfo(
+                    callback.done(new ServerStatus(
                             response.getDescription().toLegacyText(),
                             response.getPlayers().getOnline(),
                             response.getPlayers().getMax()),
@@ -33,11 +33,12 @@ public enum PingTactic {
 
     GENERIC {
         @Override
-        public void ping(ServerInfo server, Callback<StatusInfo> callback, LobbyBalancer plugin) {
+        public void ping(ServerInfo server, Callback<ServerStatus> callback, PlayerBalancer plugin) {
             try {
                 server.ping((ping, throwable) -> {
                     if (ping != null) {
-                        callback.done(new StatusInfo(
+                        //using deprecated method for 1.8 compatibility
+                        callback.done(new ServerStatus(
                                 ping.getDescription(),
                                 ping.getPlayers().getOnline(),
                                 ping.getPlayers().getMax()
@@ -52,5 +53,5 @@ public enum PingTactic {
         }
     };
 
-    public abstract void ping(ServerInfo server, Callback<StatusInfo> callback, LobbyBalancer plugin);
+    public abstract void ping(ServerInfo server, Callback<ServerStatus> callback, PlayerBalancer plugin);
 }

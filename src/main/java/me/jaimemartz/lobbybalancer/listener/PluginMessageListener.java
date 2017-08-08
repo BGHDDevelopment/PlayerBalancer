@@ -4,7 +4,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -19,10 +19,10 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class PluginMessageListener implements Listener {
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
     private final Gson gson;
 
-    public PluginMessageListener(LobbyBalancer plugin) {
+    public PluginMessageListener(PlayerBalancer plugin) {
         this.plugin = plugin;
         GsonBuilder builder = new GsonBuilder();
         builder.serializeNulls();
@@ -32,7 +32,7 @@ public class PluginMessageListener implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals("LobbyBalancer") && event.getSender() instanceof Server) {
+        if (event.getTag().equals("PlayerBalancer") && event.getSender() instanceof Server) {
             ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
             String request = in.readUTF();
             ServerInfo sender = ((Server) event.getSender()).getInfo();
@@ -107,7 +107,7 @@ public class PluginMessageListener implements Listener {
                         e.printStackTrace();
                     }
 
-                    sender.sendData("LobbyBalancer", stream.toByteArray());
+                    sender.sendData("PlayerBalancer", stream.toByteArray());
                     break;
                 }
             }

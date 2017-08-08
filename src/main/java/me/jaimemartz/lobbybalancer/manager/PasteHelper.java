@@ -2,7 +2,7 @@ package me.jaimemartz.lobbybalancer.manager;
 
 import com.github.kennedyoliveira.pastebin4j.*;
 import com.google.common.io.CharStreams;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public enum PasteHelper {
     PLUGIN {
         @Override
-        public String paste(LobbyBalancer plugin) throws Exception {
+        public String paste(PlayerBalancer plugin) throws Exception {
             File file = new File(plugin.getDataFolder(), "config.yml");
             if (!file.exists()) {
                 return "File does not exist";
@@ -45,7 +45,7 @@ public enum PasteHelper {
     },
     BUNGEE {
         @Override
-        public String paste(LobbyBalancer plugin) throws Exception {
+        public String paste(PlayerBalancer plugin) throws Exception {
             File file = new File("config.yml");
             if (!file.exists()) {
                 return "File does not exist";
@@ -73,10 +73,11 @@ public enum PasteHelper {
         }
     };
 
+    //Cached link of the paste
     private String link;
     private ScheduledTask task = null;
 
-    public void send(LobbyBalancer plugin, CommandSender sender, String message) {
+    public void send(PlayerBalancer plugin, CommandSender sender, String message) {
         try {
             sender.sendMessage(new ComponentBuilder(message.replace("{link}", link == null ? link = paste(plugin) : link)).color(ChatColor.GREEN).create());
 
@@ -91,7 +92,7 @@ public enum PasteHelper {
         }
     }
 
-    public abstract String paste(LobbyBalancer plugin) throws Exception;
+    public abstract String paste(PlayerBalancer plugin) throws Exception;
 
     private static final AccountCredentials credentials = new AccountCredentials("e3ff18d8fb001a3ece08ae0d7d4a87bd");
 }

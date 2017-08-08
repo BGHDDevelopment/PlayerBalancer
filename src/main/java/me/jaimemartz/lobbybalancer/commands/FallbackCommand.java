@@ -1,12 +1,13 @@
 package me.jaimemartz.lobbybalancer.commands;
 
-import me.jaimemartz.faucet.Messager;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
+import me.jaimemartz.lobbybalancer.utils.MessageUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -15,16 +16,15 @@ import net.md_5.bungee.config.Configuration;
 import java.util.concurrent.Callable;
 
 public class FallbackCommand extends Command {
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
 
-    public FallbackCommand(LobbyBalancer plugin) {
+    public FallbackCommand(PlayerBalancer plugin) {
         super(ConfigEntries.FALLBACK_COMMAND_NAME.get(), ConfigEntries.FALLBACK_COMMAND_PERMISSION.get(), (ConfigEntries.FALLBACK_COMMAND_ALIASES.get().stream()).toArray(String[]::new));
         this.plugin = plugin;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messager msgr = new Messager(sender);
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
 
@@ -33,7 +33,7 @@ public class FallbackCommand extends Command {
 
                 if (section != null) {
                     if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
-                        msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                        MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
                         return null;
                     }
 
@@ -45,14 +45,14 @@ public class FallbackCommand extends Command {
                         if (section.getParent() != null) {
                             target = section.getParent();
                         } else {
-                            msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                            MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
                             return null;
                         }
                     }
 
                     if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get()) {
                         if (section.getPosition() >= 0 && target.getPosition() < 0) {
-                            msgr.send(ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                            MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
                             return null;
                         }
                     }
@@ -74,15 +74,15 @@ public class FallbackCommand extends Command {
                         try {
                             int number = Integer.parseInt(args[0]);
                             if (number <= 0) {
-                                msgr.send(ConfigEntries.INVALID_INPUT_MESSAGE.get());
+                                MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
                             } else if (number > section.getServers().size()) {
-                                msgr.send(ConfigEntries.FAILURE_MESSAGE.get());
+                                MessageUtils.send(player, ConfigEntries.FAILURE_MESSAGE.get());
                             } else {
                                 ServerInfo server = section.getSortedServers().get(number - 1);
                                 ConnectionIntent.direct(plugin, player, server);
                             }
                         } catch (NumberFormatException e) {
-                            msgr.send(ConfigEntries.INVALID_INPUT_MESSAGE.get());
+                            MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
                         }
                     } else {
                         ConnectionIntent.simple(plugin, player, section);
@@ -92,7 +92,7 @@ public class FallbackCommand extends Command {
                 //Nothing to do
             }
         } else {
-            msgr.send(ChatColor.RED + "This command can only be executed by a player");
+            sender.sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());
         }
     }
 }

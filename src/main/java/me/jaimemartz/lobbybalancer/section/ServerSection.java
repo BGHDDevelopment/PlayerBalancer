@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.connection.ProviderType;
 import me.jaimemartz.lobbybalancer.utils.AlphanumComparator;
 import me.jaimemartz.lobbybalancer.utils.FixedAdapter;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 @Setter
 public class ServerSection {
     @Getter(AccessLevel.NONE)
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
 
     private Configuration configuration;
     private List<ServerInfo> sortedServers;
@@ -32,21 +32,21 @@ public class ServerSection {
     @Expose private int position;
     @Expose private boolean dummy;
     @Expose private ServerSection parent;
-    @Expose private boolean inherit = false;
+    @Expose private boolean inherited = false;
     @Expose private List<ServerInfo> servers;
     @Expose private ProviderType provider;
     @Expose private ServerInfo server;
     @Expose private SectionCommand command;
-    @Expose private boolean valid = false;
+    @Expose private boolean valid = false; //todo delete this, not necessary
 
-    public ServerSection(LobbyBalancer plugin, String name, Configuration configuration) {
+    public ServerSection(PlayerBalancer plugin, String name, Configuration configuration) {
         this.plugin = plugin;
         this.name = name;
         this.configuration = configuration;
         this.servers = new ArrayList<>();
     }
 
-    public ServerSection(LobbyBalancer plugin, String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherit, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
+    public ServerSection(PlayerBalancer plugin, String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherited, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
         this.plugin = plugin;
         this.configuration = null;
         this.name = name;
@@ -54,7 +54,7 @@ public class ServerSection {
         this.position = position;
         this.dummy = dummy;
         this.parent = parent;
-        this.inherit = inherit;
+        this.inherited = inherited;
         this.servers = servers;
         this.provider = provider;
         this.server = server;
@@ -194,7 +194,7 @@ public class ServerSection {
 
                 plugin.getLogger().info(String.format("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name));
                 provider = sect.provider;
-                inherit = true;
+                inherited = true;
             }
         }
 

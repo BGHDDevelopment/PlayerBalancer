@@ -1,12 +1,11 @@
 package me.jaimemartz.lobbybalancer.listener;
 
-import me.jaimemartz.faucet.Messager;
-import me.jaimemartz.faucet.Replacement;
-import me.jaimemartz.lobbybalancer.LobbyBalancer;
+import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
 import me.jaimemartz.lobbybalancer.connection.ConnectionIntent;
 import me.jaimemartz.lobbybalancer.manager.PlayerLocker;
 import me.jaimemartz.lobbybalancer.section.ServerSection;
+import me.jaimemartz.lobbybalancer.utils.MessageUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -23,9 +22,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerKickListener implements Listener {
-    private final LobbyBalancer plugin;
+    private final PlayerBalancer plugin;
 
-    public ServerKickListener(LobbyBalancer plugin) {
+    public ServerKickListener(PlayerBalancer plugin) {
         this.plugin = plugin;
     }
 
@@ -33,7 +32,6 @@ public class ServerKickListener implements Listener {
     public void onKick(ServerKickEvent event) {
         ProxiedPlayer player = event.getPlayer();
         ServerInfo from = event.getKickedFrom();
-        Messager msgr = new Messager(player);
 
         //Section the player is going to be reconnected
         Callable<ServerSection> callable = () -> {
@@ -114,10 +112,10 @@ public class ServerKickListener implements Listener {
                     @Override
                     public void connect(ServerInfo server) {
                         PlayerLocker.lock(player);
-                        msgr.send(ConfigEntries.KICK_MESSAGE.get(),
-                                new Replacement("{from}", from.getName()),
-                                new Replacement("{to}", server.getName()),
-                                new Replacement("{reason}", TextComponent.toPlainText(event.getKickReasonComponent())));
+                        MessageUtils.send(player, ConfigEntries.KICK_MESSAGE.get(),
+                                (str) -> str.replace("{from}", from.getName())
+                                        .replace("{to}", server.getName())
+                                        .replace("{reason}", event.getKickReason()));
                         event.setCancelled(true);
                         event.setCancelServer(server);
                         plugin.getProxy().getScheduler().schedule(plugin, () -> {
