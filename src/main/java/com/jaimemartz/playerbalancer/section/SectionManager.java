@@ -8,6 +8,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,7 @@ public class SectionManager {
     private final PlayerBalancer plugin;
     @Getter @Setter private ServerSection principal;
     @Getter private final Map<String, ServerSection> sections = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    @Getter private final Map<ServerInfo, ServerSection> servers = new TreeMap<>();
+    @Getter private final Map<ServerInfo, ServerSection> servers = new HashMap<>();
 
     public SectionManager(PlayerBalancer plugin) {
         this.plugin = plugin;
