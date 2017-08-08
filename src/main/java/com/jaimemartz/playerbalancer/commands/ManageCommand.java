@@ -17,6 +17,7 @@ import net.md_5.bungee.api.plugin.Command;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 public class ManageCommand extends Command {
@@ -106,7 +107,7 @@ public class ManageCommand extends Command {
                                         .color(ChatColor.GRAY)
                                         .append(section.getProvider().name())
                                         .color(ChatColor.AQUA)
-                                        .append(String.format("(%s)", section.isInherited() ? "Inherited" : "Specified"))
+                                        .append(String.format(" (%s)", section.isInherited() ? "Inherited" : "Specified"))
                                         .color(ChatColor.GRAY)
                                         .create()
                                 );
@@ -164,15 +165,16 @@ public class ManageCommand extends Command {
                                     //TODO show status when hovering over server
                                     section.getServers().forEach(server -> {
                                         ServerStatus status = plugin.getStatusManager().getStatus(server);
-                                        sender.sendMessage(new ComponentBuilder("|> Server: ")
+                                        sender.sendMessage(new ComponentBuilder("\u2022 Server: ")
                                                 .color(ChatColor.GRAY)
                                                 .append(server.getName())
                                                 .color(ChatColor.AQUA)
+                                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                        new ComponentBuilder("This is a test\nThis is a test").create()))
                                                 .append(String.format(" (%d/%d) ",
                                                         status.getOnline(),
                                                         status.getMaximum()))
                                                 .color(ChatColor.RED)
-                                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("This is a test\nThis is a test").create()))
                                                 .create()
                                         );
                                     });
@@ -196,41 +198,29 @@ public class ManageCommand extends Command {
                     }
 
                     case "list": {
-                        Set<String> keys = plugin.getSectionManager().getSections().keySet();
-                        Iterator<String> iterator = keys.iterator();
-                        TextComponent message = new TextComponent("There are ");
-                        message.addExtra(new TextComponent(new ComponentBuilder(String.valueOf(keys.size())).color(ChatColor.AQUA).create()));
-                        message.addExtra(" configured sections:\n");
-                        message.setColor(ChatColor.GRAY);
+                        Map<String, ServerSection> sections = plugin.getSectionManager().getSections();
 
-                        if (iterator.hasNext()) {
-                            while (iterator.hasNext()) {
-                                String name = iterator.next();
-                                TextComponent extra = new TextComponent(name);
-                                extra.setColor(ChatColor.GREEN);
-                                extra.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/section info %s", name)));
-                                extra.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click me for info").color(ChatColor.RED).create()));
+                        if (!sections.isEmpty()) {
+                            sender.sendMessage(new ComponentBuilder("These are the registered sections: ").color(ChatColor.GRAY).create());
 
-                                if (iterator.hasNext()) {
-                                    TextComponent sep = new TextComponent(", ");
-                                    sep.setColor(ChatColor.GRAY);
-                                    extra.addExtra(sep);
-                                }
-
-                                message.addExtra(extra);
-                            }
+                            sections.forEach((name, section) -> {
+                                sender.sendMessage(new ComponentBuilder("\u2022 Section: ")
+                                        .color(ChatColor.GRAY)
+                                        .event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/section info %s", name)))
+                                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click me for info").color(ChatColor.RED).create()))
+                                        .append(name)
+                                        .color(ChatColor.AQUA)
+                                        .create()
+                                );
+                            });
                         } else {
-                            TextComponent extra = new TextComponent("There are no sections to list");
-                            extra.setColor(ChatColor.RED);
-                            message.addExtra(extra);
+                            sender.sendMessage(new ComponentBuilder("There are no sections to list").color(ChatColor.GRAY).create());
                         }
-
-                        sender.sendMessage(message);
                         break;
                     }
 
                     default: {
-                        sender.sendMessage(new ComponentBuilder("This is not a valid argument for this command!").color(ChatColor.RED).create());
+                        sender.sendMessage(new ComponentBuilder("This is not a valid argument for this command! Execute /section for help").color(ChatColor.RED).create());
                     }
                 }
             } else {

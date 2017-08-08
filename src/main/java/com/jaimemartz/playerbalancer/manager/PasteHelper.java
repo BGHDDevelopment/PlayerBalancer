@@ -1,12 +1,17 @@
 package com.jaimemartz.playerbalancer.manager;
 
-import com.github.kennedyoliveira.pastebin4j.*;
 import com.google.common.io.CharStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.jaimemartz.playerbalancer.utils.GuestPaste;
+import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,25 +27,24 @@ public enum PasteHelper {
                 return "File does not exist";
             }
 
-            GuestPaste paste = new GuestPaste();
-            paste.setTitle("{name} ({version} on {bungee_version}) Configuration"
-                    .replace("{name}", plugin.getDescription().getName())
-                    .replace("{version}", plugin.getDescription().getVersion())
-                    .replace("{bungee_version}", plugin.getProxy().getVersion())
-            );
-
-            paste.setExpiration(PasteExpiration.ONE_MONTH);
-            paste.setVisibility(PasteVisibility.UNLISTED);
-            paste.setHighLight(PasteHighLight.YAML);
-
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
                     String content = CharStreams.toString(reader);
-                    paste.setContent(content);
+                    GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd", content);
+
+                    paste.setName("{name} ({version} on {bungee_version}) Configuration"
+                            .replace("{name}", plugin.getDescription().getName())
+                            .replace("{version}", plugin.getDescription().getVersion())
+                            .replace("{bungee_version}", plugin.getProxy().getVersion())
+                    );
+
+                    paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
+                    paste.setExposure(GuestPaste.Exposure.UNLISTED);
+                    paste.setFormat("yaml");
+
+                    return paste.paste();
                 }
             }
-
-            return paste.paste(credentials);
         }
     },
     BUNGEE {
@@ -51,41 +55,40 @@ public enum PasteHelper {
                 return "File does not exist";
             }
 
-            GuestPaste paste = new GuestPaste();
-            paste.setTitle("{name} ({version}) Configuration"
-                    .replace("{name}", plugin.getProxy().getName())
-                    .replace("{version}", plugin.getProxy().getVersion())
-            );
-
-            paste.setExpiration(PasteExpiration.ONE_MONTH);
-            paste.setVisibility(PasteVisibility.UNLISTED);
-            paste.setHighLight(PasteHighLight.YAML);
-
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
                     String content = CharStreams.toString(reader);
                     content = content.replaceAll("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", "X.X.X.X");
-                    paste.setContent(content);
+                    GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd", content);
+
+                    paste.setName("{name} ({version}) Configuration"
+                            .replace("{name}", plugin.getProxy().getName())
+                            .replace("{version}", plugin.getProxy().getVersion())
+                    );
+
+                    paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
+                    paste.setExposure(GuestPaste.Exposure.UNLISTED);
+                    paste.setFormat("yaml");
+
+                    return paste.paste();
                 }
             }
-
-            return paste.paste(credentials);
         }
     };
 
     //Cached link of the paste
-    private String link;
+    private String response;
     private ScheduledTask task = null;
 
     public void send(PlayerBalancer plugin, CommandSender sender, String message) {
         try {
-            sender.sendMessage(new ComponentBuilder(message.replace("{link}", link == null ? link = paste(plugin) : link)).color(ChatColor.GREEN).create());
+            sender.sendMessage(new ComponentBuilder(message.replace("{response}", response == null ? response = paste(plugin) : response)).color(ChatColor.GREEN).create());
 
             if (task != null) {
                 plugin.getProxy().getScheduler().cancel(task);
             }
 
-            task = plugin.getProxy().getScheduler().schedule(plugin, () -> link = null, 5, TimeUnit.MINUTES);
+            task = plugin.getProxy().getScheduler().schedule(plugin, () -> response = null, 5, TimeUnit.MINUTES);
         } catch (Exception e) {
             sender.sendMessage(new ComponentBuilder("An internal error occurred while attempting to perform this command").color(ChatColor.RED).create());
             e.printStackTrace();
@@ -93,6 +96,4 @@ public enum PasteHelper {
     }
 
     public abstract String paste(PlayerBalancer plugin) throws Exception;
-
-    private static final AccountCredentials credentials = new AccountCredentials("e3ff18d8fb001a3ece08ae0d7d4a87bd");
 }

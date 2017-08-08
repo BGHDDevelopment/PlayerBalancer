@@ -91,12 +91,17 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.kennedyoliveira</groupId>
-            <artifactId>pastebin4j</artifactId>
-            <version>1.2.0</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>LATEST</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- TODO Ditch this dependency, move to ConfigMe -->
         <dependency>

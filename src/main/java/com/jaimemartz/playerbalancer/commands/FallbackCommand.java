@@ -85,6 +85,9 @@ public class FallbackCommand extends Command {
                             MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
                         }
                     } else {
+                        //TODO instead of checking if the sections are the same, we have to check if the section the player is
+                        //TODO currently going to contains the server the player is connected to
+                        //TODO this should be done in ConnectionIntent instead of here
                         ServerSection current = plugin.getSectionManager().getByPlayer(player);
                         if (current != target) {
                             ConnectionIntent.simple(plugin, player, target);

@@ -22,8 +22,8 @@ public class MainCommand extends Command {
             switch (args[0].toLowerCase()) {
                 case "paste": {
                     if (sender.hasPermission("lobbybalancer.admin")) {
-                        PasteHelper.PLUGIN.send(plugin, sender, "Plugin config paste link: {link}");
-                        PasteHelper.BUNGEE.send(plugin, sender, "Bungee config paste link (sensitive): {link}");
+                        PasteHelper.PLUGIN.send(plugin, sender, "Plugin config paste link: {response}");
+                        PasteHelper.BUNGEE.send(plugin, sender, "Bungee config paste link (IPs stripped): {response}");
                     } else {
                         sender.sendMessage(new ComponentBuilder("You do not have permission to execute this command!").color(ChatColor.RED).create());
                     }
@@ -45,7 +45,7 @@ public class MainCommand extends Command {
                 }
 
                 default: {
-                    sender.sendMessage(new ComponentBuilder("This is not a valid argument for this command!").color(ChatColor.RED).create());
+                    sender.sendMessage(new ComponentBuilder("This is not a valid argument for this command! Execute /balancer for help").color(ChatColor.RED).create());
                 }
             }
         } else {
