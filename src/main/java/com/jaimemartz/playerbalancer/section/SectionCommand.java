@@ -28,7 +28,6 @@ public class SectionCommand extends Command {
     public void execute(CommandSender sender, String[] args) {
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
-
             //todo share this code with the fallback command instead of having it duplicated
             if (args.length == 1) {
                 try {
@@ -45,7 +44,12 @@ public class SectionCommand extends Command {
                     MessageUtils.send(sender, ConfigEntries.INVALID_INPUT_MESSAGE.get());
                 }
             } else {
-                ConnectionIntent.simple(plugin, player, section);
+                ServerSection current = plugin.getSectionManager().getByPlayer(player);
+                if (current != section) {
+                    ConnectionIntent.simple(plugin, player, section);
+                } else {
+                    MessageUtils.send(player, ConfigEntries.SAME_SECTION.get());
+                }
             }
         } else {
             sender.sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());

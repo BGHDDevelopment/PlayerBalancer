@@ -118,6 +118,7 @@ settings:
     unavailable-server: '&cThis command cannot be executed on this server'
     player-kicked: '&cYou have been kicked from &a{from} &cand you are being moved to &a{to}&c, reason: &a{reason}'
     player-bypass: '&cYou have not been moved because you have the playerbalancer.bypass permission'
+    same-section: '&cYou are already connected to a server of this section!'
 
 # Here you have an example of what you can do with the sections
 # The plugin will print out info telling you if your config is right or not

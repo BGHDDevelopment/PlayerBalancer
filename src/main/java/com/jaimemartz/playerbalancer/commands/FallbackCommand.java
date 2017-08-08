@@ -29,21 +29,21 @@ public class FallbackCommand extends Command {
             ProxiedPlayer player = (ProxiedPlayer) sender;
 
             Callable<ServerSection> callable = () -> {
-                ServerSection section = plugin.getSectionManager().getByServer(player.getServer().getInfo());
+                ServerSection current = plugin.getSectionManager().getByPlayer(player);
 
-                if (section != null) {
-                    if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(section.getName())) {
+                if (current != null) {
+                    if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(current.getName())) {
                         MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
                         return null;
                     }
 
                     Configuration rules = plugin.getConfigHandle().getSection("settings.fallback-command.rules");
-                    String bind = rules.getString(section.getName());
+                    String bind = rules.getString(current.getName());
                     ServerSection target = plugin.getSectionManager().getByName(bind);
 
                     if (target == null) {
-                        if (section.getParent() != null) {
-                            target = section.getParent();
+                        if (current.getParent() != null) {
+                            target = current.getParent();
                         } else {
                             MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
                             return null;
@@ -51,7 +51,7 @@ public class FallbackCommand extends Command {
                     }
 
                     if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get()) {
-                        if (section.getPosition() >= 0 && target.getPosition() < 0) {
+                        if (current.getPosition() >= 0 && target.getPosition() < 0) {
                             MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
                             return null;
                         }
@@ -68,24 +68,29 @@ public class FallbackCommand extends Command {
             };
 
             try {
-                ServerSection section = callable.call();
-                if (section != null) {
+                ServerSection target = callable.call();
+                if (target != null) {
                     if (args.length == 1) {
                         try {
                             int number = Integer.parseInt(args[0]);
                             if (number <= 0) {
                                 MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
-                            } else if (number > section.getServers().size()) {
+                            } else if (number > target.getServers().size()) {
                                 MessageUtils.send(player, ConfigEntries.FAILURE_MESSAGE.get());
                             } else {
-                                ServerInfo server = section.getSortedServers().get(number - 1);
+                                ServerInfo server = target.getSortedServers().get(number - 1);
                                 ConnectionIntent.direct(plugin, player, server);
                             }
                         } catch (NumberFormatException e) {
                             MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
                         }
                     } else {
-                        ConnectionIntent.simple(plugin, player, section);
+                        ServerSection current = plugin.getSectionManager().getByPlayer(player);
+                        if (current != target) {
+                            ConnectionIntent.simple(plugin, player, target);
+                        } else {
+                            MessageUtils.send(player, ConfigEntries.SAME_SECTION.get());
+                        }
                     }
                 }
             } catch (Exception e) {

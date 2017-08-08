@@ -49,6 +49,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<String> UNAVAILABLE_MESSAGE = new ConfigEntry<>(0, "settings.messages.unavailable-server", null);
     public static final ConfigEntry<String> KICK_MESSAGE = new ConfigEntry<>(0, "settings.messages.player-kicked", null);
     public static final ConfigEntry<String> BYPASS_MESSAGE = new ConfigEntry<>(0, "settings.messages.player-bypass", null);
+    public static final ConfigEntry<String> SAME_SECTION = new ConfigEntry<>(0, "settings.messages.same-section", null);
 
     public static final ConfigEntry<String> CONFIG_VERSION = new ConfigEntry<>(0, "version", null);
 }

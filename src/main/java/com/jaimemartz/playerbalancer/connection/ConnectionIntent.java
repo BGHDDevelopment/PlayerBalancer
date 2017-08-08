@@ -101,6 +101,7 @@ public abstract class ConnectionIntent {
         };
     }
 
+    //todo make this return true or false depending if the player really got moved or not
     public static void direct(PlayerBalancer plugin, ProxiedPlayer player, ServerInfo server) {
         PlayerLocker.lock(player);
         player.connect(server);
