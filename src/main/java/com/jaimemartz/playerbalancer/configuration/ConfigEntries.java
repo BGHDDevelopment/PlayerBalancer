@@ -42,7 +42,7 @@ public class ConfigEntries implements ConfigEntryHolder {
     public static final ConfigEntry<Boolean> SERVERS_UPDATE = new ConfigEntry<>(0, "settings.servers-update", false);
 
     public static final ConfigEntry<String> CONNECTING_MESSAGE = new ConfigEntry<>(0, "settings.messages.connecting-server", null);
-    public static final ConfigEntry<String> CONNECTED_MESSAGE = new ConfigEntry<>(0, "settings.messages.connecting-server", null);
+    public static final ConfigEntry<String> CONNECTED_MESSAGE = new ConfigEntry<>(0, "settings.messages.connected-server", null);
     public static final ConfigEntry<String> FAILURE_MESSAGE = new ConfigEntry<>(0, "settings.messages.misc-failure", null);
     public static final ConfigEntry<String> UNKNOWN_SECTION_MESSAGE = new ConfigEntry<>(0, "settings.messages.unknown-section", null);
     public static final ConfigEntry<String> INVALID_INPUT_MESSAGE = new ConfigEntry<>(0, "settings.messages.invalid-input", null);

@@ -35,8 +35,10 @@ public abstract class ConnectionIntent {
             ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
             if (target != null) {
                 this.connect(target);
+
+                //todo only send this if the above method returns true
                 MessageUtils.send(player, ConfigEntries.CONNECTED_MESSAGE.get(),
-                        (str) -> str.replace("{target}", target.getName())
+                        (str) -> str.replace("{server}", target.getName())
                 );
             } else {
                 MessageUtils.send(player, ConfigEntries.FAILURE_MESSAGE.get());
