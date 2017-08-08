@@ -16,7 +16,8 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
-import org.bstats.Metrics;
+import org.bstats.bungeecord.Metrics;
+import org.bstats.bungeecord.Metrics.SingleLineChart;
 import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class LobbyBalancer extends Plugin {
 
         //Metrics (https://bstats.org/)
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
+        metrics.addCustomChart(new SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
     }
 
     private void enable() {
@@ -60,7 +61,7 @@ public class LobbyBalancer extends Plugin {
         String text = ConfigEntries.CONFIG_VERSION.get();
         int configVersion = DigitUtils.getDigits(text, 8);
         if (configVersion < LAST_VER_CONFIG_UPDATE) {
-            failed = true;
+            this.failed = true;
             throw new IllegalStateException("Your config is outdated, please reset it and configure it again");
         }
 

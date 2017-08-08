@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.jaimemartz</groupId>
-    <artifactId>lobbybalancer</artifactId>
-    <version>2.0.9.9</version>
+    <groupId>com.jaimemartz</groupId>
+    <artifactId>playerbalancer</artifactId>
+    <version>2.1</version>
     <name>LobbyBalancer</name>
 
     <properties>
@@ -32,7 +32,7 @@
         </repository>
         <repository>
             <id>bstats-repo</id>
-            <url>https://repo.bstats.org/content/groups/public/</url>
+            <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
     </repositories>
     <build>
@@ -94,6 +94,18 @@
             <groupId>org.inventivetalent.update</groupId>
             <artifactId>bungee</artifactId>
             <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.jalu</groupId>
+            <artifactId>configme</artifactId>
+            <version>0.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kennedyoliveira</groupId>
+            <artifactId>pastebin4j</artifactId>
+            <version>1.2.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
