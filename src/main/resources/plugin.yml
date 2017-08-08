@@ -1,4 +1,4 @@
-name: LobbyBalancer
+name: PlayerBalancer
 main: com.jaimemartz.playerbalancer.PlayerBalancer
 version: ${project.version}
 author: jaime29010
