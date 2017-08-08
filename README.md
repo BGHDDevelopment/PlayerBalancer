@@ -7,7 +7,6 @@
 - [x] Get dummy sections able to have already registered servers on other sections
 - [x] Add a new message for when a player gets connected to a server and repurpose the connecting one
 - [ ] Add support for wildcards, contains, equalsIgnoreCase and regex at the same time
-- [ ] Add a identifier to get the servers of a section (auto complete)
 - [x] Add tooltip when you hover over a server in /section info
 - [ ] Stop using inventivetalent's deprecated bungee-update
 - [ ] Create a LobbyBalancer spigot addon that adds connector signs and placeholders
@@ -15,7 +14,9 @@
 - [ ] Make the plugin API not be so dependent on a instance of LobbyBalancer
 - [ ] Separate connection providers in classes instead of being hardcoded in an enum
 - [ ] Make the feature `marker-descs` work per section
+- [ ] Add a identifier to get the servers of a section (auto complete)
 - [ ] Implement fast connect (dimension change)
+- [ ] Implement a way to redirect premium players to a section and cracked ones to other section (not sure how this works)
 - [ ] Unify the code that loads server into a section (duplicated at SectionManager and ServerSection) 
 - [ ] Unify some of the code used in the FallbackCommand and SectionCommand
 - [x] Use https://github.com/kennedyoliveira/pastebin4j instead of jpaste

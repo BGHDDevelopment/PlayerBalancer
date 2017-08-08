@@ -1,9 +1,9 @@
 package me.jaimemartz.lobbybalancer.ping;
 
-import me.jaimemartz.faucet.ServerListPing;
-import me.jaimemartz.faucet.StatusResponse;
 import me.jaimemartz.lobbybalancer.PlayerBalancer;
 import me.jaimemartz.lobbybalancer.configuration.ConfigEntries;
+import me.jaimemartz.lobbybalancer.utils.ServerListPing;
+import me.jaimemartz.lobbybalancer.utils.ServerListPing.StatusResponse;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.config.ServerInfo;
 
