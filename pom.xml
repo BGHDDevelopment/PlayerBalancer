@@ -52,11 +52,10 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.4.3</version>
                 <configuration>
-                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>me.jaimemartz.playerbalancer</shadedPattern>
+                            <shadedPattern>com.jaimemartz.playerbalancer.metrics</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -97,12 +96,10 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>LATEST</version>
-            <scope>provided</scope>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.3.6</version>
         </dependency>
-
         <!-- TODO Ditch this dependency, move to ConfigMe -->
         <dependency>
             <groupId>me.jaimemartz</groupId>
