@@ -9,4 +9,6 @@ public class SectionHandler {
     public SectionHandler() {
         //Default constructor?
     }
+
+    //TODO The methods in SectionManager
 }

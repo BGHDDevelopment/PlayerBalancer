@@ -1,10 +1,10 @@
 package com.jaimemartz.playerbalancer.utils;
 
-import ch.jalu.configme.properties.Property;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public final class MessageUtils {
@@ -23,7 +23,11 @@ public final class MessageUtils {
         send(sender, text);
     }
 
-    public static void send(CommandSender sender, Property<String> property) {
-        throw new UnsupportedOperationException();
+    public static void send(CommandSender sender, Optional<String> message) {
+        message.ifPresent(text -> send(sender, text));
+    }
+
+    public static void send(CommandSender sender, Optional<String> message, Function<String, String> after) {
+        message.ifPresent(text -> send(sender, text, after));
     }
 }

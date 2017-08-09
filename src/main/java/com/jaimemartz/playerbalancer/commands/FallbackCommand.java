@@ -1,9 +1,14 @@
 package com.jaimemartz.playerbalancer.commands;
 
-import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.google.common.collect.Iterables;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.settings.ConfigEntries;
+import com.jaimemartz.playerbalancer.settings.Settings;
+import com.jaimemartz.playerbalancer.settings.beans.MapBean;
+import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
+import com.jaimemartz.playerbalancer.settings.types.GeneralProperties;
+import com.jaimemartz.playerbalancer.settings.types.MessageProperties;
+import com.jaimemartz.playerbalancer.settings.types.SectionsHolder;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -11,16 +16,24 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import net.md_5.bungee.config.Configuration;
 
+import javax.inject.Inject;
 import java.util.concurrent.Callable;
 
 public class FallbackCommand extends Command {
-    private final PlayerBalancer plugin;
+    @Inject
+    private Settings settings;
 
-    public FallbackCommand(PlayerBalancer plugin) {
-        super(ConfigEntries.FALLBACK_COMMAND_NAME.get(), ConfigEntries.FALLBACK_COMMAND_PERMISSION.get(), (ConfigEntries.FALLBACK_COMMAND_ALIASES.get().stream()).toArray(String[]::new));
-        this.plugin = plugin;
+    @Inject
+    private SectionsHolder sections;
+
+    @Inject
+    public FallbackCommand(Settings settings) {
+        super(
+                settings.getProperty(CommandProperties.COMMAND).getName(),
+                settings.getProperty(CommandProperties.COMMAND).getPermission(),
+                Iterables.toArray(settings.getProperty(CommandProperties.COMMAND).getAliases(), String.class)
+        );
     }
 
     @Override
@@ -29,38 +42,38 @@ public class FallbackCommand extends Command {
             ProxiedPlayer player = (ProxiedPlayer) sender;
 
             Callable<ServerSection> callable = () -> {
-                ServerSection current = plugin.getSectionManager().getByPlayer(player);
+                ServerSection current = sections.getByPlayer(player);
 
                 if (current != null) {
-                    if ((ConfigEntries.FALLBACK_COMMAND_IGNORED_SECTIONS.get()).contains(current.getName())) {
-                        MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                    if (settings.getProperty(CommandProperties.IGNORED_SECTIONS).contains(current.getName())) {
+                        MessageUtils.send(player, settings.getProperty(MessageProperties.UNAVAILABLE_SERVER));
                         return null;
                     }
 
-                    Configuration rules = plugin.getConfigHandle().getSection("settings.fallback-command.rules");
-                    String bind = rules.getString(current.getName());
-                    ServerSection target = plugin.getSectionManager().getByName(bind);
+                    MapBean rules = settings.getProperty(CommandProperties.RULES);
+                    String bind = rules.getMap().get(current.getName());
+                    ServerSection target = sections.getByName(bind);
 
                     if (target == null) {
                         if (current.getParent() != null) {
                             target = current.getParent();
                         } else {
-                            MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                            MessageUtils.send(player, settings.getProperty(MessageProperties.UNAVAILABLE_SERVER));
                             return null;
                         }
                     }
 
-                    if (ConfigEntries.FALLBACK_COMMAND_RESTRICTED.get()) {
+                    if (settings.getProperty(CommandProperties.RESTRICTED)) {
                         if (current.getPosition() >= 0 && target.getPosition() < 0) {
-                            MessageUtils.send(player, ConfigEntries.UNAVAILABLE_MESSAGE.get());
+                            MessageUtils.send(player, settings.getProperty(MessageProperties.UNAVAILABLE_SERVER));
                             return null;
                         }
                     }
 
                     return target;
                 } else {
-                    if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
-                        return plugin.getSectionManager().getPrincipal();
+                    if (settings.getProperty(GeneralProperties.FALLBACK_PRINCIPAL)) {
+                        return sections.getPrincipal();
                     }
                 }
 

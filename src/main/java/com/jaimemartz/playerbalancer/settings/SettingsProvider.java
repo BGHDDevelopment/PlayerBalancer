@@ -35,7 +35,7 @@ public class SettingsProvider implements Provider<Settings> {
         PropertyResource resource = new YamlFileResource(configFile);
         ConfigurationData configurationData = ConfigurationDataBuilder.collectData(
                 GeneralProperties.class, CheckerProperties.class, ReconnectorProperties.class,
-                CommandProperties.class, MessagesProperties.class, SectionsHolder.class
+                CommandProperties.class, MessageProperties.class, SectionsHolder.class
         );
 
         return new Settings(resource, new PlainMigrationService(), configurationData);

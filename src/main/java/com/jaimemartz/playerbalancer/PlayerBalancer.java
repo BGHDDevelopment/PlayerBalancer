@@ -13,10 +13,8 @@ import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
 import com.jaimemartz.playerbalancer.settings.Settings;
 import com.jaimemartz.playerbalancer.settings.SettingsProvider;
-import com.jaimemartz.playerbalancer.settings.types.CheckerProperties;
-import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
-import com.jaimemartz.playerbalancer.settings.types.GeneralProperties;
-import com.jaimemartz.playerbalancer.settings.types.ReconnectorProperties;
+import com.jaimemartz.playerbalancer.settings.beans.SectionHandler;
+import com.jaimemartz.playerbalancer.settings.types.*;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
@@ -56,6 +54,7 @@ public class PlayerBalancer extends Plugin {
         injector.registerProvider(Settings.class, SettingsProvider.class);
 
         settings = injector.getSingleton(Settings.class);
+        injector.register(SectionHandler.class, settings.getProperty(SectionsHolder.SECTION_HOLDER));
 
         Metrics metrics = new Metrics(this);
         if (this.enable()) {

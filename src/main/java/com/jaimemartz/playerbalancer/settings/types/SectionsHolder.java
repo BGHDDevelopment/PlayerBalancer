@@ -7,5 +7,5 @@ import com.jaimemartz.playerbalancer.settings.beans.SectionHandler;
 import static ch.jalu.configme.properties.PropertyInitializer.newBeanProperty;
 
 public class SectionsHolder implements SettingsHolder {
-    public static final Property<SectionHandler> SECTIONS_STORAGE = newBeanProperty(SectionHandler.class, "", new SectionHandler());
+    public static final Property<SectionHandler> SECTION_HOLDER = newBeanProperty(SectionHandler.class, "", new SectionHandler());
 }

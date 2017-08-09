@@ -1,7 +1,10 @@
 package com.jaimemartz.playerbalancer.settings.beans;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public final class CommandBean {
     private final String name;
     private final String permission;

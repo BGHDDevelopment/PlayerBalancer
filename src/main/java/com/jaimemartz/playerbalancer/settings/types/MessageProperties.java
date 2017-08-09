@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import static ch.jalu.configme.properties.PropertyInitializer.optionalStringProperty;
 
-public class MessagesProperties implements SettingsHolder {
+public class MessageProperties implements SettingsHolder {
     public static final Property<Optional<String>> CONNECTING_SERVER = optionalStringProperty("settings.messages.connecting-server");
 
     public static final Property<Optional<String>> CONNECTED_SERVER = optionalStringProperty("settings.messages.connected-server");
