@@ -7,6 +7,7 @@
 - [x] Get dummy sections able to have already registered servers on other sections
 - [x] Add a new message for when a player gets connected to a server and repurpose the connecting one
 - [ ] Add support for wildcards, contains, equalsIgnoreCase and regex at the same time
+- [ ] Add option to force joining a specific section
 - [x] Add tooltip when you hover over a server in /section info
 - [ ] Stop using inventivetalent's deprecated bungee-update
 - [ ] Create a spigot addon that adds connector signs and placeholders

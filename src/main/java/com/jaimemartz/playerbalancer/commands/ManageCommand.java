@@ -167,7 +167,7 @@ public class ManageCommand extends Command {
                                                 .append(server.getName())
                                                 .color(ChatColor.AQUA)
                                                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                        new ComponentBuilder("This is a test\nThis is a test").create()))
+                                                        new ComponentBuilder("This is a test\nThis is a test").create())) //todo implement this
                                                 .append(String.format(" (%d/%d) ",
                                                         status.getOnline(),
                                                         status.getMaximum()))

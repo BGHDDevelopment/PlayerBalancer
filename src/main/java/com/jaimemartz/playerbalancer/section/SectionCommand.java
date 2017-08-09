@@ -38,7 +38,7 @@ public class SectionCommand extends Command {
                         MessageUtils.send(sender, ConfigEntries.FAILURE_MESSAGE.get());
                     } else {
                         ServerInfo server = section.getSortedServers().get(number - 1);
-                        ConnectionIntent.direct(plugin, player, server);
+                        ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {});
                     }
                 } catch (NumberFormatException e) {
                     MessageUtils.send(sender, ConfigEntries.INVALID_INPUT_MESSAGE.get());

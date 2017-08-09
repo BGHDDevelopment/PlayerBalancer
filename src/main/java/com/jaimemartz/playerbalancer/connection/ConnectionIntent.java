@@ -6,12 +6,14 @@ import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
+import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ConnectionIntent {
     protected final PlayerBalancer plugin;
@@ -34,12 +36,13 @@ public abstract class ConnectionIntent {
         if (section.getProvider() != ProviderType.NONE) {
             ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
             if (target != null) {
-                this.connect(target);
-
-                //todo only send this if the above method returns true
-                MessageUtils.send(player, ConfigEntries.CONNECTED_MESSAGE.get(),
-                        (str) -> str.replace("{server}", target.getName())
-                );
+                this.connect(target, (response, throwable) -> {
+                    if (response) { //only if the connect has been executed correctly
+                        MessageUtils.send(player, ConfigEntries.CONNECTED_MESSAGE.get(),
+                                (str) -> str.replace("{server}", target.getName())
+                        );
+                    }
+                });
             } else {
                 MessageUtils.send(player, ConfigEntries.FAILURE_MESSAGE.get());
             }
@@ -74,7 +77,6 @@ public abstract class ConnectionIntent {
         int intents = ConfigEntries.SERVER_CHECK_ATTEMPTS.get();
         for (int intent = 1; intent <= intents; intent++) {
             if (servers.size() == 0) return null;
-            if (servers.size() == 1) return servers.get(0);
 
             ServerInfo target = provider.requestTarget(plugin, section, servers, player);
             if (target == null) continue;
@@ -90,23 +92,26 @@ public abstract class ConnectionIntent {
         return null;
     }
 
-    public abstract void connect(ServerInfo server);
+    public abstract void connect(ServerInfo server, Callback<Boolean> callback);
 
+    //todo create this as a type
     public static void simple(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section) {
         new ConnectionIntent(plugin, player, section) {
             @Override
-            public void connect(ServerInfo server) {
-                direct(plugin, player, server);
+            public void connect(ServerInfo server, Callback<Boolean> callback) {
+                ConnectionIntent.direct(plugin, player, server, callback);
             }
         };
     }
 
-    //todo make this return true or false depending if the player really got moved or not
-    public static void direct(PlayerBalancer plugin, ProxiedPlayer player, ServerInfo server) {
+    //todo create this as a type
+    public static void direct(PlayerBalancer plugin, ProxiedPlayer player, ServerInfo server, Callback<Boolean> callback) {
         PlayerLocker.lock(player);
-        player.connect(server);
-        plugin.getProxy().getScheduler().schedule(plugin, () -> {
-            PlayerLocker.unlock(player);
-        }, 5, TimeUnit.SECONDS);
+        player.connect(server, (result, throwable) -> {
+            plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                PlayerLocker.unlock(player);
+            }, 5, TimeUnit.SECONDS);
+            callback.done(result, throwable);
+        });
     }
 }

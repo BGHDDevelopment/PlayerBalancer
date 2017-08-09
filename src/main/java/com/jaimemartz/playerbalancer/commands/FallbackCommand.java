@@ -79,7 +79,7 @@ public class FallbackCommand extends Command {
                                 MessageUtils.send(player, ConfigEntries.FAILURE_MESSAGE.get());
                             } else {
                                 ServerInfo server = target.getSortedServers().get(number - 1);
-                                ConnectionIntent.direct(plugin, player, server);
+                                ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {});
                             }
                         } catch (NumberFormatException e) {
                             MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
