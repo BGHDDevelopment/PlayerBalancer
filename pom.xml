@@ -88,19 +88,18 @@
             <artifactId>configme</artifactId>
             <version>0.4</version>
             <scope>compile</scope>
+            <exclusions>
+                <!-- This is already shaded in BungeeCord -->
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>4.3.6</version>
-        </dependency>
+
+
         <!-- TODO Ditch this dependency, move to ConfigMe -->
+        <!-- TODO This is shading commons lang3 -->
         <dependency>
             <groupId>me.jaimemartz</groupId>
             <artifactId>faucet-bungee</artifactId>
@@ -116,7 +115,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- TODO Replace with our own alternative to "RedisBunge" (maybe) -->
+        <!-- TODO Replace with our own alternative to "RedisBungee" (maybe) -->
         <dependency>
             <groupId>com.imaginarycode.minecraft</groupId>
             <artifactId>RedisBungee</artifactId>

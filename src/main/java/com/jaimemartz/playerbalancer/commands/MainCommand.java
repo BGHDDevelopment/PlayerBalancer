@@ -1,7 +1,7 @@
 package com.jaimemartz.playerbalancer.commands;
 
-import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -21,9 +21,9 @@ public class MainCommand extends Command {
         if (args.length != 0) {
             switch (args[0].toLowerCase()) {
                 case "paste": {
-                    if (sender.hasPermission("lobbybalancer.admin")) {
-                        PasteHelper.PLUGIN.send(plugin, sender, "Plugin config paste link: {response}");
-                        PasteHelper.BUNGEE.send(plugin, sender, "Bungee config paste link (IPs stripped): {response}");
+                    if (sender.hasPermission("playerbalancer.admin")) {
+                        PasteHelper.PLUGIN.send(plugin, sender);
+                        PasteHelper.BUNGEE.send(plugin, sender);
                     } else {
                         sender.sendMessage(new ComponentBuilder("You do not have permission to execute this command!").color(ChatColor.RED).create());
                     }
@@ -31,7 +31,7 @@ public class MainCommand extends Command {
                 }
 
                 case "reload": {
-                    if (sender.hasPermission("lobbybalancer.admin")) {
+                    if (sender.hasPermission("playerbalancer.admin")) {
                         sender.sendMessage(new ComponentBuilder("Reloading the configuration, this may take a while...").color(ChatColor.GREEN).create());
                         if (plugin.reloadPlugin()) {
                             sender.sendMessage(new ComponentBuilder("The plugin has successfully reloaded").color(ChatColor.GREEN).create());
@@ -50,7 +50,7 @@ public class MainCommand extends Command {
             }
         } else {
             sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
-            sender.sendMessage(new ComponentBuilder("LobbyBalancer " + plugin.getDescription().getVersion()).color(ChatColor.GRAY).create());
+            sender.sendMessage(new ComponentBuilder("PlayerBalancer " + plugin.getDescription().getVersion()).color(ChatColor.GRAY).create());
             sender.sendMessage(new ComponentBuilder("Available commands:").color(ChatColor.GRAY).create());
             sender.sendMessage(new ComponentBuilder("/balancer").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Shows you this message").color(ChatColor.RED).create());
             sender.sendMessage(new ComponentBuilder("/balancer paste").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Creates a paste with the important files").color(ChatColor.RED).create());

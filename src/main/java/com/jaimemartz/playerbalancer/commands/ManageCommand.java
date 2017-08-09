@@ -11,14 +11,11 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class ManageCommand extends Command {
     private final PlayerBalancer plugin;
@@ -30,7 +27,7 @@ public class ManageCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if (sender.hasPermission("lobbybalancer.admin")) {
+        if (sender.hasPermission("playerbalancer.admin")) {
             if (args.length != 0) {
                 switch (args[0].toLowerCase()) {
                     case "connect": {

@@ -2,12 +2,12 @@ package com.jaimemartz.playerbalancer.section;
 
 import com.google.gson.annotations.Expose;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.jaimemartz.playerbalancer.connection.ProviderType;
 import com.jaimemartz.playerbalancer.utils.AlphanumComparator;
 import com.jaimemartz.playerbalancer.utils.FixedAdapter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import com.jaimemartz.playerbalancer.connection.ProviderType;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.config.Configuration;
 

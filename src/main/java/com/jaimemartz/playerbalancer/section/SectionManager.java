@@ -1,15 +1,14 @@
 package com.jaimemartz.playerbalancer.section;
 
-import lombok.Getter;
-import lombok.Setter;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
+import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
-import org.apache.commons.lang3.Validate;
 
 import java.util.HashMap;
 import java.util.Map;

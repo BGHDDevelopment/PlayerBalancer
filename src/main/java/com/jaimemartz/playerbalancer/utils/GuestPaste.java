@@ -2,19 +2,15 @@ package com.jaimemartz.playerbalancer.utils;
 
 import lombok.Data;
 import lombok.Getter;
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,35 +29,71 @@ public class GuestPaste {
         this.code = code;
     }
 
-    public String paste() throws Exception {
-        HttpPost request = new HttpPost("https://pastebin.com/api/api_post.php");
+    public URL paste() throws Exception {
+        URL url = new URL("https://pastebin.com/api/api_post.php");
+        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 
-        List<BasicNameValuePair> params = new LinkedList<>();
-        params.add(new BasicNameValuePair("api_dev_key", key));
-        params.add(new BasicNameValuePair("api_option", "paste"));
-        params.add(new BasicNameValuePair("api_paste_code", code));
+        con.setRequestMethod("POST");
+        con.setRequestProperty("User-Agent", "Mozilla/5.0");
+
+        List<SimpleEntry<String, String>> params = new LinkedList<>();
+        params.add(new SimpleEntry<>("api_dev_key", key));
+        params.add(new SimpleEntry<>("api_option", "paste"));
+        params.add(new SimpleEntry<>("api_paste_code", code));
 
         if (name != null) {
-            params.add(new BasicNameValuePair("api_paste_name", name));
+            params.add(new SimpleEntry<>("api_paste_name", name));
         }
 
         if (format != null) {
-            params.add(new BasicNameValuePair("api_paste_format", format));
+            params.add(new SimpleEntry<>("api_paste_format", format));
         }
 
         if (expiration != null) {
-            params.add(new BasicNameValuePair("api_paste_expire_date", expiration.getValue()));
+            params.add(new SimpleEntry<>("api_paste_expire_date", expiration.getValue()));
         }
 
         if (exposure != null) {
-            params.add(new BasicNameValuePair("api_paste_private", String.valueOf(exposure.getValue())));
+            params.add(new SimpleEntry<>("api_paste_private", String.valueOf(exposure.getValue())));
         }
 
-        HttpEntity entity = new UrlEncodedFormEntity(params, Consts.UTF_8);
-        request.setEntity(entity);
+        StringBuilder output = new StringBuilder();
+        for (SimpleEntry<String, String> entry : params) {
+            if (output.length() > 0)
+                output.append('&');
 
-        Response response = new Response();
-        return client.execute(request, response);
+            output.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            output.append('=');
+            output.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        con.setDoOutput(true);
+        try (DataOutputStream dos = new DataOutputStream(con.getOutputStream())) {
+            dos.writeBytes(output.toString());
+            dos.flush();
+        }
+
+        int status = con.getResponseCode();
+        if (status >= 200 && status < 300) {
+            try (InputStreamReader isr = new InputStreamReader(con.getInputStream())) {
+                try (BufferedReader br = new BufferedReader(isr)) {
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+
+                    while ((inputLine = br.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+
+                    try {
+                        return new URL(response.toString());
+                    } catch (MalformedURLException e) {
+                        throw new PasteException("Pastebin error: " + response.toString());
+                    }
+                }
+            }
+        } else {
+            throw new PasteException("Unexpected response code " + status);
+        }
     }
 
     public enum Expiration {
@@ -94,22 +126,9 @@ public class GuestPaste {
         }
     }
 
-    public static class Response implements ResponseHandler<String> {
-        @Override
-        public String handleResponse(HttpResponse response) throws IOException {
-            int status = response.getStatusLine().getStatusCode();
-            if (status >= 200 && status < 300) {
-                HttpEntity entity = response.getEntity();
-                try {
-                    return entity != null ? EntityUtils.toString(entity) : "";
-                } catch (ParseException | IOException e) {
-                    return "Error : " + e.getMessage();
-                }
-            } else {
-                return "Unexpected response status: " + status;
-            }
+    public class PasteException extends Exception {
+        public PasteException(String response) {
+            super(response);
         }
     }
-
-    private static final HttpClient client = HttpClients.createDefault();
 }

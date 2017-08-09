@@ -1,8 +1,8 @@
 package com.jaimemartz.playerbalancer.ping;
 
+import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
 import lombok.Getter;
 import lombok.Setter;
-import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public final class ServerStatus {

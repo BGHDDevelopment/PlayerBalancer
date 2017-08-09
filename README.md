@@ -1,7 +1,7 @@
 # PlayerBalancer
 [Spigot Resource](https://www.spigotmc.org/resources/10788/)
 
-[![Build Status](https://travis-ci.com/jaime29010/PlayerBalancer.svg?token=2yUi9WpA9QzSbJx9eTmy&branch=master)](https://travis-ci.com/jaime29010/LobbyBalancer)
+[![Build Status](https://travis-ci.com/jaime29010/PlayerBalancer.svg?token=2yUi9WpA9QzSbJx9eTmy&branch=master)](https://travis-ci.com/jaime29010/PlayerBalancer)
 
 ### Things to do:
 - [x] Get dummy sections able to have already registered servers on other sections
@@ -9,9 +9,9 @@
 - [ ] Add support for wildcards, contains, equalsIgnoreCase and regex at the same time
 - [x] Add tooltip when you hover over a server in /section info
 - [ ] Stop using inventivetalent's deprecated bungee-update
-- [ ] Create a LobbyBalancer spigot addon that adds connector signs and placeholders
+- [ ] Create a spigot addon that adds connector signs and placeholders
 - [ ] Separate the types of connections in classes instead of being in ConnectionIntent
-- [ ] Make the plugin API not be so dependent on a instance of LobbyBalancer
+- [ ] Make the plugin API not be so dependent on a instance of PlayerBalancer
 - [ ] Separate connection providers in classes instead of being hardcoded in an enum
 - [ ] Make the feature `marker-descs` work per section
 - [ ] Add a identifier to get the servers of a section (auto complete)

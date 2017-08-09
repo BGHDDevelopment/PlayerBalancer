@@ -82,7 +82,7 @@ public class PluginMessageListener implements Listener {
                         e.printStackTrace();
                     }
 
-                    sender.sendData("LobbyBalancer", stream.toByteArray());
+                    sender.sendData("PlayerBalancer", stream.toByteArray());
                     break;
                 }
 

@@ -109,7 +109,7 @@ public class PlayerBalancer extends Plugin {
 
                 getProxy().getPluginManager().registerListener(this, new PlayerDisconnectListener(this));
 
-                getProxy().registerChannel("LobbyBalancer");
+                getProxy().registerChannel("PlayerBalancer");
 
                 if (ConfigEntries.RECONNECT_KICK_ENABLED.get()) {
                     kickListener = new ServerKickListener(this);

@@ -1,9 +1,9 @@
 package com.jaimemartz.playerbalancer.section;
 
+import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
-import com.jaimemartz.playerbalancer.PlayerBalancer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
