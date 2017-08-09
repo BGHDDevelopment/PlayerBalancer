@@ -12,7 +12,7 @@
 - [ ] Stop using inventivetalent's deprecated bungee-update
 - [ ] Create a spigot addon that adds connector signs and placeholders
 - [ ] Separate the types of connections in classes instead of being in ConnectionIntent
-- [ ] Make the plugin API not be so dependent on a instance of PlayerBalancer
+- [ ] Make the plugin API be not so dependent on a instance of PlayerBalancer
 - [ ] Separate connection providers in classes instead of being hardcoded in an enum
 - [ ] Make the feature `marker-descs` work per section
 - [ ] Add a identifier to get the servers of a section (auto complete)

@@ -15,6 +15,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class ManageCommand extends Command {
@@ -138,11 +139,16 @@ public class ManageCommand extends Command {
                                             .append(section.getCommand().getName())
                                             .color(ChatColor.AQUA)
                                             .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                    new ComponentBuilder("Extra Information: ") //todo implement this
-                                                            .create()
-                                                    )
-                                            )
-                                            .create()
+                                                    new ComponentBuilder("Permission: ")
+                                                            .color(ChatColor.GRAY)
+                                                            .append(section.getCommand().getPermission().equals("") ? "None" : section.getCommand().getPermission())
+                                                            .color(ChatColor.AQUA)
+                                                            .append("\nAliases: ")
+                                                            .color(ChatColor.GRAY)
+                                                            .append(Arrays.toString(section.getCommand().getAliases()))
+                                                            .color(ChatColor.AQUA)
+                                                            .create())
+                                            ).create()
                                     );
                                 } else {
                                     sender.sendMessage(new ComponentBuilder("Section Command: ")
@@ -159,7 +165,6 @@ public class ManageCommand extends Command {
                                             .create()
                                     );
 
-                                    //TODO show status when hovering over server
                                     section.getServers().forEach(server -> {
                                         ServerStatus status = plugin.getStatusManager().getStatus(server);
                                         sender.sendMessage(new ComponentBuilder("\u2022 Server: ")
@@ -167,7 +172,19 @@ public class ManageCommand extends Command {
                                                 .append(server.getName())
                                                 .color(ChatColor.AQUA)
                                                 .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                        new ComponentBuilder("This is a test\nThis is a test").create())) //todo implement this
+                                                        new ComponentBuilder("Accessible: ")
+                                                                .color(ChatColor.GRAY)
+                                                                .append(status.isAccessible() ? "yes" : "no")
+                                                                .color(status.isAccessible() ? ChatColor.GREEN : ChatColor.RED)
+                                                                .append("\nDescription: ")
+                                                                .color(ChatColor.GRAY)
+                                                                .append("\"")
+                                                                .color(ChatColor.AQUA)
+                                                                .append(status.getDescription())
+                                                                .color(ChatColor.WHITE)
+                                                                .append("\"")
+                                                                .color(ChatColor.AQUA)
+                                                                .create()))
                                                 .append(String.format(" (%d/%d) ",
                                                         status.getOnline(),
                                                         status.getMaximum()))
