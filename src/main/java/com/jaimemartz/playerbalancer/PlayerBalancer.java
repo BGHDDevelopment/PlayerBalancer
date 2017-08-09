@@ -49,14 +49,13 @@ public class PlayerBalancer extends Plugin {
             factory.submit(ConfigEntries.class);
         }
 
-        this.enable();
-
-        //Metrics (https://bstats.org/)
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
+        if (this.enable()) {
+            metrics.addCustomChart(new SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
+        }
     }
 
-    private void enable() {
+    private boolean enable() {
         factory.load(0, true);
 
         mainCommand = new MainCommand(this);
@@ -121,6 +120,7 @@ public class PlayerBalancer extends Plugin {
                 }
 
                 getLogger().info("The plugin has finished loading without any problems");
+                return true;
             } catch (RuntimeException e) {
                 this.failed = true;
                 getLogger().severe("The plugin could not continue loading due to an unexpected exception");
@@ -132,6 +132,7 @@ public class PlayerBalancer extends Plugin {
             getLogger().warning("Nothing is going to work until you do that, you can reload me by using the /balancer command");
             getLogger().warning("-----------------------------------------------------");
         }
+        return false;
     }
 
     @Override
