@@ -3,6 +3,7 @@ package com.jaimemartz.playerbalancer.manager;
 import com.google.common.io.CharStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.utils.GuestPaste;
+import com.jaimemartz.playerbalancer.utils.GuestPaste.PasteException;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -20,13 +21,13 @@ import java.util.function.BiConsumer;
 public enum PasteHelper {
     PLUGIN((sender, url) -> {
         if (sender instanceof ProxiedPlayer) {
-            sender.sendMessage(new ComponentBuilder("Click me for the plugin configuration")
+            sender.sendMessage(new ComponentBuilder("Click me for the PlayerBalancer configuration")
                     .event(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString()))
                     .color(ChatColor.GREEN)
                     .create()
             );
         } else {
-            sender.sendMessage(new ComponentBuilder("Plugin configuration link: " + url.toString()).create());
+            sender.sendMessage(new ComponentBuilder("PlayerBalancer configuration link: " + url.toString()).create());
         }
     }) {
         @Override
@@ -37,7 +38,7 @@ public enum PasteHelper {
                     String content = CharStreams.toString(reader);
                     GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd", content);
 
-                    paste.setName("{name} ({version} on {bungee_version}) Configuration"
+                    paste.setName("{name} ({version} on {bungee_version})"
                             .replace("{name}", plugin.getDescription().getName())
                             .replace("{version}", plugin.getDescription().getVersion())
                             .replace("{bungee_version}", plugin.getProxy().getVersion())
@@ -52,6 +53,7 @@ public enum PasteHelper {
             }
         }
     },
+
     BUNGEE((sender, url) -> {
         if (sender instanceof ProxiedPlayer) {
             sender.sendMessage(new ComponentBuilder("Click me for the BungeeCord configuration")
@@ -72,7 +74,7 @@ public enum PasteHelper {
                     content = content.replaceAll("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", "?.?.?.?");
                     GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd", content);
 
-                    paste.setName("{name} ({version}) Configuration"
+                    paste.setName("{name} ({version})"
                             .replace("{name}", plugin.getProxy().getName())
                             .replace("{version}", plugin.getProxy().getVersion())
                     );
@@ -105,7 +107,7 @@ public enum PasteHelper {
                 task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
                     url = null;
                 }, 5, TimeUnit.MINUTES);
-            } catch (GuestPaste.PasteException e) {
+            } catch (PasteException e) {
                 sender.sendMessage(new ComponentBuilder("An pastebin exception occurred: " + e.getMessage())
                         .color(ChatColor.RED)
                         .create()

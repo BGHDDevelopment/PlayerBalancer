@@ -19,10 +19,10 @@ public class GuestPaste {
     private final String key;
     private final String code;
 
-    private String name;
-    private String format;
-    private Expiration expiration;
-    private Exposure exposure;
+    private String name = null;
+    private String format = null;
+    private Expiration expiration = null;
+    private Exposure exposure = null;
 
     public GuestPaste(String key, String code) {
         this.key = key;
@@ -50,11 +50,11 @@ public class GuestPaste {
         }
 
         if (expiration != null) {
-            params.add(new SimpleEntry<>("api_paste_expire_date", expiration.getValue()));
+            params.add(new SimpleEntry<>("api_paste_expire_date", expiration.value));
         }
 
         if (exposure != null) {
-            params.add(new SimpleEntry<>("api_paste_private", String.valueOf(exposure.getValue())));
+            params.add(new SimpleEntry<>("api_paste_private", String.valueOf(exposure.value)));
         }
 
         StringBuilder output = new StringBuilder();
@@ -75,20 +75,18 @@ public class GuestPaste {
 
         int status = con.getResponseCode();
         if (status >= 200 && status < 300) {
-            try (InputStreamReader isr = new InputStreamReader(con.getInputStream())) {
-                try (BufferedReader br = new BufferedReader(isr)) {
-                    String inputLine;
-                    StringBuilder response = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                String inputLine;
+                StringBuilder response = new StringBuilder();
 
-                    while ((inputLine = br.readLine()) != null) {
-                        response.append(inputLine);
-                    }
+                while ((inputLine = br.readLine()) != null) {
+                    response.append(inputLine);
+                }
 
-                    try {
-                        return new URL(response.toString());
-                    } catch (MalformedURLException e) {
-                        throw new PasteException("Pastebin error: " + response.toString());
-                    }
+                try {
+                    return new URL(response.toString());
+                } catch (MalformedURLException e) {
+                    throw new PasteException(response.toString());
                 }
             }
         } else {
