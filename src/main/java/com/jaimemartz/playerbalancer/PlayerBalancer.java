@@ -13,6 +13,10 @@ import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
 import com.jaimemartz.playerbalancer.settings.Settings;
 import com.jaimemartz.playerbalancer.settings.SettingsProvider;
+import com.jaimemartz.playerbalancer.settings.types.CheckerProperties;
+import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
+import com.jaimemartz.playerbalancer.settings.types.GeneralProperties;
+import com.jaimemartz.playerbalancer.settings.types.ReconnectorProperties;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
@@ -63,12 +67,12 @@ public class PlayerBalancer extends Plugin {
         mainCommand = new MainCommand(this);
         getProxy().getPluginManager().registerCommand(this, mainCommand);
 
-        if (ConfigEntries.PLUGIN_ENABLED.get()) {
-            if (ConfigEntries.SILENT_STARTUP.get()) {
+        if (settings.getProperty(GeneralProperties.ENABLED)) {
+            if (settings.getProperty(GeneralProperties.SILENT)) {
                 getLogger().setLevel(Level.WARNING);
             }
 
-            if (ConfigEntries.AUTO_RELOAD_ENABLED.get()) {
+            if (settings.getProperty(GeneralProperties.AUTO_RELOAD)) {
                 reloadListener = new ProxyReloadListener(this);
                 getProxy().getPluginManager().registerListener(this, reloadListener);
             }
@@ -85,11 +89,11 @@ public class PlayerBalancer extends Plugin {
                 sectionManager.load();
 
                 statusManager = new StatusManager();
-                if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
+                if (settings.getProperty(CheckerProperties.ENABLED)) {
                     statusManager.start(this);
                 }
 
-                if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
+                if (settings.getProperty(CommandProperties.ENABLED)) {
                     fallbackCommand = new FallbackCommand(this);
                     getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
@@ -109,7 +113,7 @@ public class PlayerBalancer extends Plugin {
 
                 Stream.of(PasteHelper.values()).forEach(a -> a.setUrl(null));
 
-                if (ConfigEntries.RECONNECT_KICK_ENABLED.get()) {
+                if (settings.getProperty(ReconnectorProperties.ENABLED)) {
                     kickListener = new ServerKickListener(this);
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
@@ -139,20 +143,20 @@ public class PlayerBalancer extends Plugin {
         getProxy().getPluginManager().unregisterCommand(mainCommand);
         mainCommand = null;
 
-        if (ConfigEntries.PLUGIN_ENABLED.get()) {
+        if (settings.getProperty(GeneralProperties.ENABLED)) {
             //Do not try to do anything if the plugin has not loaded correctly
             if (isFailed()) return;
 
-            if (ConfigEntries.AUTO_RELOAD_ENABLED.get()) {
+            if (settings.getProperty(GeneralProperties.AUTO_RELOAD)) {
                 getProxy().getPluginManager().unregisterListener(reloadListener);
                 reloadListener = null;
             }
 
-            if (ConfigEntries.SERVER_CHECK_ENABLED.get()) {
+            if (settings.getProperty(CheckerProperties.ENABLED)) {
                 statusManager.stop();
             }
 
-            if (ConfigEntries.FALLBACK_COMMAND_ENABLED.get()) {
+            if (settings.getProperty(CommandProperties.ENABLED)) {
                 getProxy().getPluginManager().unregisterCommand(fallbackCommand);
                 fallbackCommand = null;
             }
@@ -166,14 +170,14 @@ public class PlayerBalancer extends Plugin {
             getProxy().getPluginManager().unregisterCommand(manageCommand);
             manageCommand = null;
 
-            if (ConfigEntries.RECONNECT_KICK_ENABLED.get()) {
+            if (settings.getProperty(ReconnectorProperties.ENABLED)) {
                 getProxy().getPluginManager().unregisterListener(kickListener);
                 kickListener = null;
             }
 
             sectionManager.flush();
 
-            if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
+            if (settings.getProperty(GeneralProperties.ASSIGN_TARGETS)) {
                 ServerAssignRegistry.getTable().clear();
             }
         }

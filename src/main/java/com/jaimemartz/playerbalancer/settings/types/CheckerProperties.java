@@ -20,10 +20,10 @@ public class CheckerProperties implements SettingsHolder {
 
     public static final Property<Integer> TIMEOUT = newProperty("settings.server-check.timeout", 5000);
 
-    public static final Property<Boolean> DEBUG = newProperty("settings.server-check.print-info", false);
-
-    public static final Property<List<String>> MARKER_DESCS = newListProperty("settings.server-check.print-info",
+    public static final Property<List<String>> MARKER_DESCS = newListProperty("settings.server-check.marker-descs",
             "Sever is not accessible",
             "Gamemode has already started"
     );
+
+    public static final Property<Boolean> DEBUG = newProperty("settings.server-check.print-info", false);
 }

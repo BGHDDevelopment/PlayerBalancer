@@ -18,11 +18,7 @@ public class ReconnectorProperties implements SettingsHolder {
 
     public static final Property<List<String>> IGNORED_SECTIONS = newListProperty("settings.reconnect-kick.ignored");
 
-
     public static final Property<Boolean> RESTRICTED = newProperty("settings.reconnect-kick.restricted", true);
-
-    //todo is it really necessary?
-    public static final Property<Boolean> EXCLUDE_FROM = newProperty("settings.reconnect-kick.exclude-from", true);
 
     public static final Property<Boolean> FORCE_PRINCIPAL = newProperty("settings.reconnect-kick.force-principal", false);
 
