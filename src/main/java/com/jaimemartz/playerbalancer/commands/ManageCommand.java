@@ -1,5 +1,6 @@
 package com.jaimemartz.playerbalancer.commands;
 
+import com.google.common.base.Strings;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
@@ -13,7 +14,6 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -64,7 +64,7 @@ public class ManageCommand extends Command {
                             String input = args[1];
                             ServerSection section = plugin.getSectionManager().getByName(input);
                             if (section != null) {
-                                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
+                                sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
 
                                 sender.sendMessage(new ComponentBuilder("Information of section: ")
                                         .color(ChatColor.GRAY)
@@ -201,7 +201,7 @@ public class ManageCommand extends Command {
                                     );
                                 }
 
-                                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
+                                sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
                             } else {
                                 MessageUtils.send(sender, ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
                             }
@@ -238,13 +238,13 @@ public class ManageCommand extends Command {
                     }
                 }
             } else {
-                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
+                sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
                 sender.sendMessage(new ComponentBuilder("Available commands:").color(ChatColor.GRAY).create());
                 sender.sendMessage(new ComponentBuilder("/section").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Shows you this message").color(ChatColor.RED).create());
                 sender.sendMessage(new ComponentBuilder("/section list").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Tells you which sections are configured in the plugin").color(ChatColor.RED).create());
                 sender.sendMessage(new ComponentBuilder("/section info <section>").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Tells you info about the specified section").color(ChatColor.RED).create());
                 sender.sendMessage(new ComponentBuilder("/section connect <section> [player]").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Connects you or the specified player to that section").color(ChatColor.RED).create());
-                sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
+                sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
             }
         } else {
             sender.sendMessage(new ComponentBuilder("You do not have permission to execute this command!").color(ChatColor.RED).create());

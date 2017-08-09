@@ -98,6 +98,15 @@
         </dependency>
 
 
+        <!-- TODO Ditch this dependency, move to ConfigMe
+        <dependency>
+            <groupId>me.jaimemartz</groupId>
+            <artifactId>faucet-bungee</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        -->
+
         <!-- TODO Replace with HTTP call to Spigot's API -->
         <dependency>
             <groupId>org.inventivetalent.update</groupId>

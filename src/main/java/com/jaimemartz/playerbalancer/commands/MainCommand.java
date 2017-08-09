@@ -1,12 +1,12 @@
 package com.jaimemartz.playerbalancer.commands;
 
+import com.google.common.base.Strings;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.plugin.Command;
-import org.apache.commons.lang3.StringUtils;
 
 public class MainCommand extends Command {
     private final PlayerBalancer plugin;
@@ -49,13 +49,13 @@ public class MainCommand extends Command {
                 }
             }
         } else {
-            sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
+            sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
             sender.sendMessage(new ComponentBuilder("PlayerBalancer " + plugin.getDescription().getVersion()).color(ChatColor.GRAY).create());
             sender.sendMessage(new ComponentBuilder("Available commands:").color(ChatColor.GRAY).create());
             sender.sendMessage(new ComponentBuilder("/balancer").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Shows you this message").color(ChatColor.RED).create());
             sender.sendMessage(new ComponentBuilder("/balancer paste").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Creates a paste with the important files").color(ChatColor.RED).create());
             sender.sendMessage(new ComponentBuilder("/balancer reload").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Reloads the plugin completely").color(ChatColor.RED).create());
-            sender.sendMessage(new ComponentBuilder(StringUtils.repeat('-', 53)).strikethrough(true).color(ChatColor.GRAY).create());
+            sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
         }
     }
 }
