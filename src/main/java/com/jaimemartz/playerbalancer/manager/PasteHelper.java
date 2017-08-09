@@ -4,18 +4,18 @@ import com.google.common.io.CharStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.utils.GuestPaste;
 import com.jaimemartz.playerbalancer.utils.GuestPaste.PasteException;
+import lombok.Getter;
+import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 
 public enum PasteHelper {
@@ -89,8 +89,8 @@ public enum PasteHelper {
         }
     };
 
+    @Getter @Setter
     private URL url;
-    private ScheduledTask task = null;
 
     private final BiConsumer<CommandSender, URL> consumer;
     PasteHelper(BiConsumer<CommandSender, URL> consumer) {
@@ -98,15 +98,10 @@ public enum PasteHelper {
     }
 
     public void send(PlayerBalancer plugin, CommandSender sender) {
+        boolean cached = url != null;
         if (url == null) {
             try {
                 url = paste(plugin);
-                if (task != null) {
-                    task.cancel();
-                }
-                task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                    url = null;
-                }, 5, TimeUnit.MINUTES);
             } catch (PasteException e) {
                 sender.sendMessage(new ComponentBuilder("An pastebin exception occurred: " + e.getMessage())
                         .color(ChatColor.RED)
@@ -123,7 +118,12 @@ public enum PasteHelper {
         }
 
         if (url != null) {
-            consumer.accept(sender, url);
+            if (cached) {
+                sender.sendMessage(new ComponentBuilder("This is a cached link, reload the plugin for it to refresh!")
+                        .color(ChatColor.RED)
+                        .create()
+                );
+            }
         }
     }
 

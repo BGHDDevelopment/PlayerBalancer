@@ -6,6 +6,7 @@ import com.jaimemartz.playerbalancer.commands.ManageCommand;
 import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
 import com.jaimemartz.playerbalancer.listener.*;
+import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
@@ -22,6 +23,7 @@ import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 public class PlayerBalancer extends Plugin {
     private static final int LAST_VER_CONFIG_UPDATE = 20950000;
@@ -110,6 +112,8 @@ public class PlayerBalancer extends Plugin {
                 getProxy().getPluginManager().registerListener(this, new PlayerDisconnectListener(this));
 
                 getProxy().registerChannel("PlayerBalancer");
+
+                Stream.of(PasteHelper.values()).forEach(a -> a.setUrl(null));
 
                 if (ConfigEntries.RECONNECT_KICK_ENABLED.get()) {
                     kickListener = new ServerKickListener(this);
