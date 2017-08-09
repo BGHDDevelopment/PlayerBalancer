@@ -6,6 +6,7 @@ import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
+import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -110,7 +111,7 @@ public class ServerKickListener implements Listener {
 
                 new ConnectionIntent(plugin, player, section, servers) {
                     @Override
-                    public void connect(ServerInfo server) {
+                    public void connect(ServerInfo server, Callback<Boolean> callback) {
                         PlayerLocker.lock(player);
                         MessageUtils.send(player, ConfigEntries.KICK_MESSAGE.get(),
                                 (str) -> str.replace("{from}", from.getName())
@@ -121,6 +122,7 @@ public class ServerKickListener implements Listener {
                         plugin.getProxy().getScheduler().schedule(plugin, () -> {
                             PlayerLocker.unlock(player);
                         }, 5, TimeUnit.SECONDS);
+                        callback.done(true, null);
                     }
                 };
             }

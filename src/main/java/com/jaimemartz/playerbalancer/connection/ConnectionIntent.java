@@ -9,6 +9,7 @@ import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,15 @@ public abstract class ConnectionIntent {
         );
 
         if (servers == section.getServers()) {
-            throw new IllegalStateException("The servers list parameter is the same object as the section servers list, this cannot happen");
+            throw new IllegalStateException("The servers list parameter is the same reference, this cannot happen");
+        }
+
+        Server current = player.getServer();
+        if (current != null) {
+            if (section.getServers().contains(current.getInfo())) {
+                MessageUtils.send(player, ConfigEntries.SAME_SECTION.get());
+                return;
+            }
         }
 
         if (section.getProvider() != ProviderType.NONE) {

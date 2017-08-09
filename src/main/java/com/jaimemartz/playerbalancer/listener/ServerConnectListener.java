@@ -7,6 +7,7 @@ import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
+import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;
@@ -64,12 +65,13 @@ public class ServerConnectListener implements Listener {
             if (section != null) {
                 new ConnectionIntent(plugin, player, section) {
                     @Override
-                    public void connect(ServerInfo server) {
+                    public void connect(ServerInfo server, Callback<Boolean> callback) {
                         if (ConfigEntries.ASSIGN_TARGETS_ENABLED.get()) {
                             ServerAssignRegistry.assignTarget(player, section, server);
                         }
 
                         event.setTarget(server);
+                        callback.done(true, null);
                     }
                 };
             }

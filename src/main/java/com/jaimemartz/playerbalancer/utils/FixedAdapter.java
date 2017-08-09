@@ -7,7 +7,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FixedAdapter extends AdapterWrapper {
+public final class FixedAdapter extends AdapterWrapper {
     private static final Map<String, ServerInfo> fakeServers = new HashMap<>();
 
     static {

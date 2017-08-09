@@ -1,6 +1,6 @@
 package com.jaimemartz.playerbalancer.utils;
 
-public class DigitUtils {
+public final class DigitUtils {
     public static int getDigits(String string, int digits) {
         StringBuilder builder = new StringBuilder();
 

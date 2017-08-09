@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Data
-public class GuestPaste {
+public final class GuestPaste {
     private final String key;
     private final String code;
 

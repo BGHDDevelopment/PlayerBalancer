@@ -56,6 +56,7 @@ public class SectionManager {
             section.postInit();
         });
 
+        //todo unify loading code with SectionManager
         if (ConfigEntries.SERVERS_UPDATE.get()) {
             updateTask = plugin.getProxy().getScheduler().schedule(plugin, () -> {
                 this.sections.forEach((name, section) -> {

@@ -1,6 +1,6 @@
 package com.jaimemartz.playerbalancer.utils;
 
-public class LevenshteinDistance {
+public final class LevenshteinDistance {
     public static <T> T closest(Iterable<T> collection, T target) {
         int distance = Integer.MAX_VALUE;
         T closest = null;

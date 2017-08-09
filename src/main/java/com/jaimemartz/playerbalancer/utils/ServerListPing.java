@@ -16,7 +16,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 
-public class ServerListPing {
+public final class ServerListPing {
     private int timeout = 7000;
     private static Gson gson = new GsonBuilder()
             .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())

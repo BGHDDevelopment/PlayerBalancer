@@ -7,7 +7,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.function.Function;
 
-public class MessageUtils {
+public final class MessageUtils {
     public static void send(CommandSender sender, String text) {
         if (text != null) {
             text = ChatColor.translateAlternateColorCodes('&', text);
