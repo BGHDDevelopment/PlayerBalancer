@@ -1,6 +1,6 @@
 package com.jaimemartz.playerbalancer.ping;
 
-import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
+import com.jaimemartz.playerbalancer.settings.ConfigEntries;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.config.ServerInfo;

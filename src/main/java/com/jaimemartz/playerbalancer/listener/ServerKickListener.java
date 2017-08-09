@@ -1,10 +1,10 @@
 package com.jaimemartz.playerbalancer.listener;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.section.ServerSection;
+import com.jaimemartz.playerbalancer.settings.ConfigEntries;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.chat.TextComponent;

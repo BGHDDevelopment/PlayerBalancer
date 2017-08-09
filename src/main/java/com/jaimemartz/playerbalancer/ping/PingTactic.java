@@ -1,7 +1,7 @@
 package com.jaimemartz.playerbalancer.ping;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
+import com.jaimemartz.playerbalancer.settings.ConfigEntries;
 import com.jaimemartz.playerbalancer.utils.ServerListPing;
 import com.jaimemartz.playerbalancer.utils.ServerListPing.StatusResponse;
 import net.md_5.bungee.api.Callback;

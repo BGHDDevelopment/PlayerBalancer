@@ -1,7 +1,7 @@
 package com.jaimemartz.playerbalancer.manager;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
-import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
+import com.jaimemartz.playerbalancer.settings.ConfigEntries;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

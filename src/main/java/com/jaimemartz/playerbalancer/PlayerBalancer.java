@@ -1,22 +1,23 @@
 package com.jaimemartz.playerbalancer;
 
+import ch.jalu.injector.Injector;
+import ch.jalu.injector.InjectorBuilder;
 import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
-import com.jaimemartz.playerbalancer.configuration.ConfigEntries;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
 import com.jaimemartz.playerbalancer.listener.*;
 import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
-import com.jaimemartz.playerbalancer.utils.DigitUtils;
+import com.jaimemartz.playerbalancer.settings.Settings;
+import com.jaimemartz.playerbalancer.settings.SettingsProvider;
 import lombok.Getter;
-import me.jaimemartz.faucet.ConfigFactory;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.config.Configuration;
 import org.bstats.bungeecord.Metrics;
 import org.bstats.bungeecord.Metrics.SingleLineChart;
 import org.inventivetalent.update.bungee.BungeeUpdater;
@@ -26,28 +27,31 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 
 public class PlayerBalancer extends Plugin {
-    private static final int LAST_VER_CONFIG_UPDATE = 20950000;
-
-    @Getter private ConfigFactory factory;
-
     @Getter private boolean failed = false;
 
-    @Getter private StatusManager statusManager;
-    @Getter private SectionManager sectionManager;
-    @Getter private static PlayerBalancer instance;
+    //Private instances
+    private Injector injector;
+    private Settings settings;
+    private StatusManager statusManager;
+    private SectionManager sectionManager;
 
     private Command fallbackCommand, mainCommand, manageCommand;
     private Listener connectListener, kickListener, messageListener, reloadListener;
 
     @Override
     public void onEnable() {
-        instance = this;
+        getDataFolder().mkdir();
 
-        if (factory == null) {
-            factory = new ConfigFactory(this);
-            factory.register(0, "config.yml");
-            factory.submit(ConfigEntries.class);
-        }
+        injector = new InjectorBuilder()
+                .addDefaultHandlers(getClass().getPackage().getName())
+                .create();
+
+        injector.register(PlayerBalancer.class, this);
+        injector.register(ProxyServer.class, this.getProxy());
+        injector.register(SettingsProvider.class, new SettingsProvider(this.getDataFolder()));
+        injector.registerProvider(Settings.class, SettingsProvider.class);
+
+        settings = injector.getSingleton(Settings.class);
 
         Metrics metrics = new Metrics(this);
         if (this.enable()) {
@@ -56,17 +60,8 @@ public class PlayerBalancer extends Plugin {
     }
 
     private boolean enable() {
-        factory.load(0, true);
-
         mainCommand = new MainCommand(this);
         getProxy().getPluginManager().registerCommand(this, mainCommand);
-
-        String text = ConfigEntries.CONFIG_VERSION.get();
-        int configVersion = DigitUtils.getDigits(text, 8);
-        if (configVersion < LAST_VER_CONFIG_UPDATE) {
-            this.failed = true;
-            throw new IllegalStateException("Your config is outdated, please reset it and configure it again");
-        }
 
         if (ConfigEntries.PLUGIN_ENABLED.get()) {
             if (ConfigEntries.SILENT_STARTUP.get()) {
@@ -192,15 +187,12 @@ public class PlayerBalancer extends Plugin {
         long starting = System.currentTimeMillis();
 
         this.disable();
+        settings.reload();
         this.enable();
 
         long ending = System.currentTimeMillis() - starting;
         getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
 
         return !failed;
-    }
-
-    public Configuration getConfigHandle() {
-        return factory.get(0).getHandle();
     }
 }
