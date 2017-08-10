@@ -1,26 +1,28 @@
-package com.jaimemartz.playerbalancer.settings;
+package com.jaimemartz.playerbalancer.settings.provider;
 
+import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.configurationdata.ConfigurationData;
 import ch.jalu.configme.configurationdata.ConfigurationDataBuilder;
 import ch.jalu.configme.migration.PlainMigrationService;
 import ch.jalu.configme.resource.PropertyResource;
 import ch.jalu.configme.resource.YamlFileResource;
 import com.jaimemartz.playerbalancer.settings.types.*;
+import net.md_5.bungee.api.plugin.Plugin;
 
+import javax.inject.Inject;
 import javax.inject.Provider;
 import java.io.File;
 import java.io.IOException;
 
-public class SettingsProvider implements Provider<Settings> {
-    private final File dataFolder;
-
-    public SettingsProvider(File dataFolder) {
-        this.dataFolder = dataFolder;
-    }
+public class SettingsProvider implements Provider<SettingsManager> {
+    @Inject
+    private Plugin plugin;
 
     @Override
-    public Settings get() {
-        File configFile = new File(dataFolder, "config.yml");
+    public SettingsManager get() {
+        plugin.getDataFolder().mkdir();
+
+        File configFile = new File(plugin.getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             try {
                 boolean result = configFile.createNewFile();
@@ -38,6 +40,6 @@ public class SettingsProvider implements Provider<Settings> {
                 CommandProperties.class, MessageProperties.class, SectionsHolder.class
         );
 
-        return new Settings(resource, new PlainMigrationService(), configurationData);
+        return new SettingsManager(resource, new PlainMigrationService(), configurationData);
     }
 }

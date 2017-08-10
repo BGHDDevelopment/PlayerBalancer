@@ -1,5 +1,6 @@
 package com.jaimemartz.playerbalancer;
 
+import ch.jalu.configme.SettingsManager;
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
 import com.jaimemartz.playerbalancer.commands.FallbackCommand;
@@ -11,10 +12,13 @@ import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
-import com.jaimemartz.playerbalancer.settings.Settings;
-import com.jaimemartz.playerbalancer.settings.SettingsProvider;
 import com.jaimemartz.playerbalancer.settings.beans.SectionHandler;
-import com.jaimemartz.playerbalancer.settings.types.*;
+import com.jaimemartz.playerbalancer.settings.provider.SectionHandlerProvider;
+import com.jaimemartz.playerbalancer.settings.provider.SettingsProvider;
+import com.jaimemartz.playerbalancer.settings.types.CheckerProperties;
+import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
+import com.jaimemartz.playerbalancer.settings.types.GeneralProperties;
+import com.jaimemartz.playerbalancer.settings.types.ReconnectorProperties;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
@@ -33,7 +37,7 @@ public class PlayerBalancer extends Plugin {
 
     //Private instances
     private Injector injector;
-    private Settings settings;
+    private SettingsManager settings;
     private StatusManager statusManager;
     private SectionManager sectionManager;
 
@@ -42,19 +46,15 @@ public class PlayerBalancer extends Plugin {
 
     @Override
     public void onEnable() {
-        getDataFolder().mkdir();
-
         injector = new InjectorBuilder()
                 .addDefaultHandlers(getClass().getPackage().getName())
                 .create();
 
         injector.register(PlayerBalancer.class, this);
         injector.register(ProxyServer.class, this.getProxy());
-        injector.register(SettingsProvider.class, new SettingsProvider(this.getDataFolder()));
-        injector.registerProvider(Settings.class, SettingsProvider.class);
-
-        settings = injector.getSingleton(Settings.class);
-        injector.register(SectionHandler.class, settings.getProperty(SectionsHolder.SECTION_HOLDER));
+        injector.registerProvider(SettingsManager.class, SettingsProvider.class);
+        injector.registerProvider(SectionHandler.class, SectionHandlerProvider.class);
+        settings = injector.getSingleton(SettingsManager.class);
 
         Metrics metrics = new Metrics(this);
         if (this.enable()) {
@@ -93,7 +93,7 @@ public class PlayerBalancer extends Plugin {
                 }
 
                 if (settings.getProperty(CommandProperties.ENABLED)) {
-                    fallbackCommand = new FallbackCommand(this);
+                    fallbackCommand = injector.newInstance(FallbackCommand.class);
                     getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
 

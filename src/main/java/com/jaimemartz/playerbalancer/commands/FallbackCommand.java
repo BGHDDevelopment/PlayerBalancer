@@ -1,9 +1,9 @@
 package com.jaimemartz.playerbalancer.commands;
 
+import ch.jalu.configme.SettingsManager;
 import com.google.common.collect.Iterables;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.settings.Settings;
 import com.jaimemartz.playerbalancer.settings.beans.MapBean;
 import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
 import com.jaimemartz.playerbalancer.settings.types.GeneralProperties;
@@ -22,13 +22,13 @@ import java.util.concurrent.Callable;
 
 public class FallbackCommand extends Command {
     @Inject
-    private Settings settings;
+    private SettingsManager settings;
 
     @Inject
     private SectionsHolder sections;
 
     @Inject
-    public FallbackCommand(Settings settings) {
+    public FallbackCommand(SettingsManager settings) {
         super(
                 settings.getProperty(CommandProperties.COMMAND).getName(),
                 settings.getProperty(CommandProperties.COMMAND).getPermission(),
