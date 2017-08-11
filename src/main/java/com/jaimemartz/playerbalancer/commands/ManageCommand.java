@@ -1,39 +1,41 @@
 package com.jaimemartz.playerbalancer.commands;
 
-import com.google.common.base.Strings;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
-import com.jaimemartz.playerbalancer.ping.ServerStatus;
-import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.utils.MessageUtils;
-import net.md_5.bungee.api.ChatColor;
+import com.jaimemartz.playerbalancer.ping.StatusManager;
+import com.jaimemartz.playerbalancer.settings.Settings;
+import com.jaimemartz.playerbalancer.settings.beans.SectionsHandler;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.Arrays;
-import java.util.Map;
+import javax.inject.Inject;
 
 public class ManageCommand extends Command {
-    private final PlayerBalancer plugin;
+    @Inject
+    private PlayerBalancer plugin;
 
-    public ManageCommand(PlayerBalancer plugin) {
+    @Inject
+    private SectionsHandler holder;
+
+    @Inject
+    private StatusManager checker;
+
+    @Inject
+    private Settings settings;
+
+    public ManageCommand() {
         super("section");
-        this.plugin = plugin;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        /*
         if (sender.hasPermission("playerbalancer.admin")) {
             if (args.length != 0) {
                 switch (args[0].toLowerCase()) {
                     case "connect": {
                         if (args.length >= 2) {
                             String input = args[1];
-                            ServerSection section = plugin.getSectionManager().getByName(input);
+                            ServerSection section = holder.getByName(input);
                             if (section != null) {
                                 if (args.length == 3) {
                                     ProxiedPlayer player = plugin.getProxy().getPlayer(args[2]);
@@ -50,7 +52,7 @@ public class ManageCommand extends Command {
                                     }
                                 }
                             } else {
-                                MessageUtils.send(sender, ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
+                                MessageUtils.send(sender, settings.getProperty(MessageProperties.UNKNOWN_SECTION));
                             }
                         } else {
                             sender.sendMessage(new ComponentBuilder("Usage: /balancer connect <section> [player]").color(ChatColor.RED).create());
@@ -61,7 +63,7 @@ public class ManageCommand extends Command {
                     case "info": {
                         if (args.length == 2) {
                             String input = args[1];
-                            ServerSection section = plugin.getSectionManager().getByName(input);
+                            ServerSection section = holder.getByName(input);
                             if (section != null) {
                                 sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
 
@@ -165,7 +167,7 @@ public class ManageCommand extends Command {
                                     );
 
                                     section.getServers().forEach(server -> {
-                                        ServerStatus status = plugin.getStatusManager().getStatus(server);
+                                        ServerStatus status = checker.getStatus(server);
                                         sender.sendMessage(new ComponentBuilder("\u2022 Server: ")
                                                 .color(ChatColor.GRAY)
                                                 .append(server.getName())
@@ -202,7 +204,7 @@ public class ManageCommand extends Command {
 
                                 sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
                             } else {
-                                MessageUtils.send(sender, ConfigEntries.UNKNOWN_SECTION_MESSAGE.get());
+                                MessageUtils.send(sender, settings.getProperty(MessageProperties.UNKNOWN_SECTION));
                             }
                         } else {
                             sender.sendMessage(new ComponentBuilder("Usage: /balancer info <section>").color(ChatColor.RED).create());
@@ -211,7 +213,7 @@ public class ManageCommand extends Command {
                     }
 
                     case "list": {
-                        Map<String, ServerSection> sections = plugin.getSectionManager().getSections();
+                        Map<String, ServerSection> sections = sections.getSections();
 
                         if (!sections.isEmpty()) {
                             sender.sendMessage(new ComponentBuilder("These are the registered sections: ").color(ChatColor.GRAY).create());
@@ -248,5 +250,6 @@ public class ManageCommand extends Command {
         } else {
             sender.sendMessage(new ComponentBuilder("You do not have permission to execute this command!").color(ChatColor.RED).create());
         }
+        */
     }
 }

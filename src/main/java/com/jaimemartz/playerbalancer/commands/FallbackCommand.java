@@ -1,34 +1,23 @@
 package com.jaimemartz.playerbalancer.commands;
 
-import ch.jalu.configme.SettingsManager;
 import com.google.common.collect.Iterables;
-import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
-import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.settings.beans.MapBean;
+import com.jaimemartz.playerbalancer.settings.Settings;
 import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
-import com.jaimemartz.playerbalancer.settings.types.GeneralProperties;
-import com.jaimemartz.playerbalancer.settings.types.MessageProperties;
 import com.jaimemartz.playerbalancer.settings.types.SectionsHolder;
-import com.jaimemartz.playerbalancer.utils.MessageUtils;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 import javax.inject.Inject;
-import java.util.concurrent.Callable;
 
 public class FallbackCommand extends Command {
     @Inject
-    private SettingsManager settings;
+    private Settings settings;
 
     @Inject
-    private SectionsHolder sections;
+    private SectionsHolder holder;
 
-    @Inject
-    public FallbackCommand(SettingsManager settings) {
+    @Inject //todo maybe make this job of the main class (initializer)
+    public FallbackCommand(Settings settings) {
         super(
                 settings.getProperty(CommandProperties.COMMAND).getName(),
                 settings.getProperty(CommandProperties.COMMAND).getPermission(),
@@ -38,11 +27,12 @@ public class FallbackCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        /*
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
 
             Callable<ServerSection> callable = () -> {
-                ServerSection current = sections.getByPlayer(player);
+                ServerSection current = holder.getByPlayer(player);
 
                 if (current != null) {
                     if (settings.getProperty(CommandProperties.IGNORED_SECTIONS).contains(current.getName())) {
@@ -52,7 +42,7 @@ public class FallbackCommand extends Command {
 
                     MapBean rules = settings.getProperty(CommandProperties.RULES);
                     String bind = rules.getMap().get(current.getName());
-                    ServerSection target = sections.getByName(bind);
+                    ServerSection target = holder.getByName(bind);
 
                     if (target == null) {
                         if (current.getParent() != null) {
@@ -73,7 +63,7 @@ public class FallbackCommand extends Command {
                     return target;
                 } else {
                     if (settings.getProperty(GeneralProperties.FALLBACK_PRINCIPAL)) {
-                        return sections.getPrincipal();
+                        return holder.getPrincipal();
                     }
                 }
 
@@ -87,15 +77,15 @@ public class FallbackCommand extends Command {
                         try {
                             int number = Integer.parseInt(args[0]);
                             if (number <= 0) {
-                                MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
+                                MessageUtils.send(player, settings.getProperty(MessageProperties.INVALID_INPUT));
                             } else if (number > target.getServers().size()) {
-                                MessageUtils.send(player, ConfigEntries.FAILURE_MESSAGE.get());
+                                MessageUtils.send(player, settings.getProperty(MessageProperties.MISC_FAILURE));
                             } else {
                                 ServerInfo server = target.getSortedServers().get(number - 1);
                                 ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {});
                             }
                         } catch (NumberFormatException e) {
-                            MessageUtils.send(player, ConfigEntries.INVALID_INPUT_MESSAGE.get());
+                            MessageUtils.send(player, settings.getProperty(MessageProperties.INVALID_INPUT));
                         }
                     } else {
                         ConnectionIntent.simple(plugin, player, target);
@@ -107,5 +97,6 @@ public class FallbackCommand extends Command {
         } else {
             sender.sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());
         }
+        */
     }
 }

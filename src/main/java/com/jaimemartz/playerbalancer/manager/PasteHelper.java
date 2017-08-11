@@ -118,6 +118,7 @@ public enum PasteHelper {
         }
 
         if (url != null) {
+            consumer.accept(sender, url);
             if (cached) {
                 sender.sendMessage(new ComponentBuilder("This is a cached link, reload the plugin for it to refresh!")
                         .color(ChatColor.RED)

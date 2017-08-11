@@ -1,29 +1,29 @@
 package com.jaimemartz.playerbalancer.listener;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
-import com.jaimemartz.playerbalancer.section.ServerSection;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
+import com.jaimemartz.playerbalancer.settings.Settings;
+import com.jaimemartz.playerbalancer.settings.types.SectionsHolder;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import javax.inject.Inject;
 
 public class PluginMessageListener implements Listener {
-    private final PlayerBalancer plugin;
+    @Inject
+    private PlayerBalancer plugin;
+
+    @Inject
+    private Settings settings;
+
+    @Inject
+    private SectionsHolder holder;
+
     private final Gson gson;
 
-    public PluginMessageListener(PlayerBalancer plugin) {
-        this.plugin = plugin;
+    public PluginMessageListener() {
         GsonBuilder builder = new GsonBuilder();
         builder.serializeNulls();
         builder.excludeFieldsWithoutExposeAnnotation();
@@ -32,6 +32,7 @@ public class PluginMessageListener implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
+        /*
         if (event.getTag().equals("PlayerBalancer") && event.getSender() instanceof Server) {
             ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
             String request = in.readUTF();
@@ -40,7 +41,7 @@ public class PluginMessageListener implements Listener {
                 case "Connect": {
                     if (event.getReceiver() instanceof ProxiedPlayer) {
                         ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
-                        ServerSection section = plugin.getSectionManager().getByName(in.readUTF());
+                        ServerSection section = holder.getByName(in.readUTF());
 
                         if (section == null) {
                             return;
@@ -57,7 +58,7 @@ public class PluginMessageListener implements Listener {
                         return;
                     }
 
-                    ServerSection section = plugin.getSectionManager().getByName(in.readUTF());
+                    ServerSection section = holder.getByName(in.readUTF());
                     if (section == null) {
                         return;
                     }
@@ -70,7 +71,7 @@ public class PluginMessageListener implements Listener {
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     DataOutputStream out = new DataOutputStream(stream);
 
-                    ServerSection section = plugin.getSectionManager().getByName(in.readUTF());
+                    ServerSection section = holder.getByName(in.readUTF());
                     if (section == null) {
                         return;
                     }
@@ -95,7 +96,7 @@ public class PluginMessageListener implements Listener {
                         return;
                     }
 
-                    ServerSection section = plugin.getSectionManager().getByServer(server);
+                    ServerSection section = holder.getByServer(server);
                     if (section == null) {
                         return;
                     }
@@ -112,5 +113,6 @@ public class PluginMessageListener implements Listener {
                 }
             }
         }
+        */
     }
 }

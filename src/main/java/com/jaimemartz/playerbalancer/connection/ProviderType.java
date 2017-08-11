@@ -1,16 +1,7 @@
 package com.jaimemartz.playerbalancer.connection;
 
-import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.manager.NetworkManager;
-import com.jaimemartz.playerbalancer.ping.ServerStatus;
-import com.jaimemartz.playerbalancer.section.ServerSection;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-
 public enum ProviderType {
+    /*
     NONE {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
@@ -79,4 +70,5 @@ public enum ProviderType {
     };
 
     public abstract ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player);
+    */
 }

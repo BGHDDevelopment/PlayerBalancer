@@ -10,11 +10,11 @@
 - [ ] Add option to force joining a specific section
 - [x] Add tooltip when you hover over a server in /section info
 - [ ] Stop using inventivetalent's deprecated bungee-update
-- [ ] Create a spigot addon that adds connector signs and placeholders
-- [ ] Separate the types of connections in classes instead of being in ConnectionIntent
+- [] Create a spigot addon that adds connector signs and placeholders
+- [x] Separate the types of connections in classes instead of being in ConnectionIntent
 - [ ] Make the plugin API be not so dependent on a instance of PlayerBalancer
 - [ ] Separate connection providers in classes instead of being hardcoded in an enum
-- [ ] Make the feature `marker-descs` work per section
+- [x] Make the feature `marker-descs` work per section
 - [ ] Add a identifier to get the servers of a section (auto complete)
 - [ ] Implement fast connect (dimension change)
 - [ ] Implement a way to redirect premium players to a section and cracked ones to other section (not sure how this works)

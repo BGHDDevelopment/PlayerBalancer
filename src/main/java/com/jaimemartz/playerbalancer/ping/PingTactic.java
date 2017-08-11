@@ -1,11 +1,10 @@
 package com.jaimemartz.playerbalancer.ping;
 
-import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.settings.ConfigEntries;
 import com.jaimemartz.playerbalancer.utils.ServerListPing;
 import com.jaimemartz.playerbalancer.utils.ServerListPing.StatusResponse;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.IOException;
 
@@ -14,8 +13,7 @@ public enum PingTactic {
         ServerListPing utility = new ServerListPing();
 
         @Override
-        public void ping(ServerInfo server, Callback<ServerStatus> callback, PlayerBalancer plugin) {
-            utility.setTimeout(ConfigEntries.SERVER_CHECK_TIMEOUT.get());
+        public void ping(ServerInfo server, Callback<ServerStatus> callback, Plugin plugin) {
             plugin.getProxy().getScheduler().runAsync(plugin, () -> {
                 try {
                     StatusResponse response = utility.ping(server.getAddress());
@@ -33,7 +31,7 @@ public enum PingTactic {
 
     GENERIC {
         @Override
-        public void ping(ServerInfo server, Callback<ServerStatus> callback, PlayerBalancer plugin) {
+        public void ping(ServerInfo server, Callback<ServerStatus> callback, Plugin plugin) {
             try {
                 server.ping((ping, throwable) -> {
                     if (ping != null) {
@@ -53,5 +51,5 @@ public enum PingTactic {
         }
     };
 
-    public abstract void ping(ServerInfo server, Callback<ServerStatus> callback, PlayerBalancer plugin);
+    public abstract void ping(ServerInfo server, Callback<ServerStatus> callback, Plugin plugin);
 }

@@ -1,44 +1,36 @@
 package com.jaimemartz.playerbalancer.listener;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
-import com.jaimemartz.playerbalancer.manager.PlayerLocker;
-import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.settings.ConfigEntries;
-import com.jaimemartz.playerbalancer.utils.MessageUtils;
-import net.md_5.bungee.api.Callback;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import com.jaimemartz.playerbalancer.settings.Settings;
+import com.jaimemartz.playerbalancer.settings.types.SectionsHolder;
 import net.md_5.bungee.api.event.ServerKickEvent;
 import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import javax.inject.Inject;
 
 public class ServerKickListener implements Listener {
-    private final PlayerBalancer plugin;
+    @Inject
+    private Settings settings;
 
-    public ServerKickListener(PlayerBalancer plugin) {
-        this.plugin = plugin;
-    }
+    @Inject
+    private SectionsHolder holder;
+
+    @Inject
+    private PlayerBalancer plugin;
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onKick(ServerKickEvent event) {
+        /*
         ProxiedPlayer player = event.getPlayer();
         ServerInfo from = event.getKickedFrom();
 
         //Section the player is going to be reconnected
         Callable<ServerSection> callable = () -> {
             if (player.getServer() == null) {
-                if (ConfigEntries.RECONNECT_KICK_FORCE_PRINCIPAL.get()) {
-                    return plugin.getSectionManager().getPrincipal();
+                if (settings.getProperty(ReconnectorProperties.FORCE_PRINCIPAL)) {
+                    return holder.getPrincipal();
                 } else {
                     return null;
                 }
@@ -48,51 +40,52 @@ public class ServerKickListener implements Listener {
                 return null;
             }
 
-            ServerSection section = plugin.getSectionManager().getByServer(from);
+            ServerSection current = holder.getByServer(from);
 
-            if (section != null) {
-                if ((ConfigEntries.RECONNECT_KICK_IGNORED_SECTIONS.get()).contains(section.getName())) {
+            if (current != null) {
+                if (settings.getProperty(ReconnectorProperties.IGNORED_SECTIONS).contains(current.getName())) {
                     return null;
                 }
             }
 
             AtomicBoolean matches = new AtomicBoolean(false);
             String reason = TextComponent.toPlainText(event.getKickReasonComponent());
-            for (String string : ConfigEntries.RECONNECT_KICK_REASONS.get()) {
+
+            for (String string : settings.getProperty(ReconnectorProperties.REASONS)) {
                 if (reason.matches(string) || reason.contains(string)) {
                     matches.set(true);
                     break;
                 }
             }
 
-            if (ConfigEntries.RECONNECT_KICK_INVERTED.get()) {
+            if (settings.getProperty(ReconnectorProperties.INVERTED)) {
                 matches.set(!matches.get());
             }
 
-            if (ConfigEntries.RECONNECT_KICK_PRINT_INFO.get()) {
+            if (settings.getProperty(ReconnectorProperties.DEBUG)) {
                 plugin.getLogger().info(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches));
             }
 
             if (matches.get()) {
-                if (section != null) {
-                    Configuration rules = plugin.getConfigHandle().getSection("settings.reconnect-kick.rules");
-                    String name = rules.getString(section.getName());
-                    ServerSection target = plugin.getSectionManager().getByName(name);
+                if (current != null) {
+                    MapBean rules = settings.getProperty(CommandProperties.RULES);
+                    String bind = rules.getMap().get(current.getName());
+                    ServerSection target = holder.getByName(bind);
 
                     if (target == null) {
-                        target = section.getParent();
+                        target = current.getParent();
                     }
 
-                    if (ConfigEntries.RECONNECT_KICK_RESTRICTED.get()) {
-                        if (section.getPosition() >= 0 && target.getPosition() < 0) {
+                    if (settings.getProperty(ReconnectorProperties.RESTRICTED)) {
+                        if (current.getPosition() >= 0 && target.getPosition() < 0) {
                             return null;
                         }
                     }
 
                     return target;
                 } else {
-                    if (ConfigEntries.FALLBACK_PRINCIPAL_ENABLED.get()) {
-                        return plugin.getSectionManager().getPrincipal();
+                    if (settings.getProperty(GeneralProperties.FALLBACK_PRINCIPAL)) {
+                        return holder.getPrincipal();
                     }
                 }
             }
@@ -129,5 +122,6 @@ public class ServerKickListener implements Listener {
         } catch (Exception e) {
             //Nothing to do
         }
+        */
     }
 }

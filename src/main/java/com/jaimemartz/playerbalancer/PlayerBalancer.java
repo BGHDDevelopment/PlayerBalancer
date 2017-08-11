@@ -1,45 +1,26 @@
 package com.jaimemartz.playerbalancer;
 
-import ch.jalu.configme.SettingsManager;
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
-import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
-import com.jaimemartz.playerbalancer.commands.ManageCommand;
-import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
-import com.jaimemartz.playerbalancer.listener.*;
-import com.jaimemartz.playerbalancer.manager.PasteHelper;
-import com.jaimemartz.playerbalancer.manager.PlayerLocker;
-import com.jaimemartz.playerbalancer.ping.StatusManager;
-import com.jaimemartz.playerbalancer.section.SectionManager;
-import com.jaimemartz.playerbalancer.settings.beans.SectionHandler;
+import com.jaimemartz.playerbalancer.settings.Settings;
+import com.jaimemartz.playerbalancer.settings.beans.SectionsHandler;
 import com.jaimemartz.playerbalancer.settings.provider.SectionHandlerProvider;
 import com.jaimemartz.playerbalancer.settings.provider.SettingsProvider;
-import com.jaimemartz.playerbalancer.settings.types.CheckerProperties;
-import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
-import com.jaimemartz.playerbalancer.settings.types.GeneralProperties;
-import com.jaimemartz.playerbalancer.settings.types.ReconnectorProperties;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.bstats.bungeecord.Metrics;
-import org.bstats.bungeecord.Metrics.SingleLineChart;
-import org.inventivetalent.update.bungee.BungeeUpdater;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.stream.Stream;
 
 public class PlayerBalancer extends Plugin {
     @Getter private boolean failed = false;
 
     //Private instances
     private Injector injector;
-    private SettingsManager settings;
-    private StatusManager statusManager;
-    private SectionManager sectionManager;
+    private Settings settings;
+    private SectionsHandler handler;
 
     private Command fallbackCommand, mainCommand, manageCommand;
     private Listener connectListener, kickListener, messageListener, reloadListener;
@@ -52,13 +33,16 @@ public class PlayerBalancer extends Plugin {
 
         injector.register(PlayerBalancer.class, this);
         injector.register(ProxyServer.class, this.getProxy());
-        injector.registerProvider(SettingsManager.class, SettingsProvider.class);
-        injector.registerProvider(SectionHandler.class, SectionHandlerProvider.class);
-        settings = injector.getSingleton(SettingsManager.class);
+
+        injector.registerProvider(Settings.class, SettingsProvider.class);
+        injector.registerProvider(SectionsHandler.class, SectionHandlerProvider.class);
+
+        settings = injector.getSingleton(Settings.class);
+        handler = injector.getSingleton(SectionsHandler.class);
 
         Metrics metrics = new Metrics(this);
         if (this.enable()) {
-            metrics.addCustomChart(new SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
+            //metrics.addCustomChart(new SingleLineChart("configured_sections", () -> handler.getSections().size()));
         }
     }
 
@@ -66,6 +50,7 @@ public class PlayerBalancer extends Plugin {
         mainCommand = new MainCommand(this);
         getProxy().getPluginManager().registerCommand(this, mainCommand);
 
+        /*
         if (settings.getProperty(GeneralProperties.ENABLED)) {
             if (settings.getProperty(GeneralProperties.SILENT)) {
                 getLogger().setLevel(Level.WARNING);
@@ -93,7 +78,7 @@ public class PlayerBalancer extends Plugin {
                 }
 
                 if (settings.getProperty(CommandProperties.ENABLED)) {
-                    fallbackCommand = injector.newInstance(FallbackCommand.class);
+                    fallbackCommand = injector.getSingleton(FallbackCommand.class);
                     getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
 
@@ -130,6 +115,7 @@ public class PlayerBalancer extends Plugin {
             getLogger().warning("Nothing is going to work until you do that, you can reload me by using the /balancer command");
             getLogger().warning("-----------------------------------------------------");
         }
+        */
         return false;
     }
 
@@ -142,6 +128,7 @@ public class PlayerBalancer extends Plugin {
         getProxy().getPluginManager().unregisterCommand(mainCommand);
         mainCommand = null;
 
+        /*
         if (settings.getProperty(GeneralProperties.ENABLED)) {
             //Do not try to do anything if the plugin has not loaded correctly
             if (isFailed()) return;
@@ -183,6 +170,7 @@ public class PlayerBalancer extends Plugin {
 
         PlayerLocker.flush();
         failed = false;
+        */
     }
 
     public boolean reloadPlugin() {

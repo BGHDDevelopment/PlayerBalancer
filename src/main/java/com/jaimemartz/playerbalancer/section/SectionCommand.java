@@ -1,14 +1,7 @@
 package com.jaimemartz.playerbalancer.section;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
-import com.jaimemartz.playerbalancer.settings.ConfigEntries;
-import com.jaimemartz.playerbalancer.utils.MessageUtils;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 import java.util.List;
@@ -26,6 +19,7 @@ public class SectionCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        /*
         if (sender instanceof ProxiedPlayer) {
             ProxiedPlayer player = (ProxiedPlayer) sender;
             //todo share this code with the fallback command instead of having it duplicated
@@ -54,5 +48,6 @@ public class SectionCommand extends Command {
         } else {
             sender.sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());
         }
+        */
     }
 }

@@ -1,17 +1,14 @@
 package com.jaimemartz.playerbalancer.manager;
 
-import com.imaginarycode.minecraft.redisbungee.RedisBungee;
-import com.jaimemartz.playerbalancer.settings.ConfigEntries;
 import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class NetworkManager {
     public static Set<UUID> getPlayers(ServerInfo server) {
-        if (ConfigEntries.REDIS_BUNGEE_ENABLED.get()) {
+        /*
+        if (settings.getProperty(GeneralProperties.REDIS_BUNGEE)) { //TODO false for now
             try {
                 return RedisBungee.getApi().getPlayersOnServer(server.getName());
             } catch (Exception e) {
@@ -20,5 +17,8 @@ public class NetworkManager {
         }
 
         return server.getPlayers().stream().map(ProxiedPlayer::getUniqueId).collect(Collectors.toSet());
+        */
+
+        return null;
     }
 }

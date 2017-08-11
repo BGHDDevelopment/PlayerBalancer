@@ -1,13 +1,10 @@
 package com.jaimemartz.playerbalancer.ping;
 
-import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class StatusManager {
     private boolean stopped = true;
@@ -15,6 +12,7 @@ public class StatusManager {
     private ScheduledTask task;
     private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
 
+    /*
     public void start(PlayerBalancer plugin) {
         if (task != null) {
             stop();
@@ -76,4 +74,5 @@ public class StatusManager {
             return status;
         }
     }
+    */
 }

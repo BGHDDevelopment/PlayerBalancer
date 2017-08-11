@@ -1,18 +1,18 @@
 package com.jaimemartz.playerbalancer.settings.provider;
 
-import ch.jalu.configme.SettingsManager;
-import com.jaimemartz.playerbalancer.settings.beans.SectionHandler;
-import com.jaimemartz.playerbalancer.settings.types.SectionsHolder;
+import com.jaimemartz.playerbalancer.settings.Settings;
+import com.jaimemartz.playerbalancer.settings.beans.SectionsHandler;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class SectionHandlerProvider implements Provider<SectionHandler> {
+public class SectionHandlerProvider implements Provider<SectionsHandler> {
     @Inject
-    private SettingsManager settings;
+    private Settings settings;
 
     @Override
-    public SectionHandler get() {
-        return settings.getProperty(SectionsHolder.SECTION_HOLDER);
+    public SectionsHandler get() {
+        return new SectionsHandler();
+        //return settings.getProperty(SectionsHolder.MAP);
     }
 }
