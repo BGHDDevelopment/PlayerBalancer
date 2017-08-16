@@ -3,7 +3,6 @@ package com.jaimemartz.playerbalancer.commands;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.settings.Settings;
-import com.jaimemartz.playerbalancer.settings.beans.SectionsHandler;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -12,9 +11,6 @@ import javax.inject.Inject;
 public class ManageCommand extends Command {
     @Inject
     private PlayerBalancer plugin;
-
-    @Inject
-    private SectionsHandler holder;
 
     @Inject
     private StatusManager checker;

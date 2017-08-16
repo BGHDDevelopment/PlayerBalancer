@@ -1,6 +1,5 @@
 package com.jaimemartz.playerbalancer.commands;
 
-import com.google.common.collect.Iterables;
 import com.jaimemartz.playerbalancer.settings.Settings;
 import com.jaimemartz.playerbalancer.settings.types.CommandProperties;
 import com.jaimemartz.playerbalancer.settings.types.SectionsHolder;
@@ -21,7 +20,7 @@ public class FallbackCommand extends Command {
         super(
                 settings.getProperty(CommandProperties.COMMAND).getName(),
                 settings.getProperty(CommandProperties.COMMAND).getPermission(),
-                Iterables.toArray(settings.getProperty(CommandProperties.COMMAND).getAliases(), String.class)
+                settings.getProperty(CommandProperties.COMMAND).getAliases()
         );
     }
 

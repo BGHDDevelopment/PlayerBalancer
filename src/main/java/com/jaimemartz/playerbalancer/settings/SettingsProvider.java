@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.settings.provider;
+package com.jaimemartz.playerbalancer.settings;
 
 import ch.jalu.configme.configurationdata.ConfigurationData;
 import ch.jalu.configme.configurationdata.ConfigurationDataBuilder;
@@ -6,7 +6,6 @@ import ch.jalu.configme.migration.PlainMigrationService;
 import ch.jalu.configme.resource.PropertyResource;
 import ch.jalu.configme.resource.YamlFileResource;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.settings.Settings;
 import com.jaimemartz.playerbalancer.settings.types.*;
 
 import javax.inject.Inject;

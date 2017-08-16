@@ -2,11 +2,8 @@ package com.jaimemartz.playerbalancer;
 
 import ch.jalu.injector.Injector;
 import ch.jalu.injector.InjectorBuilder;
-import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.settings.Settings;
-import com.jaimemartz.playerbalancer.settings.beans.SectionsHandler;
-import com.jaimemartz.playerbalancer.settings.provider.SectionHandlerProvider;
-import com.jaimemartz.playerbalancer.settings.provider.SettingsProvider;
+import com.jaimemartz.playerbalancer.settings.SettingsProvider;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
@@ -20,7 +17,6 @@ public class PlayerBalancer extends Plugin {
     //Private instances
     private Injector injector;
     private Settings settings;
-    private SectionsHandler handler;
 
     private Command fallbackCommand, mainCommand, manageCommand;
     private Listener connectListener, kickListener, messageListener, reloadListener;
@@ -35,29 +31,28 @@ public class PlayerBalancer extends Plugin {
         injector.register(ProxyServer.class, this.getProxy());
 
         injector.registerProvider(Settings.class, SettingsProvider.class);
-        injector.registerProvider(SectionsHandler.class, SectionHandlerProvider.class);
 
         settings = injector.getSingleton(Settings.class);
-        handler = injector.getSingleton(SectionsHandler.class);
 
         Metrics metrics = new Metrics(this);
+
         if (this.enable()) {
-            //metrics.addCustomChart(new SingleLineChart("configured_sections", () -> handler.getSections().size()));
+            //metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections", () -> s.size()));
         }
     }
 
     private boolean enable() {
+        /*
         mainCommand = new MainCommand(this);
         getProxy().getPluginManager().registerCommand(this, mainCommand);
 
-        /*
         if (settings.getProperty(GeneralProperties.ENABLED)) {
             if (settings.getProperty(GeneralProperties.SILENT)) {
                 getLogger().setLevel(Level.WARNING);
             }
 
             if (settings.getProperty(GeneralProperties.AUTO_RELOAD)) {
-                reloadListener = new ProxyReloadListener(this);
+                reloadListener = injector.getSingleton(ProxyReloadListener.class);
                 getProxy().getPluginManager().registerListener(this, reloadListener);
             }
 
@@ -82,23 +77,23 @@ public class PlayerBalancer extends Plugin {
                     getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
 
-                connectListener = new ServerConnectListener(this);
+                connectListener = injector.getSingleton(ServerConnectListener.class);
                 getProxy().getPluginManager().registerListener(this, connectListener);
 
-                messageListener = new PluginMessageListener(this);
+                messageListener = injector.getSingleton(PluginMessageListener.class);
                 getProxy().getPluginManager().registerListener(this, messageListener);
 
-                manageCommand = new ManageCommand(this);
+                manageCommand = injector.getSingleton(ManageCommand.class);
                 getProxy().getPluginManager().registerCommand(this, manageCommand);
 
-                getProxy().getPluginManager().registerListener(this, new PlayerDisconnectListener(this));
+                getProxy().getPluginManager().registerListener(this, injector.getSingleton(PlayerDisconnectListener.class));
 
                 getProxy().registerChannel("PlayerBalancer");
 
                 Stream.of(PasteHelper.values()).forEach(a -> a.setUrl(null));
 
                 if (settings.getProperty(ReconnectorProperties.ENABLED)) {
-                    kickListener = new ServerKickListener(this);
+                    kickListener = injector.getSingleton(ServerKickListener.class);
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
 
@@ -125,10 +120,10 @@ public class PlayerBalancer extends Plugin {
     }
 
     private void disable() {
+        /*
         getProxy().getPluginManager().unregisterCommand(mainCommand);
         mainCommand = null;
 
-        /*
         if (settings.getProperty(GeneralProperties.ENABLED)) {
             //Do not try to do anything if the plugin has not loaded correctly
             if (isFailed()) return;

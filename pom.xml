@@ -68,6 +68,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
@@ -81,6 +82,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
         <resources>
             <resource>
@@ -100,7 +102,7 @@
         <dependency>
             <groupId>ch.jalu</groupId>
             <artifactId>configme</artifactId>
-            <version>0.4</version>
+            <version>0.6-SNAPSHOT</version>
             <scope>compile</scope>
             <exclusions>
                 <!-- This is already shaded in BungeeCord -->
@@ -114,7 +116,7 @@
         <dependency>
             <groupId>ch.jalu</groupId>
             <artifactId>injector</artifactId>
-            <version>0.4</version>
+            <version>0.5-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 

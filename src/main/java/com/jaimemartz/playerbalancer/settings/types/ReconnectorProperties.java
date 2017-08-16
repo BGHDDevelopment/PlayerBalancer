@@ -3,10 +3,11 @@ package com.jaimemartz.playerbalancer.settings.types;
 import ch.jalu.configme.SettingsHolder;
 import ch.jalu.configme.properties.Property;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-import static ch.jalu.configme.properties.PropertyInitializer.newListProperty;
-import static ch.jalu.configme.properties.PropertyInitializer.newProperty;
+import static ch.jalu.configme.properties.PropertyInitializer.*;
 
 public class ReconnectorProperties implements SettingsHolder {
     public static final Property<Boolean> ENABLED = newProperty("settings.reconnect-kick.enabled", true);
@@ -21,11 +22,9 @@ public class ReconnectorProperties implements SettingsHolder {
 
     public static final Property<Boolean> FORCE_PRINCIPAL = newProperty("settings.reconnect-kick.force-principal", false);
 
-    /*
-    public static final Property<MapBean> RULES = newBeanProperty(MapBean.class, "settings.reconnect-kick",
-            new MapBean(ImmutableMap.of("section-from", "section-to"))
+    public static final Property<Map<String, String>> RULES = newStringKeyMapProperty(String.class, "settings.reconnect-kick.rules",
+            Collections.emptyMap()//ImmutableMap.of("section-from", "section-to")
     );
-    */
 
     public static final Property<Boolean> DEBUG = newProperty("settings.reconnect-kick.debug", false);
 }

@@ -1,7 +1,15 @@
 package com.jaimemartz.playerbalancer.connection;
 
+import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.jaimemartz.playerbalancer.manager.NetworkManager;
+import com.jaimemartz.playerbalancer.section.ServerSection;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 public enum ProviderType {
-    /*
     NONE {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
@@ -38,6 +46,7 @@ public enum ProviderType {
     PROGRESSIVE {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
+            /*
             for (ServerInfo server : list) {
                 ServerStatus status = plugin.getStatusManager().getStatus(server);
                 if (NetworkManager.getPlayers(server).size() < status.getMaximum()) {
@@ -46,12 +55,15 @@ public enum ProviderType {
             }
 
             return list.get(ThreadLocalRandom.current().nextInt(list.size()));
+            */
+            return null;
         }
     },
 
     FILLER {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
+            /*
             int max = Integer.MIN_VALUE;
             ServerInfo target = null;
 
@@ -66,9 +78,10 @@ public enum ProviderType {
             }
 
             return target;
+            */
+            return null;
         }
     };
 
     public abstract ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player);
-    */
 }
