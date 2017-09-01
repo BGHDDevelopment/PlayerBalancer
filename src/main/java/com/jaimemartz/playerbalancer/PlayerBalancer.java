@@ -14,7 +14,6 @@ import org.bstats.bungeecord.Metrics;
 public class PlayerBalancer extends Plugin {
     @Getter private boolean failed = false;
 
-    //Private instances
     private Injector injector;
     private Settings settings;
 
