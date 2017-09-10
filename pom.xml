@@ -68,21 +68,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>1.13</version>
-                <executions>
-                    <execution>
-                        <id>download-licenses</id>
-                        <goals>
-                            <goal>download-licenses</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
         <resources>
             <resource>
@@ -98,59 +83,30 @@
             <version>1.11-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>ch.jalu</groupId>
-            <artifactId>configme</artifactId>
-            <version>0.6-SNAPSHOT</version>
-            <scope>compile</scope>
-            <exclusions>
-                <!-- This is already shaded in BungeeCord -->
-                <exclusion>
-                    <groupId>org.yaml</groupId>
-                    <artifactId>snakeyaml</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.jalu</groupId>
-            <artifactId>injector</artifactId>
-            <version>0.5-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- TODO Replace with HTTP call to Spigot's API -->
         <dependency>
             <groupId>org.inventivetalent.update</groupId>
             <artifactId>bungee</artifactId>
             <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
-
-        <!-- TODO Replace with our own alternative to "RedisBungee" (maybe) -->
         <dependency>
             <groupId>com.imaginarycode.minecraft</groupId>
             <artifactId>RedisBungee</artifactId>
             <version>0.3.8-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-
-
+        <dependency>
+            <groupId>ninja.leaping.configurate</groupId>
+            <artifactId>configurate-hocon</artifactId>
+            <version>3.3</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bungeecord</artifactId>
             <version>1.2</version>
             <scope>compile</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.16</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

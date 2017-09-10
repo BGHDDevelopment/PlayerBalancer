@@ -1,7 +1,7 @@
 package com.jaimemartz.playerbalancer.connection;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.manager.NetworkManager;
+import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -24,7 +24,7 @@ public enum ProviderType {
             ServerInfo target = null;
 
             for (ServerInfo server : list) {
-                int count = NetworkManager.getPlayers(server).size();
+                int count = plugin.getNetworkManager().getPlayers(server);
 
                 if (count < min) {
                     min = count;
@@ -46,30 +46,26 @@ public enum ProviderType {
     PROGRESSIVE {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
-            /*
             for (ServerInfo server : list) {
                 ServerStatus status = plugin.getStatusManager().getStatus(server);
-                if (NetworkManager.getPlayers(server).size() < status.getMaximum()) {
+                if (plugin.getNetworkManager().getPlayers(server) < status.getMaximum()) {
                     return server;
                 }
             }
 
             return list.get(ThreadLocalRandom.current().nextInt(list.size()));
-            */
-            return null;
         }
     },
 
     FILLER {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
-            /*
             int max = Integer.MIN_VALUE;
             ServerInfo target = null;
 
             for (ServerInfo server : list) {
                 ServerStatus status = plugin.getStatusManager().getStatus(server);
-                int count = NetworkManager.getPlayers(server).size();
+                int count = plugin.getNetworkManager().getPlayers(server);
 
                 if (count > max && count <= status.getMaximum()) {
                     max = count;
@@ -78,8 +74,6 @@ public enum ProviderType {
             }
 
             return target;
-            */
-            return null;
         }
     };
 

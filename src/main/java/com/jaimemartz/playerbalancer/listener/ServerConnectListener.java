@@ -1,22 +1,20 @@
 package com.jaimemartz.playerbalancer.listener;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.settings.Settings;
-import com.jaimemartz.playerbalancer.settings.types.SectionsHolder;
+import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
+import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
+import com.jaimemartz.playerbalancer.manager.PlayerLocker;
+import com.jaimemartz.playerbalancer.section.ServerSection;
+import com.jaimemartz.playerbalancer.utils.MessageUtils;
+import net.md_5.bungee.api.Callback;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import javax.inject.Inject;
-
 public class ServerConnectListener implements Listener {
-    @Inject
-    private Settings settings;
-
-    @Inject
-    private SectionsHolder holder;
-
     private final PlayerBalancer plugin;
 
     public ServerConnectListener(PlayerBalancer plugin) {
@@ -25,59 +23,53 @@ public class ServerConnectListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onConnect(ServerConnectEvent event) {
-        /*
         ProxiedPlayer player = event.getPlayer();
         ServerInfo target = event.getTarget();
 
-        Callable<ServerSection> callable = () -> {
-            ServerSection section = holder.getByServer(target);
+        ServerSection section = getSection(player, target);
+        if (section != null) {
+            new ConnectionIntent(plugin, player, section) {
+                @Override
+                public void connect(ServerInfo server, Callback<Boolean> callback) {
+                    if (plugin.getSettings().getGeneralProps().isAssignTargets()) {
+                        ServerAssignRegistry.assignTarget(player, section, server);
+                    }
 
-            if (section != null) {
-                if (PlayerLocker.isLocked(player)) {
+                    event.setTarget(server);
+                    callback.done(true, null);
+                }
+            };
+        }
+    }
+
+    private ServerSection getSection(ProxiedPlayer player, ServerInfo target) {
+        ServerSection section = plugin.getSectionManager().getByServer(target);
+
+        if (section != null) {
+            if (PlayerLocker.isLocked(player)) {
+                return null;
+            }
+
+            //Checks only for servers (not the section server)
+            if (section.getMappedServers().contains(target)) {
+                if (section.getProps().isDummy()) {
                     return null;
                 }
 
-                //Checks only for servers (not the section server)
-                if (section.getServers().contains(target)) {
-                    if (section.isDummy()) {
-                        return null;
-                    }
+                if (player.hasPermission("playerbalancer.bypass")) {
+                    MessageUtils.send(player, plugin.getSettings().getMessagesProps().getBypassMessage());
+                    return null;
+                }
 
-                    if (player.hasPermission("playerbalancer.bypass")) {
-                        MessageUtils.send(player, settings.getProperty(MessageProperties.PLAYER_BYPASS));
-                        return null;
+                if (player.getServer() != null && section.getMappedServers().contains(player.getServer().getInfo())) {
+                    if (plugin.getSettings().getGeneralProps().isAssignTargets()) {
+                        ServerAssignRegistry.assignTarget(player, section, target);
                     }
-
-                    if (player.getServer() != null && section.getServers().contains(player.getServer().getInfo())) {
-                        if (settings.getProperty(GeneralProperties.ASSIGN_TARGETS)) {
-                            ServerAssignRegistry.assignTarget(player, section, target);
-                        }
-                        return null;
-                    }
+                    return null;
                 }
             }
-
-            return section;
-        };
-
-        try {
-            ServerSection section = callable.call();
-            if (section != null) {
-                new ConnectionIntent(plugin, player, section) {
-                    @Override
-                    public void connect(ServerInfo server, Callback<Boolean> callback) {
-                        if (settings.getProperty(GeneralProperties.ASSIGN_TARGETS)) {
-                            ServerAssignRegistry.assignTarget(player, section, server);
-                        }
-
-                        event.setTarget(server);
-                        callback.done(true, null);
-                    }
-                };
-            }
-        } catch (Exception e) {
-            //Nothing to do
         }
-        */
+
+        return section;
     }
 }

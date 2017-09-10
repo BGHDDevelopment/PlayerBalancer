@@ -1,53 +1,35 @@
 package com.jaimemartz.playerbalancer.section;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.jaimemartz.playerbalancer.connection.ProviderType;
+import com.jaimemartz.playerbalancer.settings.shared.SectionProps;
+import net.md_5.bungee.api.config.ServerInfo;
 
-@Getter
-@Setter
+import java.util.List;
+
 public class ServerSection {
-    /*
-    @Getter(AccessLevel.NONE)
-    private final PlayerBalancer plugin;
+    private final String name;
+    private int position;
 
-    private Configuration configuration;
+    private final SectionProps props;
+
+    private boolean inherited = false;
+    private ServerSection parent;
+
+    private ServerInfo server;
+    private SectionCommand command;
+
+    private List<ServerInfo> mappedServers;
     private List<ServerInfo> sortedServers;
-    @Expose private final String name;
-    @Expose private boolean principal;
-    @Expose private int position;
-    @Expose private boolean dummy;
-    @Expose private ServerSection parent;
-    @Expose private boolean inherited = false;
-    @Expose private List<ServerInfo> servers;
-    @Expose private ProviderType provider;
-    @Expose private ServerInfo server;
-    @Expose private SectionCommand command;
-    @Expose private boolean valid = false; //todo delete this, not necessary
 
-    public ServerSection(PlayerBalancer plugin, String name, Configuration configuration) {
-        this.plugin = plugin;
-        this.name = name;
-        this.configuration = configuration;
-        this.servers = new ArrayList<>();
-    }
+    private boolean valid = false;
 
-    public ServerSection(PlayerBalancer plugin, String name, boolean principal, int position, boolean dummy, ServerSection parent, boolean inherited, List<ServerInfo> servers, ProviderType provider, ServerInfo server, SectionCommand command, boolean valid) {
-        this.plugin = plugin;
-        this.configuration = null;
+    public ServerSection(String name, SectionProps props) {
         this.name = name;
-        this.principal = principal;
-        this.position = position;
-        this.dummy = dummy;
-        this.parent = parent;
-        this.inherited = inherited;
-        this.servers = servers;
-        this.provider = provider;
-        this.server = server;
-        this.command = command;
-        this.valid = valid;
+        this.props = props;
     }
 
     public void preInit() {
+        /*
         checkInit();
 
         if (configuration == null) {
@@ -98,12 +80,11 @@ public class ServerSection {
         } else {
             throw new IllegalArgumentException(String.format("The section \"%s\" does not have any servers set", name));
         }
-
+        */
     }
 
     public void load() {
-        checkInit();
-
+        /*
         if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
@@ -123,49 +104,17 @@ public class ServerSection {
                 throw new IllegalArgumentException(String.format("The principal section \"%s\" does not have a provider set", name));
             }
         }
+        */
     }
 
     public void postInit() {
-        checkInit();
-
+        /*
         if (configuration == null) {
             throw new IllegalStateException("Tried to call an init method with null configuration section");
         }
 
-        Callable<Integer> callable = () -> {
-            //Calculate above principal
-            int iterations = 0;
-            ServerSection current = this;
-            while (current != null) {
-                if (current.isPrincipal()) {
-                    return iterations;
-                }
-
-                current = current.getParent();
-                iterations++;
-            }
-
-            //Calculate below principal
-            ServerSection principal = plugin.getSectionManager().getPrincipal();
-            if (principal != null) {
-                iterations = 0;
-                current = principal;
-                while (current != null) {
-                    if (current.equals(this)) {
-                        return iterations;
-                    }
-
-                    current = current.getParent();
-                    iterations--;
-                }
-            }
-
-            //Calculated iterations above parents
-            return iterations;
-        };
-
         try {
-            position = callable.call();
+            position = calculatePosition();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -211,11 +160,87 @@ public class ServerSection {
         sortedServers.sort(new AlphanumComparator());
 
         valid = true;
+        */
     }
 
-    private void checkInit() {
-        if (!valid) return;
-        throw new IllegalStateException("Tried to init a section that is already valid");
+    public String getName() {
+        return name;
     }
-    */
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public SectionProps getProps() {
+        return props;
+    }
+
+    public boolean isInherited() {
+        return inherited;
+    }
+
+    public void setInherited(boolean inherited) {
+        this.inherited = inherited;
+    }
+
+    public ServerSection getParent() {
+        return parent;
+    }
+
+    public void setParent(ServerSection parent) {
+        this.parent = parent;
+    }
+
+    public ProviderType getEffectiveProvider() {
+        return inherited ? parent.getEffectiveProvider() : props.getProvider();
+    }
+
+    public void setProvider(ProviderType provider) {
+        props.setProvider(provider);
+        inherited = false;
+    }
+
+    public ServerInfo getServer() {
+        return server;
+    }
+
+    public void setServer(ServerInfo server) {
+        this.server = server;
+    }
+
+    public SectionCommand getCommand() {
+        return command;
+    }
+
+    public void setCommand(SectionCommand command) {
+        this.command = command;
+    }
+
+    public List<ServerInfo> getMappedServers() {
+        return mappedServers;
+    }
+
+    public void setMappedServers(List<ServerInfo> mappedServers) {
+        this.mappedServers = mappedServers;
+    }
+
+    public List<ServerInfo> getSortedServers() {
+        return sortedServers;
+    }
+
+    public void setSortedServers(List<ServerInfo> sortedServers) {
+        this.sortedServers = sortedServers;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 }

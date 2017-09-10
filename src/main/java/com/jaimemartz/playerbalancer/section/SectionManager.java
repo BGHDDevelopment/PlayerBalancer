@@ -1,12 +1,25 @@
 package com.jaimemartz.playerbalancer.section;
 
+import com.jaimemartz.playerbalancer.PlayerBalancer;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 public class SectionManager {
-    /*
-    private ScheduledTask updateTask;
     private final PlayerBalancer plugin;
-    @Getter @Setter private ServerSection principal;
-    @Getter private final Map<String, ServerSection> sections = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    @Getter private final Map<ServerInfo, ServerSection> servers = new HashMap<>();
+    private ScheduledTask updateTask;
+    private ServerSection principal;
+
+    private final Map<String, ServerSection> sections = new TreeMap<>(
+            String.CASE_INSENSITIVE_ORDER
+    );
+
+    private final Map<ServerInfo, ServerSection> servers = new HashMap<>();
 
     public SectionManager(PlayerBalancer plugin) {
         this.plugin = plugin;
@@ -16,13 +29,10 @@ public class SectionManager {
         plugin.getLogger().info("Loading sections from the config, this may take a while...");
         long starting = System.currentTimeMillis();
 
-        Configuration sections = plugin.getConfigHandle().getSection("sections");
-
-        sections.getKeys().forEach(name -> {
+        plugin.getSettings().getSections().forEach((name, prop) -> {
             plugin.getLogger().info(String.format("Construction of section with name \"%s\"", name));
-            Configuration section = sections.getSection(name);
-            ServerSection object = new ServerSection(plugin, name, section);
-            this.sections.put(name, object);
+            ServerSection object = new ServerSection(name, prop);
+            sections.put(name, object);
         });
 
         this.sections.forEach((name, section) -> {
@@ -40,6 +50,7 @@ public class SectionManager {
             section.postInit();
         });
 
+        /*
         //todo unify loading code with SectionManager
         if (ConfigEntries.SERVERS_UPDATE.get()) {
             updateTask = plugin.getProxy().getScheduler().schedule(plugin, () -> {
@@ -60,6 +71,7 @@ public class SectionManager {
                 });
             }, 1, 1, TimeUnit.MINUTES);
         }
+        */
 
         long ending = System.currentTimeMillis() - starting;
         plugin.getLogger().info(String.format("A total of %s section(s) have been loaded in %sms", this.sections.size(), ending));
@@ -92,7 +104,7 @@ public class SectionManager {
 
     public void register(ServerInfo server, ServerSection section) {
         if (servers.containsKey(server)) {
-            if (section.isDummy()) {
+            if (section.getProps().isDummy()) {
                 return;
             }
 
@@ -134,5 +146,49 @@ public class SectionManager {
 
         return getByServer(server.getInfo());
     }
-    */
+
+    public ServerSection getPrincipal() {
+        return principal;
+    }
+
+    /**
+     * Calculates the position of a section in relation to other sections
+     * This is supposed to be called on section construction
+     * @param section the section we want to get the position of
+     * @param principal the principal section
+     * @return the position of {@param section}
+     */
+    private int calculatePosition(ServerSection section, ServerSection principal) {
+        //Calculate above principal
+        int iterations = 0;
+        ServerSection current = section;
+        while (current != null) {
+            if (current.getProps().isPrincipal()) {
+                return iterations;
+            }
+
+            current = current.getParent();
+            iterations++;
+        }
+
+        //Calculate below principal
+        if (principal != null) {
+            iterations = 0;
+            current = principal;
+            while (current != null) {
+                if (current.equals(section)) {
+                    return iterations;
+                }
+
+                current = current.getParent();
+                iterations--;
+            }
+        }
+
+        return iterations;
+    }
+
+    public Map<String, ServerSection> getSections() {
+        return sections;
+    }
 }

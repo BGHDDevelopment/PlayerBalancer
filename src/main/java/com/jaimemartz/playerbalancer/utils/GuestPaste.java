@@ -1,8 +1,5 @@
 package com.jaimemartz.playerbalancer.utils;
 
-import lombok.Data;
-import lombok.Getter;
-
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -14,7 +11,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.LinkedList;
 import java.util.List;
 
-@Data
 public final class GuestPaste {
     private final String key;
     private final String code;
@@ -105,10 +101,13 @@ public final class GuestPaste {
         SIX_MONTHS("6M"),
         ONE_YEAR("1Y");
 
-        @Getter
         private final String value;
         Expiration(String value) {
             this.value = value;
+        }
+
+        public String getValue() {
+            return value;
         }
     }
 
@@ -117,10 +116,13 @@ public final class GuestPaste {
         UNLISTED(1),
         PRIVATE(2);
 
-        @Getter
         private final int value;
         Exposure(int value) {
             this.value = value;
+        }
+
+        public int getValue() {
+            return value;
         }
     }
 
@@ -128,5 +130,45 @@ public final class GuestPaste {
         public PasteException(String response) {
             super(response);
         }
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public Expiration getExpiration() {
+        return expiration;
+    }
+
+    public void setExpiration(Expiration expiration) {
+        this.expiration = expiration;
+    }
+
+    public Exposure getExposure() {
+        return exposure;
+    }
+
+    public void setExposure(Exposure exposure) {
+        this.exposure = exposure;
     }
 }

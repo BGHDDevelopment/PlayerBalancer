@@ -1,24 +1,25 @@
 package com.jaimemartz.playerbalancer.manager;
 
+import com.imaginarycode.minecraft.redisbungee.RedisBungee;
+import com.jaimemartz.playerbalancer.PlayerBalancer;
 import net.md_5.bungee.api.config.ServerInfo;
 
-import java.util.Set;
-import java.util.UUID;
-
 public class NetworkManager {
-    public static Set<UUID> getPlayers(ServerInfo server) {
-        /*
-        if (settings.getProperty(GeneralProperties.REDIS_BUNGEE)) { //TODO false for now
+    private final PlayerBalancer plugin;
+
+    public NetworkManager(PlayerBalancer plugin) {
+        this.plugin = plugin;
+    }
+
+    public int getPlayers(ServerInfo server) {
+        if (plugin.getSettings().getGeneralProps().isRedisBungee()) {
             try {
-                return RedisBungee.getApi().getPlayersOnServer(server.getName());
+                return RedisBungee.getApi().getPlayersOnServer(server.getName()).size();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        return server.getPlayers().stream().map(ProxiedPlayer::getUniqueId).collect(Collectors.toSet());
-        */
-
-        return null;
+        return server.getPlayers().size();
     }
 }

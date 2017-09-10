@@ -4,8 +4,6 @@ import com.google.common.io.CharStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.utils.GuestPaste;
 import com.jaimemartz.playerbalancer.utils.GuestPaste.PasteException;
-import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -32,7 +30,7 @@ public enum PasteHelper {
     }) {
         @Override
         public URL paste(PlayerBalancer plugin) throws Exception {
-            File file = new File(plugin.getDataFolder(), "config.yml");
+            File file = new File(plugin.getDataFolder(), "plugin.conf");
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
                     String content = CharStreams.toString(reader);
@@ -46,7 +44,7 @@ public enum PasteHelper {
 
                     paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
                     paste.setExposure(GuestPaste.Exposure.UNLISTED);
-                    paste.setFormat("yaml");
+                    paste.setFormat("json");
 
                     return paste.paste();
                 }
@@ -89,10 +87,10 @@ public enum PasteHelper {
         }
     };
 
-    @Getter @Setter
     private URL url;
 
     private final BiConsumer<CommandSender, URL> consumer;
+
     PasteHelper(BiConsumer<CommandSender, URL> consumer) {
         this.consumer = consumer;
     }
@@ -128,5 +126,15 @@ public enum PasteHelper {
         }
     }
 
+    public URL getURL() {
+        return url;
+    }
+
     public abstract URL paste(PlayerBalancer plugin) throws Exception;
+
+    public static void reset() {
+        for (PasteHelper helper : values()) {
+            helper.url = null;
+        }
+    }
 }

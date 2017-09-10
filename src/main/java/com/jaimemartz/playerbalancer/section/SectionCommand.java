@@ -1,53 +1,26 @@
 package com.jaimemartz.playerbalancer.section;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.jaimemartz.playerbalancer.commands.FallbackCommand;
+import com.jaimemartz.playerbalancer.settings.shared.CommandProps;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.List;
+public class SectionCommand extends FallbackCommand {
+    protected final ServerSection section;
 
-public class SectionCommand extends Command {
-    private final PlayerBalancer plugin;
-    private final ServerSection section;
-
-    public SectionCommand(PlayerBalancer plugin, String name, String permission, List<String> aliases, ServerSection section) {
-        super(name, permission, aliases.toArray(new String[aliases.size()]));
-        this.plugin = plugin;
+    public SectionCommand(PlayerBalancer plugin, CommandProps props, ServerSection section) {
+        super(plugin, props);
         this.section = section;
-        plugin.getProxy().getPluginManager().registerCommand(plugin, this);
     }
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        /*
-        if (sender instanceof ProxiedPlayer) {
-            ProxiedPlayer player = (ProxiedPlayer) sender;
-            //todo share this code with the fallback command instead of having it duplicated
-            if (args.length == 1) {
-                try {
-                    int number = Integer.parseInt(args[0]);
-                    if (number <= 0) {
-                        MessageUtils.send(sender, ConfigEntries.INVALID_INPUT_MESSAGE.get());
-                    } else if (number > section.getServers().size()) {
-                        MessageUtils.send(sender, ConfigEntries.FAILURE_MESSAGE.get());
-                    } else {
-                        ServerInfo server = section.getSortedServers().get(number - 1);
-                        ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {});
-                    }
-                } catch (NumberFormatException e) {
-                    MessageUtils.send(sender, ConfigEntries.INVALID_INPUT_MESSAGE.get());
-                }
-            } else {
-                ServerSection current = plugin.getSectionManager().getByPlayer(player);
-                if (current != section) {
-                    ConnectionIntent.simple(plugin, player, section);
-                } else {
-                    MessageUtils.send(player, ConfigEntries.SAME_SECTION.get());
-                }
-            }
-        } else {
-            sender.sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());
-        }
-        */
+        super.execute(sender, args);
+    }
+
+    @Override
+    public ServerSection getSection(ProxiedPlayer player) {
+        return section;
     }
 }

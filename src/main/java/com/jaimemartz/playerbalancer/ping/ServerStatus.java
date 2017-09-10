@@ -1,8 +1,10 @@
 package com.jaimemartz.playerbalancer.ping;
 
+import com.jaimemartz.playerbalancer.PlayerBalancer;
 import lombok.Getter;
 import lombok.Setter;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class ServerStatus {
     @Getter private final String description;
@@ -23,19 +25,17 @@ public final class ServerStatus {
         this.maximum = maximum;
     }
 
-    //TODO improve this
-    public boolean isAccessible() {
+    //TODO improve this (set from the pinger if accessible or not)
+    public boolean isAccessible(PlayerBalancer plugin, ProxiedPlayer player) {
         if (maximum == 0) {
             return false;
         }
 
-        /*
-        for (String pattern : ConfigEntries.SERVER_CHECK_MARKER_DESCS.get()) {
+        for (String pattern : plugin.getSettings().getServerCheckerProps().getMarkerDescs()) {
             if (description.matches(pattern) || description.contains(pattern)) {
                 return false;
             }
         }
-        */
 
         return online < maximum;
     }
