@@ -44,7 +44,7 @@ public enum PasteHelper {
 
                     paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
                     paste.setExposure(GuestPaste.Exposure.UNLISTED);
-                    paste.setFormat("json");
+                    paste.setFormat("properties");
 
                     return paste.paste();
                 }

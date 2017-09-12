@@ -9,10 +9,10 @@ import java.util.List;
 @ConfigSerializable
 public class SectionProps {
     @Setting
-    private boolean principal; //move this to other place
+    private boolean principal; //TODO move this to other place
 
     @Setting
-    private boolean dummy; //move this to other place
+    private boolean dummy; //TODO move this to other place
 
     @Setting
     private ProviderType provider;

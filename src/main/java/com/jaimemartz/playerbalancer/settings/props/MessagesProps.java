@@ -1,9 +1,9 @@
 package com.jaimemartz.playerbalancer.settings.props;
 
 import ninja.leaping.configurate.objectmapping.Setting;
+import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
-import java.util.Optional;
-
+@ConfigSerializable
 public class MessagesProps {
     @Setting("connecting-server")
     private String connectingMessage;
@@ -32,7 +32,7 @@ public class MessagesProps {
     @Setting("same-section")
     private String sameSectionMessage;
 
-    public MessagesProps _defaults() {
+    public MessagesProps __defaults() {
         connectingMessage = "&aConnecting to a {section} server";
         connectedMessage = "&aConnected to {server}";
         failureMessage = "&cCould not find a server to get connected to";
@@ -45,72 +45,72 @@ public class MessagesProps {
         return this;
     }
 
-    public Optional<String> getConnectingMessage() {
-        return Optional.ofNullable(connectingMessage);
+    public String getConnectingMessage() {
+        return connectingMessage;
     }
 
     public void setConnectingMessage(String connectingMessage) {
         this.connectingMessage = connectingMessage;
     }
 
-    public Optional<String> getConnectedMessage() {
-        return Optional.ofNullable(connectedMessage);
+    public String getConnectedMessage() {
+        return connectedMessage;
     }
 
     public void setConnectedMessage(String connectedMessage) {
         this.connectedMessage = connectedMessage;
     }
 
-    public Optional<String> getFailureMessage() {
-        return Optional.ofNullable(failureMessage);
+    public String getFailureMessage() {
+        return failureMessage;
     }
 
     public void setFailureMessage(String failureMessage) {
         this.failureMessage = failureMessage;
     }
 
-    public Optional<String> getUnknownSectionMessage() {
-        return Optional.ofNullable(unknownSectionMessage);
+    public String getUnknownSectionMessage() {
+        return unknownSectionMessage;
     }
 
     public void setUnknownSectionMessage(String unknownSectionMessage) {
         this.unknownSectionMessage = unknownSectionMessage;
     }
 
-    public Optional<String> getInvalidInputMessage() {
-        return Optional.ofNullable(invalidInputMessage);
+    public String getInvalidInputMessage() {
+        return invalidInputMessage;
     }
 
     public void setInvalidInputMessage(String invalidInputMessage) {
         this.invalidInputMessage = invalidInputMessage;
     }
 
-    public Optional<String> getUnavailableServerMessage() {
-        return Optional.ofNullable(unavailableServerMessage);
+    public String getUnavailableServerMessage() {
+        return unavailableServerMessage;
     }
 
     public void setUnavailableServerMessage(String unavailableServerMessage) {
         this.unavailableServerMessage = unavailableServerMessage;
     }
 
-    public Optional<String> getKickMessage() {
-        return Optional.ofNullable(kickMessage);
+    public String getKickMessage() {
+        return kickMessage;
     }
 
     public void setKickMessage(String kickMessage) {
         this.kickMessage = kickMessage;
     }
 
-    public Optional<String> getBypassMessage() {
-        return Optional.ofNullable(bypassMessage);
+    public String getBypassMessage() {
+        return bypassMessage;
     }
 
     public void setBypassMessage(String bypassMessage) {
         this.bypassMessage = bypassMessage;
     }
 
-    public Optional<String> getSameSectionMessage() {
-        return Optional.ofNullable(sameSectionMessage);
+    public String getSameSectionMessage() {
+        return sameSectionMessage;
     }
 
     public void setSameSectionMessage(String sameSectionMessage) {

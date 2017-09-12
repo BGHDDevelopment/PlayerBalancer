@@ -67,7 +67,7 @@ public class FallbackCommandProps {
         this.rules = rules;
     }
 
-    public FallbackCommandProps _defaults() {
+    public FallbackCommandProps __defaults() {
         this.active = true;
         this.command = new CommandProps();
         command.setName("fallback");

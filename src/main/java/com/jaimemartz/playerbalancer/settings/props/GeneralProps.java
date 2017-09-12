@@ -82,7 +82,7 @@ public class GeneralProps {
         this.autoRefresh = autoRefresh;
     }
 
-    public GeneralProps _defaults() {
+    public GeneralProps __defaults() {
         this.active = false;
         this.silent = false;
         this.autoReload = true;

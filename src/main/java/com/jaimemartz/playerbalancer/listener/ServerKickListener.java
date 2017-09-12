@@ -4,6 +4,8 @@ import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.section.ServerSection;
+import com.jaimemartz.playerbalancer.settings.props.KickHandlerProps;
+import com.jaimemartz.playerbalancer.settings.props.MessagesProps;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -19,9 +21,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ServerKickListener implements Listener {
+    private final KickHandlerProps props;
     private final PlayerBalancer plugin;
+    private final MessagesProps messages;
 
     public ServerKickListener(PlayerBalancer plugin) {
+        this.props = plugin.getSettings().getKickHandlerProps();
+        this.messages = plugin.getSettings().getMessagesProps();
         this.plugin = plugin;
     }
 
@@ -30,35 +36,60 @@ public class ServerKickListener implements Listener {
         ProxiedPlayer player = event.getPlayer();
         ServerInfo from = event.getKickedFrom();
 
-        ServerSection section = getSection(player, from);
+        boolean matches = false;
+        String reason = TextComponent.toPlainText(event.getKickReasonComponent());
 
-        if (section != null) {
-            List<ServerInfo> servers = new ArrayList<>();
-            servers.addAll(section.getMappedServers());
-            servers.remove(from);
+        for (String string : props.getReasons()) {
+            if (reason.matches(string) || reason.contains(string)) { //todo improve this
+                matches = true;
+                break;
+            }
+        }
 
-            new ConnectionIntent(plugin, player, section, servers) {
-                @Override
-                public void connect(ServerInfo server, Callback<Boolean> callback) {
-                    PlayerLocker.lock(player);
-                    MessageUtils.send(player, plugin.getSettings().getMessagesProps().getKickMessage(),
-                            (str) -> str.replace("{from}", from.getName())
-                                    .replace("{to}", server.getName())
-                                    .replace("{reason}", event.getKickReason()));
-                    event.setCancelled(true);
-                    event.setCancelServer(server);
-                    plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                        PlayerLocker.unlock(player);
-                    }, 5, TimeUnit.SECONDS);
-                    callback.done(true, null);
-                }
-            };
+        if (props.isInverted()) {
+            matches = !matches;
+        }
+
+        if (props.isDebug()) {
+            plugin.getLogger().info(String.format("The player %s got kicked from %s, reason: %s. Matched reasons: %s",
+                    player.getName(),
+                    from.getName(),
+                    TextComponent.toPlainText(event.getKickReasonComponent()),
+                    matches
+            ));
+        }
+
+        if (matches) {
+            ServerSection section = getSection(player, from);
+
+            if (section != null) {
+                List<ServerInfo> servers = new ArrayList<>();
+                servers.addAll(section.getMappedServers());
+                servers.remove(from);
+
+                new ConnectionIntent(plugin, player, section, servers) {
+                    @Override
+                    public void connect(ServerInfo server, Callback<Boolean> callback) {
+                        PlayerLocker.lock(player);
+                        MessageUtils.send(player, messages.getKickMessage(), (str) ->
+                                str.replace("{from}", from.getName())
+                                        .replace("{to}", server.getName())
+                                        .replace("{reason}", event.getKickReason()));
+                        event.setCancelled(true);
+                        event.setCancelServer(server);
+                        plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                            PlayerLocker.unlock(player);
+                        }, 5, TimeUnit.SECONDS);
+                        callback.done(true, null);
+                    }
+                };
+            }
         }
     }
 
     private ServerSection getSection(ProxiedPlayer player, ServerInfo from) {
         if (player.getServer() == null) {
-            if (plugin.getSettings().getKickHandlerProps().isForcePrincipal()) {
+            if (props.isForcePrincipal()) {
                 return plugin.getSectionManager().getPrincipal();
             } else {
                 return null;
@@ -72,52 +103,32 @@ public class ServerKickListener implements Listener {
         ServerSection current = plugin.getSectionManager().getByServer(from);
 
         if (current != null) {
-            if (plugin.getSettings().getKickHandlerProps().getExcludedSections().contains(current.getName())) {
+            if (props.getExcludedSections().contains(current.getName())) {
                 return null;
             }
         }
 
-        boolean matches = false;
-        String reason = TextComponent.toPlainText(event.getKickReasonComponent());
+        if (current != null) {
+            ServerSection target = plugin.getSectionManager().getBind(props.getRules(), current)
+                    .orElse(current.getParent());
+            if (target == null) {
+                MessageUtils.send(player, messages.getUnavailableServerMessage());
+                return null;
+            }
 
-        for (String string : settings.getProperty(ReconnectorProperties.REASONS)) {
-            if (reason.matches(string) || reason.contains(string)) {
-                matches = true;
-                break;
+            if (props.isRestricted()) {
+                if (current.getPosition() >= 0 && target.getPosition() < 0) {
+                    return null;
+                }
+            }
+
+            return target;
+        } else {
+            if (plugin.getSettings().getGeneralProps().isFallbackPrincipal()) {
+                return plugin.getSectionManager().getPrincipal();
             }
         }
 
-        if (settings.getProperty(ReconnectorProperties.INVERTED)) {
-            matches.set(!matches.get());
-        }
-
-        if (settings.getProperty(ReconnectorProperties.DEBUG)) {
-            plugin.getLogger().info(String.format("Kick Reason: \"%s\", Found Match: %s", TextComponent.toPlainText(event.getKickReasonComponent()), matches));
-        }
-
-        if (matches.get()) {
-            if (current != null) {
-                MapBean rules = settings.getProperty(CommandProperties.RULES);
-                String bind = rules.getMap().get(current.getName());
-                ServerSection target = holder.getByName(bind);
-
-                if (target == null) {
-                    target = current.getParentName();
-                }
-
-                if (settings.getProperty(ReconnectorProperties.RESTRICTED)) {
-                    if (current.getPosition() >= 0 && target.getPosition() < 0) {
-                        return null;
-                    }
-                }
-
-                return target;
-            } else {
-                if (settings.getProperty(GeneralProperties.FALLBACK_PRINCIPAL)) {
-                    return holder.getPrincipal();
-                }
-            }
-        }
         return null;
     }
 }

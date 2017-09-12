@@ -28,12 +28,12 @@ public class MainSettings {
     @Setting
     private Map<String, SectionProps> sections;
 
-    public MainSettings _defaults() {
-        this.generalProps = new GeneralProps()._defaults();
-        this.serverCheckerProps = new ServerCheckerProps()._defaults();
-        this.kickHandlerProps = new KickHandlerProps()._defaults();
-        this.fallbackCommandProps = new FallbackCommandProps()._defaults();
-        this.messagesProps = new MessagesProps()._defaults();
+    public MainSettings __defaults() {
+        this.generalProps = new GeneralProps().__defaults();
+        this.serverCheckerProps = new ServerCheckerProps().__defaults();
+        this.kickHandlerProps = new KickHandlerProps().__defaults();
+        this.fallbackCommandProps = new FallbackCommandProps().__defaults();
+        this.messagesProps = new MessagesProps().__defaults();
         this.sections = new HashMap<>();
 
         SectionProps prop1 = new SectionProps();

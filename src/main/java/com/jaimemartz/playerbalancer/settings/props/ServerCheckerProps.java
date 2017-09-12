@@ -75,7 +75,7 @@ public class ServerCheckerProps {
         this.debug = debug;
     }
 
-    public ServerCheckerProps _defaults() {
+    public ServerCheckerProps __defaults() {
         this.active = true;
         this.tactic = PingTactic.CUSTOM;
         this.attempts = 5;

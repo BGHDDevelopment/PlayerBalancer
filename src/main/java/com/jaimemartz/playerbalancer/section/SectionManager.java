@@ -8,6 +8,7 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class SectionManager {
@@ -37,17 +38,17 @@ public class SectionManager {
 
         this.sections.forEach((name, section) -> {
             plugin.getLogger().info(String.format("Pre-Initialization of section with name \"%s\"", name));
-            section.preInit();
+            //section.preInit();
         });
 
         this.sections.forEach((name, section) -> {
             plugin.getLogger().info(String.format("Initialization of section with name \"%s\"", name));
-            section.load();
+            //section.load();
         });
 
         this.sections.forEach((name, section) -> {
             plugin.getLogger().info(String.format("Post-Initialization of section with name \"%s\"", name));
-            section.postInit();
+            //section.postInit();
         });
 
         /*
@@ -190,5 +191,9 @@ public class SectionManager {
 
     public Map<String, ServerSection> getSections() {
         return sections;
+    }
+
+    public Optional<ServerSection> getBind(Map<String, String> rules, ServerSection section) {
+        return Optional.ofNullable(getByName(rules.get(section.getName())));
     }
 }

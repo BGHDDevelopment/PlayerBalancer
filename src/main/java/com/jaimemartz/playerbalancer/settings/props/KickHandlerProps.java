@@ -99,7 +99,7 @@ public class KickHandlerProps {
         this.debug = debug;
     }
 
-    public KickHandlerProps _defaults() {
+    public KickHandlerProps __defaults() {
         this.active = true;
         this.inverted = true;
         this.reasons = Arrays.asList("Banned", "Hacks");

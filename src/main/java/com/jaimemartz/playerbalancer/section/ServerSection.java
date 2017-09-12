@@ -8,12 +8,11 @@ import java.util.List;
 
 public class ServerSection {
     private final String name;
-    private int position;
-
     private final SectionProps props;
 
     private boolean inherited = false;
     private ServerSection parent;
+    private int position;
 
     private ServerInfo server;
     private SectionCommand command;
@@ -26,141 +25,6 @@ public class ServerSection {
     public ServerSection(String name, SectionProps props) {
         this.name = name;
         this.props = props;
-    }
-
-    public void preInit() {
-        /*
-        checkInit();
-
-        if (configuration == null) {
-            throw new IllegalStateException("Tried to call an init method with null configuration section");
-        }
-
-        principal = configuration.getBoolean("principal", false);
-
-        if (principal) {
-            ServerSection section = plugin.getSectionManager().getPrincipal();
-            if (section != null) {
-                throw new IllegalStateException(String.format("The section \"%s\" is already principal", section.getName()));
-            } else {
-                plugin.getSectionManager().setPrincipal(this);
-            }
-        }
-
-        dummy = configuration.getBoolean("dummy", false);
-
-        if (configuration.contains("parent")) {
-            parent = plugin.getSectionManager().getByName(configuration.getString("parent"));
-
-            if (parent == null) {
-                throw new IllegalArgumentException(String.format("The section \"%s\" has an invalid parent set", name));
-            }
-        }
-
-        if (configuration.contains("servers")) {
-            configuration.getStringList("servers").forEach(entry -> {
-                Pattern pattern = Pattern.compile(entry);
-                AtomicBoolean matches = new AtomicBoolean(false);
-                plugin.getProxy().getServers().forEach((key, value) -> {
-                    Matcher matcher = pattern.matcher(key);
-                    if (matcher.matches()) {
-                        plugin.getLogger().info(String.format("Found a match with \"%s\" for entry \"%s\"", key, entry));
-                        servers.add(value);
-                        plugin.getSectionManager().register(value, this);
-                        matches.set(true);
-                    }
-                });
-
-                if (!matches.get()) {
-                    plugin.getLogger().warning(String.format("Could not match a server with the entry \"%s\"", entry));
-                }
-            });
-
-            plugin.getLogger().info(String.format("Recognized %s server(s) out of %s entries on the section \"%s\"", servers.size(), configuration.getStringList("servers").size(), this.name));
-        } else {
-            throw new IllegalArgumentException(String.format("The section \"%s\" does not have any servers set", name));
-        }
-        */
-    }
-
-    public void load() {
-        /*
-        if (configuration == null) {
-            throw new IllegalStateException("Tried to call an init method with null configuration section");
-        }
-
-        if (parent != null && parent.parent == this) {
-            throw new IllegalStateException(String.format("The sections \"%s\" and \"%s\" are parents of each other", this.name, parent.name));
-        }
-
-        if (configuration.contains("provider")) {
-            try {
-                provider = ProviderType.valueOf(configuration.getString("provider").toUpperCase());
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-            }
-        } else {
-            if (principal && parent == null) {
-                throw new IllegalArgumentException(String.format("The principal section \"%s\" does not have a provider set", name));
-            }
-        }
-        */
-    }
-
-    public void postInit() {
-        /*
-        if (configuration == null) {
-            throw new IllegalStateException("Tried to call an init method with null configuration section");
-        }
-
-        try {
-            position = calculatePosition();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (provider == null) {
-            ServerSection sect = this.parent;
-            if (sect != null) {
-                while (sect.provider == null) {
-                    sect = sect.parent;
-                }
-
-                plugin.getLogger().info(String.format("The section \"%s\" inherits the provider from the section \"%s\"", this.name, sect.name));
-                provider = sect.provider;
-                inherited = true;
-            }
-        }
-
-        if (provider == null) {
-            throw new IllegalStateException(String.format("The section \"%s\" does not have a provider", name));
-        }
-
-        if (configuration.contains("section-server")) {
-            int port = (int) Math.floor(Math.random() * (0xFFFF + 1)); //Get a random valid port for our fake server
-            server = plugin.getProxy().constructServerInfo("@" + configuration.getString("section-server"), new InetSocketAddress("0.0.0.0", port), String.format("Server of Section %s", name), false);
-            plugin.getSectionManager().register(server, this);
-            FixedAdapter.getFakeServers().put(server.getName(), server);
-            plugin.getProxy().getServers().put(server.getName(), server);
-        }
-
-        if (configuration.contains("section-command")) {
-            Configuration other = configuration.getSection("section-command");
-
-            String name = other.getString("name");
-            String permission = other.getString("permission");
-            List<String> aliases = other.getStringList("aliases");
-
-            command = new SectionCommand(plugin, name, permission, aliases, this);
-            plugin.getProxy().getPluginManager().registerCommand(plugin, command);
-        }
-
-        sortedServers = new ArrayList<>();
-        sortedServers.addAll(servers);
-        sortedServers.sort(new AlphanumComparator());
-
-        valid = true;
-        */
     }
 
     public String getName() {
@@ -242,5 +106,21 @@ public class ServerSection {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    @Override
+    public String toString() {
+        return "ServerSection{" +
+                "name='" + name + '\'' +
+                ", props=" + props +
+                ", inherited=" + inherited +
+                ", parent=" + parent +
+                ", position=" + position +
+                ", server=" + server +
+                ", command=" + command +
+                ", mappedServers=" + mappedServers +
+                ", sortedServers=" + sortedServers +
+                ", valid=" + valid +
+                '}';
     }
 }

@@ -1,15 +1,13 @@
 package com.jaimemartz.playerbalancer.ping;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import lombok.Getter;
-import lombok.Setter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class ServerStatus {
-    @Getter private final String description;
-    @Getter private final int online, maximum;
-    @Getter @Setter private boolean outdated = true;
+    private final String description;
+    private final int online, maximum;
+    private boolean outdated = true;
 
     public ServerStatus() {
         this("Server Unreachable", 0, 0);
@@ -38,5 +36,25 @@ public final class ServerStatus {
         }
 
         return online < maximum;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getOnline() {
+        return online;
+    }
+
+    public int getMaximum() {
+        return maximum;
+    }
+
+    public boolean isOutdated() {
+        return outdated;
+    }
+
+    public void setOutdated(boolean outdated) {
+        this.outdated = outdated;
     }
 }

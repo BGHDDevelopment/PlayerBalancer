@@ -15,19 +15,19 @@ public final class MessageUtils {
         }
     }
 
-    public static void send(CommandSender sender, String text, Function<String, String> after) {
+    public static void send(CommandSender sender, Optional<String> message) {
+        message.ifPresent(text -> send(sender, text));
+    }
+
+    public static void send(CommandSender sender, String text, Function<String, String> postProcess) {
         if (text != null) {
-            text = after.apply(text);
+            text = postProcess.apply(text);
         }
 
         send(sender, text);
     }
 
-    public static void send(CommandSender sender, Optional<String> message) {
-        message.ifPresent(text -> send(sender, text));
-    }
-
-    public static void send(CommandSender sender, Optional<String> message, Function<String, String> after) {
-        message.ifPresent(text -> send(sender, text, after));
+    public static void send(CommandSender sender, Optional<String> message, Function<String, String> postProcess) {
+        message.ifPresent(text -> send(sender, text, postProcess));
     }
 }

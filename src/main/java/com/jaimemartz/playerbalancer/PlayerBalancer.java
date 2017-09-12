@@ -11,9 +11,7 @@ import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
-import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.settings.MainSettings;
-import com.jaimemartz.playerbalancer.settings.serializers.SectionSerializer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -52,13 +50,12 @@ public class PlayerBalancer extends Plugin {
         if (!getDataFolder().exists())
             getDataFolder().mkdir();
 
-        File file = new File(getDataFolder(), "default.conf");
+        File file = new File(getDataFolder(), "plugin.conf");
 
         if (loader == null) {
             TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-            serializers.registerType(TypeToken.of(ServerSection.class), new SectionSerializer());
+            //serializers.registerType(TypeToken.of(ServerSection.class), new SectionSerializer());
             ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
-            //options.setMapFactory(MapFactories.insertionOrdered());
             loader = HoconConfigurationLoader.builder().setFile(file).setDefaultOptions(options).build();
         }
 
@@ -66,7 +63,7 @@ public class PlayerBalancer extends Plugin {
             CommentedConfigurationNode node = loader.load();
 
             if (!file.exists()) {
-                mainSettings = new MainSettings()._defaults();
+                mainSettings = new MainSettings().__defaults();
                 node.setValue(TypeToken.of(MainSettings.class), mainSettings);
                 loader.save(node);
             } else {

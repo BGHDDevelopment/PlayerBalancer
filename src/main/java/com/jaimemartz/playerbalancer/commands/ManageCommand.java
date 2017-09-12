@@ -52,7 +52,7 @@ public class ManageCommand extends Command {
                                 MessageUtils.send(sender, plugin.getSettings().getMessagesProps().getUnknownSectionMessage());
                             }
                         } else {
-                            sender.sendMessage(new ComponentBuilder("Usage: /balancer connect <section> [player]").color(ChatColor.RED).create());
+                            sender.sendMessage(new ComponentBuilder("Usage: /section connect <section> [player]").color(ChatColor.RED).create());
                         }
                         break;
                     }
@@ -204,7 +204,7 @@ public class ManageCommand extends Command {
                                 MessageUtils.send(sender, plugin.getSettings().getMessagesProps().getUnknownSectionMessage());
                             }
                         } else {
-                            sender.sendMessage(new ComponentBuilder("Usage: /balancer info <section>").color(ChatColor.RED).create());
+                            sender.sendMessage(new ComponentBuilder("Usage: /section info <section>").color(ChatColor.RED).create());
                         }
                         break;
                     }

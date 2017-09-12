@@ -3,7 +3,7 @@ package com.jaimemartz.playerbalancer.commands;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.settings.MainSettings;
+import com.jaimemartz.playerbalancer.settings.props.FallbackCommandProps;
 import com.jaimemartz.playerbalancer.settings.props.MessagesProps;
 import com.jaimemartz.playerbalancer.settings.shared.CommandProps;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
@@ -17,12 +17,12 @@ import net.md_5.bungee.api.plugin.Command;
 public class FallbackCommand extends Command {
     protected final PlayerBalancer plugin;
     protected final MessagesProps messages;
-    protected final MainSettings settings;
+    private final FallbackCommandProps props;
 
     public FallbackCommand(PlayerBalancer plugin, CommandProps props) {
         super(props.getName(), props.getPermission(), props.getAliasesArray());
-        this.settings = plugin.getSettings();
-        this.messages = settings.getMessagesProps();
+        this.props = plugin.getSettings().getFallbackCommandProps();
+        this.messages = plugin.getSettings().getMessagesProps();
         this.plugin = plugin;
     }
 
@@ -43,6 +43,7 @@ public class FallbackCommand extends Command {
                         } else {
                             ServerInfo server = target.getSortedServers().get(number - 1);
                             ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {
+                                //todo something missing
                             });
                         }
                     } catch (NumberFormatException e) {
@@ -61,24 +62,19 @@ public class FallbackCommand extends Command {
         ServerSection current = plugin.getSectionManager().getByPlayer(player);
 
         if (current != null) {
-            if (settings.getFallbackCommandProps().getExcludedSections().contains(current.getName())) {
+            if (props.getExcludedSections().contains(current.getName())) {
                 MessageUtils.send(player, messages.getUnavailableServerMessage());
                 return null;
             }
 
-            String bind = settings.getFallbackCommandProps().getRules().get(current.getName());
-            ServerSection target = plugin.getSectionManager().getByName(bind);
-
+            ServerSection target = plugin.getSectionManager().getBind(props.getRules(), current)
+                    .orElse(current.getParent());
             if (target == null) {
-                if (current.getParent() != null) {
-                    target = current.getParent();
-                } else {
-                    MessageUtils.send(player, messages.getUnavailableServerMessage());
-                    return null;
-                }
+                MessageUtils.send(player, messages.getUnavailableServerMessage());
+                return null;
             }
 
-            if (settings.getFallbackCommandProps().isRestrictive()) {
+            if (props.isRestrictive()) {
                 if (current.getPosition() >= 0 && target.getPosition() < 0) {
                     MessageUtils.send(player, messages.getUnavailableServerMessage());
                     return null;
@@ -87,7 +83,7 @@ public class FallbackCommand extends Command {
 
             return target;
         } else {
-            if (settings.getGeneralProps().isFallbackPrincipal()) {
+            if (plugin.getSettings().getGeneralProps().isFallbackPrincipal()) {
                 return plugin.getSectionManager().getPrincipal();
             }
         }
