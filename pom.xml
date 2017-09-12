@@ -37,6 +37,7 @@
     </repositories>
     <build>
         <defaultGoal>clean install</defaultGoal>
+        <finalName>${project.name}</finalName>
         <plugins>
             <plugin>
                 <version>3.3</version>
