@@ -103,6 +103,7 @@
             <scope>compile</scope>
             <exclusions>
                 <exclusion>
+                    <!-- Already shaded in bungee -->
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>

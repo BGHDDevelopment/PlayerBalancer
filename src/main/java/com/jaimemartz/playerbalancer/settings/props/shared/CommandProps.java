@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.settings.shared;
+package com.jaimemartz.playerbalancer.settings.props.shared;
 
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;

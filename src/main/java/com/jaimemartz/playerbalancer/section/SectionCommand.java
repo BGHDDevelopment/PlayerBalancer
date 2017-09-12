@@ -2,7 +2,7 @@ package com.jaimemartz.playerbalancer.section;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.commands.FallbackCommand;
-import com.jaimemartz.playerbalancer.settings.shared.CommandProps;
+import com.jaimemartz.playerbalancer.settings.props.shared.CommandProps;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

@@ -4,14 +4,13 @@ import com.google.common.reflect.TypeToken;
 import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
-import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
 import com.jaimemartz.playerbalancer.listener.*;
 import com.jaimemartz.playerbalancer.manager.NetworkManager;
 import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
-import com.jaimemartz.playerbalancer.settings.MainSettings;
+import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -31,7 +30,7 @@ import java.util.logging.Level;
 public class PlayerBalancer extends Plugin {
     private boolean failed = false;
     private StatusManager statusManager;
-    private MainSettings mainSettings;
+    private SettingsHolder mainSettings;
     private ConfigurationLoader<CommentedConfigurationNode> loader;
     private SectionManager sectionManager;
     private NetworkManager networkManager;
@@ -63,11 +62,11 @@ public class PlayerBalancer extends Plugin {
             CommentedConfigurationNode node = loader.load();
 
             if (!file.exists()) {
-                mainSettings = new MainSettings().__defaults();
-                node.setValue(TypeToken.of(MainSettings.class), mainSettings);
+                mainSettings = new SettingsHolder(); //.__defaults(); todo load defaults from default config
+                node.setValue(TypeToken.of(SettingsHolder.class), mainSettings);
                 loader.save(node);
             } else {
-                mainSettings = node.getValue(TypeToken.of(MainSettings.class));
+                mainSettings = node.getValue(TypeToken.of(SettingsHolder.class));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -76,7 +75,7 @@ public class PlayerBalancer extends Plugin {
         mainCommand = new MainCommand(this);
         getProxy().getPluginManager().registerCommand(this, mainCommand);
 
-        if (mainSettings.getGeneralProps().isActive()) {
+        if (mainSettings.getGeneralProps().isEnabled()) {
             if (mainSettings.getGeneralProps().isSilent()) {
                 getLogger().setLevel(Level.WARNING);
             }
@@ -99,11 +98,11 @@ public class PlayerBalancer extends Plugin {
                 sectionManager.load();
 
                 statusManager = new StatusManager(this);
-                if (mainSettings.getServerCheckerProps().isActive()) {
+                if (mainSettings.getServerCheckerProps().isEnabled()) {
                     statusManager.start();
                 }
 
-                if (mainSettings.getFallbackCommandProps().isActive()) {
+                if (mainSettings.getFallbackCommandProps().isEnabled()) {
                     fallbackCommand = new FallbackCommand(this, mainSettings.getFallbackCommandProps().getCommand());
                     getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
@@ -123,7 +122,7 @@ public class PlayerBalancer extends Plugin {
 
                 PasteHelper.reset();
 
-                if (mainSettings.getKickHandlerProps().isActive()) {
+                if (mainSettings.getKickHandlerProps().isEnabled()) {
                     kickListener = new ServerKickListener(this);
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
@@ -151,7 +150,7 @@ public class PlayerBalancer extends Plugin {
         getProxy().getPluginManager().unregisterCommand(mainCommand);
         mainCommand = null;
 
-        if (mainSettings.getGeneralProps().isActive()) {
+        if (mainSettings.getGeneralProps().isEnabled()) {
             //Do not try to do anything if the plugin has not loaded correctly
             if (failed) return;
 
@@ -160,13 +159,18 @@ public class PlayerBalancer extends Plugin {
                 reloadListener = null;
             }
 
-            if (mainSettings.getServerCheckerProps().isActive()) {
+            if (mainSettings.getServerCheckerProps().isEnabled()) {
                 statusManager.stop();
             }
 
-            if (mainSettings.getFallbackCommandProps().isActive()) {
+            if (mainSettings.getFallbackCommandProps().isEnabled()) {
                 getProxy().getPluginManager().unregisterCommand(fallbackCommand);
                 fallbackCommand = null;
+            }
+
+            if (mainSettings.getKickHandlerProps().isEnabled()) {
+                getProxy().getPluginManager().unregisterListener(kickListener);
+                kickListener = null;
             }
 
             getProxy().getPluginManager().unregisterListener(connectListener);
@@ -178,16 +182,13 @@ public class PlayerBalancer extends Plugin {
             getProxy().getPluginManager().unregisterCommand(manageCommand);
             manageCommand = null;
 
-            if (mainSettings.getKickHandlerProps().isActive()) {
-                getProxy().getPluginManager().unregisterListener(kickListener);
-                kickListener = null;
-            }
-
             sectionManager.flush();
 
+            /*
             if (mainSettings.getGeneralProps().isAssignTargets()) {
                 ServerAssignRegistry.getTable().clear();
             }
+            */
         }
 
         PlayerLocker.flush();
@@ -207,7 +208,7 @@ public class PlayerBalancer extends Plugin {
         return !failed;
     }
 
-    public MainSettings getSettings() {
+    public SettingsHolder getSettings() {
         return mainSettings;
     }
 

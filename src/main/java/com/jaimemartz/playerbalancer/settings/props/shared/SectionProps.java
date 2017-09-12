@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.settings.shared;
+package com.jaimemartz.playerbalancer.settings.props.shared;
 
 import com.jaimemartz.playerbalancer.connection.ProviderType;
 import ninja.leaping.configurate.objectmapping.Setting;
@@ -9,41 +9,19 @@ import java.util.List;
 @ConfigSerializable
 public class SectionProps {
     @Setting
-    private boolean principal; //TODO move this to other place
-
-    @Setting
-    private boolean dummy; //TODO move this to other place
-
-    @Setting
     private ProviderType provider;
 
-    @Setting("parent")
+    @Setting(value = "parent")
     private String parentName;
 
-    @Setting("servers")
+    @Setting(value = "servers")
     private List<String> serverEntries;
 
     @Setting
     private CommandProps command;
 
-    @Setting("server")
+    @Setting(value = "server")
     private String serverName;
-
-    public boolean isPrincipal() {
-        return principal;
-    }
-
-    public void setPrincipal(boolean principal) {
-        this.principal = principal;
-    }
-
-    public boolean isDummy() {
-        return dummy;
-    }
-
-    public void setDummy(boolean dummy) {
-        this.dummy = dummy;
-    }
 
     public ProviderType getProvider() {
         return provider;
@@ -88,9 +66,7 @@ public class SectionProps {
     @Override
     public String toString() {
         return "SectionProps{" +
-                "principal=" + principal +
-                ", dummy=" + dummy +
-                ", provider=" + provider +
+                "provider=" + provider +
                 ", parentName='" + parentName + '\'' +
                 ", serverEntries=" + serverEntries +
                 ", command=" + command +

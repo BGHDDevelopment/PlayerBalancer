@@ -1,24 +1,21 @@
-package com.jaimemartz.playerbalancer.settings.props;
+package com.jaimemartz.playerbalancer.settings.props.features;
 
-import com.google.common.collect.ImmutableMap;
-import com.jaimemartz.playerbalancer.settings.shared.CommandProps;
+import com.jaimemartz.playerbalancer.settings.props.shared.CommandProps;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @ConfigSerializable
 public class FallbackCommandProps {
     @Setting
-    private boolean active;
+    private boolean enabled;
 
     @Setting
     private CommandProps command;
 
-    @Setting("excluded-sections")
+    @Setting(value = "excluded-sections")
     private List<String> excludedSections;
 
     @Setting
@@ -27,12 +24,12 @@ public class FallbackCommandProps {
     @Setting
     private Map<String, String> rules;
 
-    public boolean isActive() {
-        return active;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public CommandProps getCommand() {
@@ -67,22 +64,10 @@ public class FallbackCommandProps {
         this.rules = rules;
     }
 
-    public FallbackCommandProps __defaults() {
-        this.active = true;
-        this.command = new CommandProps();
-        command.setName("fallback");
-        command.setPermission("");
-        command.setAliases(Arrays.asList("lobby", "hub", "back"));
-        this.excludedSections = Collections.emptyList();
-        this.restrictive = true;
-        this.rules = ImmutableMap.of("section-from", "section-to");
-        return this;
-    }
-
     @Override
     public String toString() {
         return "FallbackCommandProps{" +
-                "active=" + active +
+                "enabled=" + enabled +
                 ", command=" + command +
                 ", excludedSections=" + excludedSections +
                 ", restrictive=" + restrictive +

@@ -1,16 +1,15 @@
-package com.jaimemartz.playerbalancer.settings.props;
+package com.jaimemartz.playerbalancer.settings.props.features;
 
 import com.jaimemartz.playerbalancer.ping.PingTactic;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
-import java.util.Arrays;
 import java.util.List;
 
 @ConfigSerializable
 public class ServerCheckerProps {
     @Setting
-    private boolean active;
+    private boolean enabled;
 
     @Setting
     private PingTactic tactic;
@@ -27,12 +26,12 @@ public class ServerCheckerProps {
     @Setting(value = "debug-info")
     private boolean debug;
 
-    public boolean isActive() {
-        return active;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public PingTactic getTactic() {
@@ -73,27 +72,5 @@ public class ServerCheckerProps {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
-    }
-
-    public ServerCheckerProps __defaults() {
-        this.active = true;
-        this.tactic = PingTactic.CUSTOM;
-        this.attempts = 5;
-        this.interval = 10000;
-        this.markerDescs = Arrays.asList("Server is not accessible", "Gamemode has already started");
-        this.debug = false;
-        return this;
-    }
-
-    @Override
-    public String toString() {
-        return "ServerCheckerProps{" +
-                "active=" + active +
-                ", tactic=" + tactic +
-                ", attempts=" + attempts +
-                ", interval=" + interval +
-                ", markerDescs=" + markerDescs +
-                ", debug=" + debug +
-                '}';
     }
 }

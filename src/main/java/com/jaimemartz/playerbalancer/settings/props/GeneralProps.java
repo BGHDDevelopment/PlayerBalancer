@@ -6,7 +6,7 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 @ConfigSerializable
 public class GeneralProps {
     @Setting
-    private boolean active;
+    private boolean enabled;
 
     @Setting
     private boolean silent;
@@ -17,21 +17,18 @@ public class GeneralProps {
     @Setting(value = "redis-bungee")
     private boolean redisBungee;
 
-    @Setting(value = "assign-targets")
-    private boolean assignTargets;
-
     @Setting(value = "fallback-principal")
     private boolean fallbackPrincipal;
 
     @Setting(value = "auto-refresh")
     private boolean autoRefresh;
 
-    public boolean isActive() {
-        return active;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public boolean isSilent() {
@@ -58,14 +55,6 @@ public class GeneralProps {
         this.redisBungee = redisBungee;
     }
 
-    public boolean isAssignTargets() {
-        return assignTargets;
-    }
-
-    public void setAssignTargets(boolean assignTargets) {
-        this.assignTargets = assignTargets;
-    }
-
     public boolean isFallbackPrincipal() {
         return fallbackPrincipal;
     }
@@ -82,25 +71,13 @@ public class GeneralProps {
         this.autoRefresh = autoRefresh;
     }
 
-    public GeneralProps __defaults() {
-        this.active = false;
-        this.silent = false;
-        this.autoReload = true;
-        this.redisBungee = false;
-        this.assignTargets = false;
-        this.fallbackPrincipal = true;
-        this.autoRefresh = false;
-        return this;
-    }
-
     @Override
     public String toString() {
         return "GeneralProps{" +
-                "active=" + active +
+                "enabled=" + enabled +
                 ", silent=" + silent +
                 ", autoReload=" + autoReload +
                 ", redisBungee=" + redisBungee +
-                ", assignTargets=" + assignTargets +
                 ", fallbackPrincipal=" + fallbackPrincipal +
                 ", autoRefresh=" + autoRefresh +
                 '}';

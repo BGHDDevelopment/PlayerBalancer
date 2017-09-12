@@ -1,7 +1,7 @@
 package com.jaimemartz.playerbalancer.section;
 
 import com.jaimemartz.playerbalancer.connection.ProviderType;
-import com.jaimemartz.playerbalancer.settings.shared.SectionProps;
+import com.jaimemartz.playerbalancer.settings.props.shared.SectionProps;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.List;

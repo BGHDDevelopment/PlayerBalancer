@@ -9,17 +9,13 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 public class SectionManager {
     private final PlayerBalancer plugin;
     private ScheduledTask updateTask;
     private ServerSection principal;
 
-    private final Map<String, ServerSection> sections = new TreeMap<>(
-            String.CASE_INSENSITIVE_ORDER
-    );
-
+    private final Map<String, ServerSection> sections = new HashMap<>();
     private final Map<ServerInfo, ServerSection> servers = new HashMap<>();
 
     public SectionManager(PlayerBalancer plugin) {
@@ -36,46 +32,15 @@ public class SectionManager {
             sections.put(name, object);
         });
 
-        this.sections.forEach((name, section) -> {
-            plugin.getLogger().info(String.format("Pre-Initialization of section with name \"%s\"", name));
-            //section.preInit();
-        });
+        //todo validate principal section
+        //todo validate dummy sections
 
-        this.sections.forEach((name, section) -> {
-            plugin.getLogger().info(String.format("Initialization of section with name \"%s\"", name));
-            //section.load();
+        sections.forEach((name, section) -> {
+            //load section
         });
-
-        this.sections.forEach((name, section) -> {
-            plugin.getLogger().info(String.format("Post-Initialization of section with name \"%s\"", name));
-            //section.postInit();
-        });
-
-        /*
-        //todo unify loading code with SectionManager
-        if (ConfigEntries.SERVERS_UPDATE.get()) {
-            updateTask = plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                this.sections.forEach((name, section) -> {
-                    section.getConfiguration().getStringList("servers").forEach(entry -> {
-                        Pattern pattern = Pattern.compile(entry);
-                        plugin.getProxy().getServers().forEach((key, value) -> {
-                            Matcher matcher = pattern.matcher(key);
-                            if (matcher.matches()) {
-                                if (!section.getServers().contains(value)) {
-                                    plugin.getLogger().info(String.format("Found a new match with \"%s\" for entry \"%s\"", key, entry));
-                                    this.register(value, section);
-                                    section.getServers().add(value);
-                                }
-                            }
-                        });
-                    });
-                });
-            }, 1, 1, TimeUnit.MINUTES);
-        }
-        */
 
         long ending = System.currentTimeMillis() - starting;
-        plugin.getLogger().info(String.format("A total of %s section(s) have been loaded in %sms", this.sections.size(), ending));
+        plugin.getLogger().info(String.format("A total of %s section(s) have been loaded in %sms", sections.size(), ending));
     }
 
     public void flush() {

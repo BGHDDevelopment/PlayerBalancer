@@ -1,18 +1,15 @@
-package com.jaimemartz.playerbalancer.settings.props;
+package com.jaimemartz.playerbalancer.settings.props.features;
 
-import com.google.common.collect.ImmutableMap;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 @ConfigSerializable
 public class KickHandlerProps {
     @Setting
-    private boolean active;
+    private boolean enabled;
 
     @Setting
     private boolean inverted;
@@ -35,12 +32,12 @@ public class KickHandlerProps {
     @Setting(value = "debug-info")
     private boolean debug;
 
-    public boolean isActive() {
-        return active;
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public boolean isInverted() {
@@ -99,22 +96,10 @@ public class KickHandlerProps {
         this.debug = debug;
     }
 
-    public KickHandlerProps __defaults() {
-        this.active = true;
-        this.inverted = true;
-        this.reasons = Arrays.asList("Banned", "Hacks");
-        this.excludedSections = Collections.emptyList();
-        this.restricted = true;
-        this.forcePrincipal = false; //maybe stop using this
-        this.rules = ImmutableMap.of("section-from", "section-to");
-        this.debug = false;
-        return this;
-    }
-
     @Override
     public String toString() {
         return "KickHandlerProps{" +
-                "active=" + active +
+                "enabled=" + enabled +
                 ", inverted=" + inverted +
                 ", reasons=" + reasons +
                 ", excludedSections=" + excludedSections +

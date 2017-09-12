@@ -5,45 +5,32 @@ import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
 @ConfigSerializable
 public class MessagesProps {
-    @Setting("connecting-server")
+    @Setting(value = "connecting-server")
     private String connectingMessage;
 
-    @Setting("connected-server")
+    @Setting(value = "connected-server")
     private String connectedMessage;
 
-    @Setting("misc-failure")
+    @Setting(value = "misc-failure")
     private String failureMessage;
 
-    @Setting("unknown-section")
+    @Setting(value = "unknown-section")
     private String unknownSectionMessage;
 
-    @Setting("invalid-input")
+    @Setting(value = "invalid-input")
     private String invalidInputMessage;
 
-    @Setting("unavailable-server")
+    @Setting(value = "unavailable-server")
     private String unavailableServerMessage;
 
-    @Setting("player-kicked")
+    @Setting(value = "player-kicked")
     private String kickMessage;
 
-    @Setting("player-bypass")
+    @Setting(value = "player-bypass")
     private String bypassMessage;
 
-    @Setting("same-section")
+    @Setting(value = "same-section")
     private String sameSectionMessage;
-
-    public MessagesProps __defaults() {
-        connectingMessage = "&aConnecting to a {section} server";
-        connectedMessage = "&aConnected to {server}";
-        failureMessage = "&cCould not find a server to get connected to";
-        unknownSectionMessage = "&aCould not find a section with that name";
-        invalidInputMessage = "&cThis is an invalid input type for this command";
-        unavailableServerMessage = "&cThis command cannot be executed on this server";
-        kickMessage = "&cYou have been kicked from &a{from} &cand you are being moved to &a{to}, reason: &a{reason}";
-        bypassMessage = "&cYou have not been moved because you have the playerbalancer.bypass permission";
-        sameSectionMessage = "&cYou are already connected to a server on this section!";
-        return this;
-    }
 
     public String getConnectingMessage() {
         return connectingMessage;
