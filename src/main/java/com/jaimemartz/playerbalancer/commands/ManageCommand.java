@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.ping.ServerStatus;
+import com.jaimemartz.playerbalancer.section.SectionManager;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.ChatColor;
@@ -60,7 +61,9 @@ public class ManageCommand extends Command {
                     case "info": {
                         if (args.length == 2) {
                             String input = args[1];
-                            ServerSection section = plugin.getSectionManager().getByName(input);
+                            SectionManager manager = plugin.getSectionManager();
+                            ServerSection section = manager.getByName(input);
+
                             if (section != null) {
                                 sender.sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
 
@@ -72,8 +75,8 @@ public class ManageCommand extends Command {
 
                                 sender.sendMessage(new ComponentBuilder("Principal: ")
                                         .color(ChatColor.GRAY)
-                                        .append(section.getProps().isPrincipal() ? "yes" : "no")
-                                        .color(section.getProps().isPrincipal() ? ChatColor.GREEN : ChatColor.RED)
+                                        .append(manager.isPrincipal(section) ? "yes" : "no")
+                                        .color(manager.isPrincipal(section) ? ChatColor.GREEN : ChatColor.RED)
                                         .create());
 
                                 if (section.getParent() != null) {
@@ -110,8 +113,8 @@ public class ManageCommand extends Command {
 
                                 sender.sendMessage(new ComponentBuilder("Dummy: ")
                                         .color(ChatColor.GRAY)
-                                        .append(section.getProps().isDummy() ? "yes" : "no")
-                                        .color(section.getProps().isDummy() ? ChatColor.GREEN : ChatColor.RED)
+                                        .append(manager.isDummy(section) ? "yes" : "no")
+                                        .color(manager.isDummy(section) ? ChatColor.GREEN : ChatColor.RED)
                                         .create()
                                 );
 

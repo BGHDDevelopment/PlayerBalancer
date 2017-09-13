@@ -7,7 +7,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class SectionCommand extends FallbackCommand {
-    protected final ServerSection section;
+    private final ServerSection section;
 
     public SectionCommand(PlayerBalancer plugin, CommandProps props, ServerSection section) {
         super(plugin, props);

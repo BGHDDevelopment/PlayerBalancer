@@ -21,9 +21,6 @@ public class PlayerDisconnectListener implements Listener {
         ProxiedPlayer player = event.getPlayer();
         PlayerLocker.unlock(player);
 
-        //Delete this if we want to keep assigned groups even when leaving
-        if (plugin.getSettings().getGeneralProps().isAssignTargets()) {
-            ServerAssignRegistry.clearAsssignedServers(player);
-        }
+        ServerAssignRegistry.clearAsssignedServers(player);
     }
 }

@@ -1,6 +1,7 @@
 package com.jaimemartz.playerbalancer.section;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.jaimemartz.playerbalancer.settings.props.features.BalancerProps;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -26,7 +27,7 @@ public class SectionManager {
         plugin.getLogger().info("Loading sections from the config, this may take a while...");
         long starting = System.currentTimeMillis();
 
-        plugin.getSettings().getSections().forEach((name, prop) -> {
+        plugin.getSettings().getBalancerProps().getSectionProps().forEach((name, prop) -> {
             plugin.getLogger().info(String.format("Construction of section with name \"%s\"", name));
             ServerSection object = new ServerSection(name, prop);
             sections.put(name, object);
@@ -70,7 +71,7 @@ public class SectionManager {
 
     public void register(ServerInfo server, ServerSection section) {
         if (servers.containsKey(server)) {
-            if (section.getProps().isDummy()) {
+            if (isDummy(section)) {
                 return;
             }
 
@@ -113,23 +114,18 @@ public class SectionManager {
         return getByServer(server.getInfo());
     }
 
-    public ServerSection getPrincipal() {
-        return principal;
-    }
-
     /**
      * Calculates the position of a section in relation to other sections
      * This is supposed to be called on section construction
      * @param section the section we want to get the position of
-     * @param principal the principal section
      * @return the position of {@param section}
      */
-    private int calculatePosition(ServerSection section, ServerSection principal) {
+    private int calculatePosition(ServerSection section) {
         //Calculate above principal
         int iterations = 0;
         ServerSection current = section;
         while (current != null) {
-            if (current.getProps().isPrincipal()) {
+            if (current == principal) {
                 return iterations;
             }
 
@@ -152,6 +148,24 @@ public class SectionManager {
         }
 
         return iterations;
+    }
+
+    public ServerSection getPrincipal() {
+        return principal;
+    }
+
+    public boolean isPrincipal(ServerSection section) {
+        return section.equals(principal);
+    }
+
+    public boolean isDummy(ServerSection section) {
+        BalancerProps props = plugin.getSettings().getBalancerProps();
+        return props.getDummySectionNames().contains(section.getName());
+    }
+
+    public boolean isReiterative(ServerSection section) {
+        BalancerProps props = plugin.getSettings().getBalancerProps();
+        return props.getReiterativeSectionNames().contains(section.getName());
     }
 
     public Map<String, ServerSection> getSections() {

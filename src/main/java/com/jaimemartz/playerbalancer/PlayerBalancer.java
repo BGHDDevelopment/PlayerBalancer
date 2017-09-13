@@ -25,6 +25,8 @@ import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.logging.Level;
 
 public class PlayerBalancer extends Plugin {
@@ -41,7 +43,6 @@ public class PlayerBalancer extends Plugin {
     public void onEnable() {
         Metrics metrics = new Metrics(this);
         metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
-
         this.enable();
     }
 
@@ -53,21 +54,21 @@ public class PlayerBalancer extends Plugin {
 
         if (loader == null) {
             TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-            //serializers.registerType(TypeToken.of(ServerSection.class), new SectionSerializer());
             ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
             loader = HoconConfigurationLoader.builder().setFile(file).setDefaultOptions(options).build();
         }
 
         try {
-            CommentedConfigurationNode node = loader.load();
-
             if (!file.exists()) {
-                mainSettings = new SettingsHolder(); //.__defaults(); todo load defaults from default config
-                node.setValue(TypeToken.of(SettingsHolder.class), mainSettings);
-                loader.save(node);
-            } else {
-                mainSettings = node.getValue(TypeToken.of(SettingsHolder.class));
+                try (InputStream in = getResourceAsStream("default.conf")) {
+                    Files.copy(in, file.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+
+            CommentedConfigurationNode node = loader.load();
+            mainSettings = node.getValue(TypeToken.of(SettingsHolder.class));
         } catch (Exception e) {
             e.printStackTrace();
         }

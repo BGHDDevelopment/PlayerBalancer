@@ -31,7 +31,7 @@ public class ServerConnectListener implements Listener {
             new ConnectionIntent(plugin, player, section) {
                 @Override
                 public void connect(ServerInfo server, Callback<Boolean> callback) {
-                    if (plugin.getSettings().getGeneralProps().isAssignTargets()) {
+                    if (plugin.getSectionManager().isReiterative(section)) {
                         ServerAssignRegistry.assignTarget(player, section, server);
                     }
 
@@ -52,7 +52,7 @@ public class ServerConnectListener implements Listener {
 
             //Checks only for servers (not the section server)
             if (section.getMappedServers().contains(target)) {
-                if (section.getProps().isDummy()) {
+                if (plugin.getSectionManager().isDummy(section)) {
                     return null;
                 }
 
@@ -62,7 +62,7 @@ public class ServerConnectListener implements Listener {
                 }
 
                 if (player.getServer() != null && section.getMappedServers().contains(player.getServer().getInfo())) {
-                    if (plugin.getSettings().getGeneralProps().isAssignTargets()) {
+                    if (plugin.getSectionManager().isReiterative(section)) {
                         ServerAssignRegistry.assignTarget(player, section, target);
                     }
                     return null;

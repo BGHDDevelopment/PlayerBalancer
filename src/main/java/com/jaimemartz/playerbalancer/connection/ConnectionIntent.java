@@ -69,7 +69,7 @@ public abstract class ConnectionIntent {
     }
 
     private ServerInfo fetchServer(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {
-        if (plugin.getSettings().getGeneralProps().isAssignTargets()) {
+        if (plugin.getSectionManager().isReiterative(section)) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
                 ServerStatus status = plugin.getStatusManager().getStatus(target);

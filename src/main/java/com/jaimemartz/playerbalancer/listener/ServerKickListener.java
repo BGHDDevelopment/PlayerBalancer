@@ -116,7 +116,7 @@ public class ServerKickListener implements Listener {
                 return null;
             }
 
-            if (props.isRestricted()) {
+            if (props.isRestrictive()) {
                 if (current.getPosition() >= 0 && target.getPosition() < 0) {
                     return null;
                 }

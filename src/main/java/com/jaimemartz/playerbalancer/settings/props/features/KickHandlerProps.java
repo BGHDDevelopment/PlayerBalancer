@@ -21,7 +21,7 @@ public class KickHandlerProps {
     private List<String> excludedSections;
 
     @Setting
-    private boolean restricted;
+    private boolean restrictive;
 
     @Setting(value = "force-principal")
     private boolean forcePrincipal;
@@ -64,12 +64,12 @@ public class KickHandlerProps {
         this.excludedSections = excludedSections;
     }
 
-    public boolean isRestricted() {
-        return restricted;
+    public boolean isRestrictive() {
+        return restrictive;
     }
 
-    public void setRestricted(boolean restricted) {
-        this.restricted = restricted;
+    public void setRestrictive(boolean restrictive) {
+        this.restrictive = restrictive;
     }
 
     public boolean isForcePrincipal() {
@@ -103,7 +103,7 @@ public class KickHandlerProps {
                 ", inverted=" + inverted +
                 ", reasons=" + reasons +
                 ", excludedSections=" + excludedSections +
-                ", restricted=" + restricted +
+                ", restrictive=" + restrictive +
                 ", forcePrincipal=" + forcePrincipal +
                 ", rules=" + rules +
                 ", debug=" + debug +
