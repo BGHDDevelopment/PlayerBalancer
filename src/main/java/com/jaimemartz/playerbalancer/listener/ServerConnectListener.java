@@ -51,7 +51,7 @@ public class ServerConnectListener implements Listener {
             }
 
             //Checks only for servers (not the section server)
-            if (section.getMappedServers().contains(target)) {
+            if (section.getServers().contains(target)) {
                 if (plugin.getSectionManager().isDummy(section)) {
                     return null;
                 }
@@ -61,7 +61,7 @@ public class ServerConnectListener implements Listener {
                     return null;
                 }
 
-                if (player.getServer() != null && section.getMappedServers().contains(player.getServer().getInfo())) {
+                if (player.getServer() != null && section.getServers().contains(player.getServer().getInfo())) {
                     if (plugin.getSectionManager().isReiterative(section)) {
                         ServerAssignRegistry.assignTarget(player, section, target);
                     }

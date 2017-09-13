@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 public class ServerKickListener implements Listener {
     private final KickHandlerProps props;
-    private final PlayerBalancer plugin;
     private final MessagesProps messages;
+    private final PlayerBalancer plugin;
 
     public ServerKickListener(PlayerBalancer plugin) {
         this.props = plugin.getSettings().getKickHandlerProps();
@@ -64,19 +64,19 @@ public class ServerKickListener implements Listener {
 
             if (section != null) {
                 List<ServerInfo> servers = new ArrayList<>();
-                servers.addAll(section.getMappedServers());
+                servers.addAll(section.getServers());
                 servers.remove(from);
 
                 new ConnectionIntent(plugin, player, section, servers) {
                     @Override
                     public void connect(ServerInfo server, Callback<Boolean> callback) {
                         PlayerLocker.lock(player);
-                        MessageUtils.send(player, messages.getKickMessage(), (str) ->
-                                str.replace("{from}", from.getName())
-                                        .replace("{to}", server.getName())
-                                        .replace("{reason}", event.getKickReason()));
                         event.setCancelled(true);
                         event.setCancelServer(server);
+                        MessageUtils.send(player, messages.getKickMessage(), (str) -> str
+                                .replace("{reason}", event.getKickReason())
+                                .replace("{from}", from.getName())
+                                .replace("{to}", server.getName()));
                         plugin.getProxy().getScheduler().schedule(plugin, () -> {
                             PlayerLocker.unlock(player);
                         }, 5, TimeUnit.SECONDS);

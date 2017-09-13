@@ -20,7 +20,7 @@ public class ServerCheckerProps {
     @Setting
     private int interval;
 
-    @Setting("marker-descs")
+    @Setting(value = "marker-descs")
     private List<String> markerDescs;
 
     @Setting(value = "debug-info")

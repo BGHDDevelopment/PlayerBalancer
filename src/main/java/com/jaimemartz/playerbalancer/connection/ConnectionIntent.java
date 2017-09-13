@@ -28,19 +28,19 @@ public abstract class ConnectionIntent {
                 (str) -> str.replace("{section}", section.getName())
         );
 
-        if (servers == section.getMappedServers()) {
+        if (servers == section.getServers()) {
             throw new IllegalStateException("The servers list parameter is the same reference, this cannot happen");
         }
 
         Server current = player.getServer();
         if (current != null) {
-            if (section.getMappedServers().contains(current.getInfo())) {
+            if (section.getServers().contains(current.getInfo())) {
                 MessageUtils.send(player, plugin.getSettings().getMessagesProps().getSameSectionMessage());
                 return;
             }
         }
 
-        if (section.getEffectiveProvider() != ProviderType.NONE) {
+        if (section.getImplicitProvider() != ProviderType.NONE) {
             ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
             if (target != null) {
                 this.connect(target, (response, throwable) -> {
@@ -57,15 +57,15 @@ public abstract class ConnectionIntent {
     }
 
     public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section) {
-        this(plugin, player, section.getEffectiveProvider(), section);
+        this(plugin, player, section.getImplicitProvider(), section);
     }
 
     public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ProviderType type, ServerSection section) {
-        this(plugin, player, type, section, new ArrayList<>(section.getMappedServers()));
+        this(plugin, player, type, section, new ArrayList<>(section.getServers()));
     }
 
     public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
-        this(plugin, player, section.getEffectiveProvider(), section, servers);
+        this(plugin, player, section.getImplicitProvider(), section, servers);
     }
 
     private ServerInfo fetchServer(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {

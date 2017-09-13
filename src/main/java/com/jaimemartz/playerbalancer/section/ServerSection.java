@@ -2,9 +2,12 @@ package com.jaimemartz.playerbalancer.section;
 
 import com.jaimemartz.playerbalancer.connection.ProviderType;
 import com.jaimemartz.playerbalancer.settings.props.shared.SectionProps;
+import com.jaimemartz.playerbalancer.utils.AlphanumComparator;
 import net.md_5.bungee.api.config.ServerInfo;
 
-import java.util.List;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class ServerSection {
     private final String name;
@@ -16,15 +19,16 @@ public class ServerSection {
 
     private ServerInfo server;
     private SectionCommand command;
-
-    private List<ServerInfo> mappedServers;
-    private List<ServerInfo> sortedServers;
+    private Set<ServerInfo> servers;
 
     private boolean valid = false;
 
     public ServerSection(String name, SectionProps props) {
         this.name = name;
         this.props = props;
+
+        AlphanumComparator<ServerInfo> comparator = new AlphanumComparator<>();
+        this.servers = Collections.synchronizedSortedSet(new TreeSet<>(comparator));
     }
 
     public String getName() {
@@ -59,11 +63,11 @@ public class ServerSection {
         this.parent = parent;
     }
 
-    public ProviderType getEffectiveProvider() {
-        return inherited ? parent.getEffectiveProvider() : props.getProvider();
+    public ProviderType getImplicitProvider() {
+        return inherited ? parent.getImplicitProvider() : props.getProvider();
     }
 
-    public void setProvider(ProviderType provider) {
+    public void setExplicitProvider(ProviderType provider) {
         props.setProvider(provider);
         inherited = false;
     }
@@ -84,20 +88,12 @@ public class ServerSection {
         this.command = command;
     }
 
-    public List<ServerInfo> getMappedServers() {
-        return mappedServers;
+    public void addServer(ServerInfo server) {
+        servers.add(server);
     }
 
-    public void setMappedServers(List<ServerInfo> mappedServers) {
-        this.mappedServers = mappedServers;
-    }
-
-    public List<ServerInfo> getSortedServers() {
-        return sortedServers;
-    }
-
-    public void setSortedServers(List<ServerInfo> sortedServers) {
-        this.sortedServers = sortedServers;
+    public Set<ServerInfo> getServers() {
+        return servers;
     }
 
     public boolean isValid() {
@@ -118,8 +114,7 @@ public class ServerSection {
                 ", position=" + position +
                 ", server=" + server +
                 ", command=" + command +
-                ", mappedServers=" + mappedServers +
-                ", sortedServers=" + sortedServers +
+                ", servers=" + servers +
                 ", valid=" + valid +
                 '}';
     }

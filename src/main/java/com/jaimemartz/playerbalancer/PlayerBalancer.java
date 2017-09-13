@@ -14,12 +14,9 @@ import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollection;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.bstats.bungeecord.Metrics;
 import org.inventivetalent.update.bungee.BungeeUpdater;
 
@@ -32,7 +29,7 @@ import java.util.logging.Level;
 public class PlayerBalancer extends Plugin {
     private boolean failed = false;
     private StatusManager statusManager;
-    private SettingsHolder mainSettings;
+    private SettingsHolder settings;
     private ConfigurationLoader<CommentedConfigurationNode> loader;
     private SectionManager sectionManager;
     private NetworkManager networkManager;
@@ -52,23 +49,21 @@ public class PlayerBalancer extends Plugin {
 
         File file = new File(getDataFolder(), "plugin.conf");
 
+        if (!file.exists()) {
+            try (InputStream in = getResourceAsStream("default.conf")) {
+                Files.copy(in, file.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         if (loader == null) {
-            TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-            ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
-            loader = HoconConfigurationLoader.builder().setFile(file).setDefaultOptions(options).build();
+            loader = HoconConfigurationLoader.builder().setFile(file).build();
         }
 
         try {
-            if (!file.exists()) {
-                try (InputStream in = getResourceAsStream("default.conf")) {
-                    Files.copy(in, file.toPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
             CommentedConfigurationNode node = loader.load();
-            mainSettings = node.getValue(TypeToken.of(SettingsHolder.class));
+            settings = node.getValue(TypeToken.of(SettingsHolder.class));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,12 +71,12 @@ public class PlayerBalancer extends Plugin {
         mainCommand = new MainCommand(this);
         getProxy().getPluginManager().registerCommand(this, mainCommand);
 
-        if (mainSettings.getGeneralProps().isEnabled()) {
-            if (mainSettings.getGeneralProps().isSilent()) {
+        if (settings.getGeneralProps().isEnabled()) {
+            if (settings.getGeneralProps().isSilent()) {
                 getLogger().setLevel(Level.WARNING);
             }
 
-            if (mainSettings.getGeneralProps().isAutoReload()) {
+            if (settings.getGeneralProps().isAutoReload()) {
                 reloadListener = new ProxyReloadListener(this);
                 getProxy().getPluginManager().registerListener(this, reloadListener);
             }
@@ -99,12 +94,12 @@ public class PlayerBalancer extends Plugin {
                 sectionManager.load();
 
                 statusManager = new StatusManager(this);
-                if (mainSettings.getServerCheckerProps().isEnabled()) {
+                if (settings.getServerCheckerProps().isEnabled()) {
                     statusManager.start();
                 }
 
-                if (mainSettings.getFallbackCommandProps().isEnabled()) {
-                    fallbackCommand = new FallbackCommand(this, mainSettings.getFallbackCommandProps().getCommand());
+                if (settings.getFallbackCommandProps().isEnabled()) {
+                    fallbackCommand = new FallbackCommand(this, settings.getFallbackCommandProps().getCommand());
                     getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
 
@@ -123,7 +118,7 @@ public class PlayerBalancer extends Plugin {
 
                 PasteHelper.reset();
 
-                if (mainSettings.getKickHandlerProps().isEnabled()) {
+                if (settings.getKickHandlerProps().isEnabled()) {
                     kickListener = new ServerKickListener(this);
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
@@ -151,25 +146,25 @@ public class PlayerBalancer extends Plugin {
         getProxy().getPluginManager().unregisterCommand(mainCommand);
         mainCommand = null;
 
-        if (mainSettings.getGeneralProps().isEnabled()) {
+        if (settings.getGeneralProps().isEnabled()) {
             //Do not try to do anything if the plugin has not loaded correctly
             if (failed) return;
 
-            if (mainSettings.getGeneralProps().isAutoReload()) {
+            if (settings.getGeneralProps().isAutoReload()) {
                 getProxy().getPluginManager().unregisterListener(reloadListener);
                 reloadListener = null;
             }
 
-            if (mainSettings.getServerCheckerProps().isEnabled()) {
+            if (settings.getServerCheckerProps().isEnabled()) {
                 statusManager.stop();
             }
 
-            if (mainSettings.getFallbackCommandProps().isEnabled()) {
+            if (settings.getFallbackCommandProps().isEnabled()) {
                 getProxy().getPluginManager().unregisterCommand(fallbackCommand);
                 fallbackCommand = null;
             }
 
-            if (mainSettings.getKickHandlerProps().isEnabled()) {
+            if (settings.getKickHandlerProps().isEnabled()) {
                 getProxy().getPluginManager().unregisterListener(kickListener);
                 kickListener = null;
             }
@@ -186,7 +181,7 @@ public class PlayerBalancer extends Plugin {
             sectionManager.flush();
 
             /*
-            if (mainSettings.getGeneralProps().isAssignTargets()) {
+            if (settings.getGeneralProps().isAssignTargets()) {
                 ServerAssignRegistry.getTable().clear();
             }
             */
@@ -210,7 +205,7 @@ public class PlayerBalancer extends Plugin {
     }
 
     public SettingsHolder getSettings() {
-        return mainSettings;
+        return settings;
     }
 
     public SectionManager getSectionManager() {

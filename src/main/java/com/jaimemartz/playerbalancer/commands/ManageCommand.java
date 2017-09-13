@@ -104,9 +104,9 @@ public class ManageCommand extends Command {
 
                                 sender.sendMessage(new ComponentBuilder("Provider: ")
                                         .color(ChatColor.GRAY)
-                                        .append(section.getEffectiveProvider().name())
+                                        .append(section.getImplicitProvider().name())
                                         .color(ChatColor.AQUA)
-                                        .append(String.format(" (%s)", section.isInherited() ? "Inherited" : "Specified"))
+                                        .append(String.format(" (%s)", section.isInherited() ? "Implicit" : "Explicit"))
                                         .color(ChatColor.GRAY)
                                         .create()
                                 );
@@ -160,13 +160,13 @@ public class ManageCommand extends Command {
                                     );
                                 }
 
-                                if (!section.getMappedServers().isEmpty()) {
+                                if (!section.getServers().isEmpty()) {
                                     sender.sendMessage(new ComponentBuilder("Section Servers: ")
                                             .color(ChatColor.GRAY)
                                             .create()
                                     );
 
-                                    section.getMappedServers().forEach(server -> {
+                                    section.getServers().forEach(server -> {
                                         ServerStatus status = plugin.getStatusManager().getStatus(server);
                                         sender.sendMessage(new ComponentBuilder("\u2022 Server: ")
                                                 .color(ChatColor.GRAY)

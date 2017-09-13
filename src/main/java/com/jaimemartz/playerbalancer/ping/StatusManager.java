@@ -34,7 +34,7 @@ public class StatusManager {
             storage.forEach((k, v) -> v.setOutdated(true));
 
             for (ServerSection section : plugin.getSectionManager().getSections().values()) {
-                for (ServerInfo server : section.getMappedServers()) {
+                for (ServerInfo server : section.getServers()) {
                     if (stopped) {
                         break;
                     }

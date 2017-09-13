@@ -14,6 +14,8 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
+import java.util.ArrayList;
+
 public class FallbackCommand extends Command {
     protected final PlayerBalancer plugin;
     protected final MessagesProps messages;
@@ -38,10 +40,10 @@ public class FallbackCommand extends Command {
                         int number = Integer.parseInt(args[0]);
                         if (number <= 0) {
                             MessageUtils.send(player, messages.getInvalidInputMessage());
-                        } else if (number > target.getMappedServers().size()) {
+                        } else if (number > target.getServers().size()) {
                             MessageUtils.send(player, messages.getFailureMessage());
                         } else {
-                            ServerInfo server = target.getSortedServers().get(number - 1);
+                            ServerInfo server = new ArrayList<>(target.getServers()).get(number - 1);
                             ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {
                                 //todo something missing
                             });
