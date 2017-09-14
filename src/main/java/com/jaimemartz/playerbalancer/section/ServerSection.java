@@ -69,6 +69,7 @@ public class ServerSection {
         } else {
             return props.getProvider();
         }
+
     }
 
     public ProviderType getExplicitProvider() {

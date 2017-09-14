@@ -15,14 +15,6 @@
 
     <repositories>
         <repository>
-            <id>bungee-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>md_5-snapshots</id>
-            <url>http://repo.md-5.net/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>inventive-repo</id>
             <url>https://repo.inventivetalent.org/content/groups/public/</url>
         </repository>
@@ -80,8 +72,8 @@
     <dependencies>
         <dependency>
             <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.11-SNAPSHOT</version>
+            <artifactId>bungeecord-proxy</artifactId>
+            <version>local</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

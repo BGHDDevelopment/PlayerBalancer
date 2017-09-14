@@ -24,7 +24,7 @@ public abstract class ConnectionIntent {
         this.player = player;
         this.section = section;
 
-        MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectedMessage(),
+        MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectingMessage(),
                 (str) -> str.replace("{section}", section.getName())
         );
 

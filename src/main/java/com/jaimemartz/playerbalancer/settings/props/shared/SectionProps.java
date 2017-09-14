@@ -17,10 +17,10 @@ public class SectionProps {
     @Setting(value = "servers")
     private List<String> serverEntries;
 
-    @Setting
+    @Setting(value = "section-command")
     private CommandProps command;
 
-    @Setting(value = "server")
+    @Setting(value = "section-server")
     private String serverName;
 
     public ProviderType getProvider() {

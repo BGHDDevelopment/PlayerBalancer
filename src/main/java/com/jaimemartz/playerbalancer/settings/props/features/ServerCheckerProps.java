@@ -73,4 +73,16 @@ public class ServerCheckerProps {
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
+
+    @Override
+    public String toString() {
+        return "ServerCheckerProps{" +
+                "enabled=" + enabled +
+                ", tactic=" + tactic +
+                ", attempts=" + attempts +
+                ", interval=" + interval +
+                ", markerDescs=" + markerDescs +
+                ", debug=" + debug +
+                '}';
+    }
 }

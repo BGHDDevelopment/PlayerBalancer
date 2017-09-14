@@ -3,6 +3,7 @@ package com.jaimemartz.playerbalancer.settings.props.shared;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
+import java.util.Collections;
 import java.util.List;
 
 @ConfigSerializable
@@ -25,7 +26,11 @@ public class CommandProps {
     }
 
     public String getPermission() {
-        return permission;
+        if (permission != null) {
+            return permission;
+        } else {
+            return "";
+        }
     }
 
     public void setPermission(String permission) {
@@ -33,14 +38,31 @@ public class CommandProps {
     }
 
     public List<String> getAliases() {
-        return aliases;
+        if (aliases != null) {
+            return aliases;
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     public String[] getAliasesArray() {
-        return aliases.toArray(new String[aliases.size()]);
+        if (aliases != null) {
+            return aliases.toArray(new String[aliases.size()]);
+        } else {
+            return new String[]{};
+        }
     }
 
     public void setAliases(List<String> aliases) {
         this.aliases = aliases;
+    }
+
+    @Override
+    public String toString() {
+        return "CommandProps{" +
+                "name='" + name + '\'' +
+                ", permission='" + permission + '\'' +
+                ", aliases=" + aliases +
+                '}';
     }
 }
