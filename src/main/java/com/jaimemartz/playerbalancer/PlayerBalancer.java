@@ -19,6 +19,7 @@ import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.bstats.bungeecord.Metrics;
+import org.bstats.bungeecord.Metrics.SingleLineChart;
 import org.inventivetalent.update.bungee.BungeeUpdater;
 
 import java.io.File;
@@ -31,17 +32,22 @@ public class PlayerBalancer extends Plugin {
     private boolean failed = false;
     private StatusManager statusManager;
     private SettingsHolder settings;
-    private ConfigurationLoader<CommentedConfigurationNode> loader;
     private SectionManager sectionManager;
     private NetworkManager networkManager;
+    private ConfigurationLoader<CommentedConfigurationNode> loader;
     private Command fallbackCommand, mainCommand, manageCommand;
     private Listener connectListener, kickListener, messageListener, reloadListener;
 
     @Override
     public void onEnable() {
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new Metrics.SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
+        metrics.addCustomChart(new SingleLineChart("configured_sections", () -> sectionManager.getSections().size()));
         this.enable();
+    }
+
+    @Override
+    public void onDisable() {
+        disable();
     }
 
     private void enable() {
@@ -65,7 +71,6 @@ public class PlayerBalancer extends Plugin {
         try {
             CommentedConfigurationNode node = loader.load();
             settings = node.getValue(TypeToken.of(SettingsHolder.class));
-            System.out.println(settings);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,11 +142,6 @@ public class PlayerBalancer extends Plugin {
             getLogger().warning("Nothing is going to work until you do that, you can reload me by using the /balancer command");
             getLogger().warning("-----------------------------------------------------");
         }
-    }
-
-    @Override
-    public void onDisable() {
-        disable();
     }
 
     private void disable() {

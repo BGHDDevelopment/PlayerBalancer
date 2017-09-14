@@ -8,7 +8,6 @@ import com.jaimemartz.playerbalancer.utils.FixedAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,7 +17,6 @@ import java.util.regex.Pattern;
 public class SectionManager {
     private final PlayerBalancer plugin;
     private final BalancerProps props;
-    private ScheduledTask updateTask;
     private ServerSection principal;
 
     private final Map<String, ServerSection> sections = Collections.synchronizedMap(new HashMap<>());
@@ -63,11 +61,6 @@ public class SectionManager {
                 plugin.getProxy().getServers().remove(server.getName());
             }
         });
-
-        if (updateTask != null) {
-            updateTask.cancel();
-            updateTask = null;
-        }
 
         principal = null;
         sections.clear();
@@ -122,9 +115,9 @@ public class SectionManager {
     private final Stage[] stages = {
             new SectionStage("Constructing sections") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
-                    ServerSection object = new ServerSection(name, props);
-                    sections.put(name, object);
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                    ServerSection object = new ServerSection(sectionName, sectionProps);
+                    sections.put(sectionName, object);
                 }
             },
             new GlobalStage("Processing principal section") {
@@ -141,9 +134,9 @@ public class SectionManager {
             },
             new SectionStage("Processing parents") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
-                    if (props.getParentName() != null) {
-                        ServerSection parent = getByName(props.getParentName());
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                    if (sectionProps.getParentName() != null) {
+                        ServerSection parent = getByName(sectionProps.getParentName());
                         if (principal.equals(section) && parent == null) {
                             throw new IllegalArgumentException(String.format(
                                     "The section \"%s\" has an invalid parent set",
@@ -157,7 +150,7 @@ public class SectionManager {
             },
             new SectionStage("Validating parents") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
                     ServerSection parent = section.getParent();
                     if (parent != null && parent.getParent() == section) {
                         throw new IllegalStateException(String.format(
@@ -170,8 +163,8 @@ public class SectionManager {
             },
             new SectionStage("Validating providers") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
-                    if (props.getProvider() == null) {
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                    if (sectionProps.getProvider() == null) {
                         ServerSection current = section.getParent();
                         if (current != null) {
                             while (current.getExplicitProvider() == null) {
@@ -193,20 +186,20 @@ public class SectionManager {
             },
             new SectionStage("Calculating positions") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
                     section.setPosition(calculatePosition(section));
                 }
             },
             new SectionStage("Resolving servers") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
                     section.setServers(calculateServers(section));
                 }
             },
             new SectionStage("Section server processing") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
-                    if (props.getServerName() != null) {
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                    if (sectionProps.getServerName() != null) {
                         FakeServer server = new FakeServer(section);
                         section.setServer(server);
                         plugin.getSectionManager().register(server, section);
@@ -217,9 +210,9 @@ public class SectionManager {
             },
             new SectionStage("Section command processing") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
-                    if (props.getCommand() != null) {
-                        SectionCommand command = new SectionCommand(plugin, props.getCommand(), section);
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                    if (sectionProps.getCommand() != null) {
+                        SectionCommand command = new SectionCommand(plugin, sectionProps.getCommand(), section);
                         section.setCommand(command);
                         plugin.getProxy().getPluginManager().registerCommand(plugin, command);
                     }
@@ -227,10 +220,10 @@ public class SectionManager {
             },
             new SectionStage("Finishing loading sections") {
                 @Override
-                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
                     section.setValid(true);
                 }
-            }
+            },
     };
 
     public Set<ServerInfo> calculateServers(ServerSection section) {
@@ -345,8 +338,8 @@ public class SectionManager {
         }
 
         public abstract void execute(
-                String name,
-                SectionProps props,
+                String sectionName,
+                SectionProps sectionProps,
                 ServerSection section
         ) throws RuntimeException;
     }

@@ -20,9 +20,6 @@ public class GeneralProps {
     @Setting(value = "fallback-principal")
     private boolean fallbackPrincipal;
 
-    @Setting(value = "auto-refresh")
-    private boolean autoRefresh;
-
     public boolean isEnabled() {
         return enabled;
     }
@@ -63,14 +60,6 @@ public class GeneralProps {
         this.fallbackPrincipal = fallbackPrincipal;
     }
 
-    public boolean isAutoRefresh() {
-        return autoRefresh;
-    }
-
-    public void setAutoRefresh(boolean autoRefresh) {
-        this.autoRefresh = autoRefresh;
-    }
-
     @Override
     public String toString() {
         return "GeneralProps{" +
@@ -79,7 +68,6 @@ public class GeneralProps {
                 ", autoReload=" + autoReload +
                 ", redisBungee=" + redisBungee +
                 ", fallbackPrincipal=" + fallbackPrincipal +
-                ", autoRefresh=" + autoRefresh +
                 '}';
     }
 }
