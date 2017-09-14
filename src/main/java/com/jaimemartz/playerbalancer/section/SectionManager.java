@@ -3,13 +3,14 @@ package com.jaimemartz.playerbalancer.section;
 import com.google.common.base.Preconditions;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.settings.props.features.BalancerProps;
+import com.jaimemartz.playerbalancer.settings.props.shared.SectionProps;
+import com.jaimemartz.playerbalancer.utils.FakeServer;
 import com.jaimemartz.playerbalancer.utils.FixedAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
-import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
@@ -29,7 +30,7 @@ public class SectionManager {
     }
 
     public void load() throws RuntimeException {
-        plugin.getLogger().info("Loading sections from the config, this may take a while...");
+        plugin.getLogger().info("Executing section initialization stages, this may take a while...");
         long starting = System.currentTimeMillis();
 
         props.getSectionProps().forEach((name, prop) -> {
@@ -119,6 +120,21 @@ public class SectionManager {
         return getByServer(server.getInfo());
     }
 
+    private final Stage[] stages = {
+            new Stage("Creation") {
+                @Override
+                public void execute(SectionProps props, ServerSection section) throws RuntimeException {
+
+                }
+            },
+            new Stage("") {
+                @Override
+                public void execute(SectionProps props, ServerSection section) throws RuntimeException {
+
+                }
+            }
+    };
+
     public void processSection(String sectionName, ServerSection section) throws RuntimeException {
         plugin.getLogger().info(String.format("Loading section with name \"%s\"", sectionName));
 
@@ -143,29 +159,14 @@ public class SectionManager {
         Set<ServerInfo> servers = calculateServers(section);
         section.getServers().addAll(servers);
 
-        //TODO move this to other stage
-        if (section.getProps().getProvider() != null) {
-            section.setInherited(false);
-        } else {
-            section.setInherited(true);
-
-            if (section.getImplicitProvider() != null) {
-
-            } else {
-                throw new IllegalStateException(String.format("The section \"%s\" does not have a provider", sectionName));
-            }
-        }
+        //TODO Load sections
 
         section.setPosition(calculatePosition(section));
 
         Optional.ofNullable(section.getProps().getServerName()).ifPresent(serverName -> {
-            int port = (int) Math.floor(Math.random() * (0xFFFF + 1)); //Get a random valid port for our fake server
-            ServerInfo server = plugin.getProxy().constructServerInfo(
-                    "@" + serverName,
-                    new InetSocketAddress("0.0.0.0", port),
-                    String.format("Server of Section %s", sectionName),
-                    false);
+            FakeServer server = new FakeServer(section);
             section.setServer(server);
+
             plugin.getSectionManager().register(server, section);
             FixedAdapter.getFakeServers().put(server.getName(), server);
             plugin.getProxy().getServers().put(server.getName(), server);
@@ -174,6 +175,7 @@ public class SectionManager {
         Optional.ofNullable(section.getProps().getCommand()).ifPresent(props -> {
             SectionCommand command = new SectionCommand(plugin, props, section);
             section.setCommand(command);
+
             plugin.getProxy().getPluginManager().registerCommand(plugin, command);
         });
 
@@ -258,7 +260,7 @@ public class SectionManager {
         return Optional.ofNullable(res);
     }
 
-    //maybe store this as a variable?
+    //todo maybe store this as a variable?
     public ServerSection getPrincipal() {
         return getByName(props.getPrincipalSectionName());
     }
@@ -269,5 +271,22 @@ public class SectionManager {
 
     public Map<String, ServerSection> getSections() {
         return sections;
+    }
+
+    private abstract static class Stage {
+        private final String title;
+
+        public Stage(String title) {
+            this.title = title;
+        }
+
+        public String getTitle() {
+            return title;a
+        }
+
+        public abstract void execute(
+                SectionProps props,
+                ServerSection section
+        ) throws RuntimeException;
     }
 }

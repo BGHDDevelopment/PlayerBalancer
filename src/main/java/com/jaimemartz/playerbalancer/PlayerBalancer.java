@@ -64,6 +64,7 @@ public class PlayerBalancer extends Plugin {
         try {
             CommentedConfigurationNode node = loader.load();
             settings = node.getValue(TypeToken.of(SettingsHolder.class));
+            System.out.println(settings);
         } catch (Exception e) {
             e.printStackTrace();
         }
