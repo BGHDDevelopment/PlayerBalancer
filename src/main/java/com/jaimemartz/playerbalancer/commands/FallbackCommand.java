@@ -43,7 +43,7 @@ public class FallbackCommand extends Command {
                         } else {
                             int iterations = 0;
                             for (ServerInfo server : target.getServers()) {
-                                if (iterations++ < number) {
+                                if (iterations++ < number - 1) {
                                     continue;
                                 }
 
