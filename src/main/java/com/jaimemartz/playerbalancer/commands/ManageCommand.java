@@ -118,6 +118,13 @@ public class ManageCommand extends Command {
                                         .create()
                                 );
 
+                                sender.sendMessage(new ComponentBuilder("Reiterative: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(manager.isReiterative(section) ? "yes" : "no")
+                                        .color(manager.isReiterative(section) ? ChatColor.GREEN : ChatColor.RED)
+                                        .create()
+                                );
+
                                 if (section.getServer() != null) {
                                     sender.sendMessage(new ComponentBuilder("Section Server: ")
                                             .color(ChatColor.GRAY)
