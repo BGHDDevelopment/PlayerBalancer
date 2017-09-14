@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
+import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
 import com.jaimemartz.playerbalancer.listener.*;
 import com.jaimemartz.playerbalancer.manager.NetworkManager;
 import com.jaimemartz.playerbalancer.manager.PasteHelper;
@@ -181,11 +182,7 @@ public class PlayerBalancer extends Plugin {
 
             sectionManager.flush();
 
-            /*
-            if (settings.getGeneralProps().isAssignTargets()) {
-                ServerAssignRegistry.getTable().clear();
-            }
-            */
+            ServerAssignRegistry.getTable().clear();
         }
 
         PlayerLocker.flush();
@@ -199,8 +196,10 @@ public class PlayerBalancer extends Plugin {
         this.disable();
         this.enable();
 
-        long ending = System.currentTimeMillis() - starting;
-        getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
+        if (!failed) {
+            long ending = System.currentTimeMillis() - starting;
+            getLogger().info(String.format("The plugin has been reloaded, took %sms", ending));
+        }
 
         return !failed;
     }

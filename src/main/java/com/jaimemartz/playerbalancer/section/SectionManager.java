@@ -1,6 +1,5 @@
 package com.jaimemartz.playerbalancer.section;
 
-import com.google.common.base.Preconditions;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.settings.props.features.BalancerProps;
 import com.jaimemartz.playerbalancer.settings.props.shared.SectionProps;
@@ -20,9 +19,10 @@ public class SectionManager {
     private final PlayerBalancer plugin;
     private final BalancerProps props;
     private ScheduledTask updateTask;
+    private ServerSection principal;
 
-    private final Map<String, ServerSection> sections = new HashMap<>();
-    private final Map<ServerInfo, ServerSection> servers = new HashMap<>();
+    private final Map<String, ServerSection> sections = Collections.synchronizedMap(new HashMap<>());
+    private final Map<ServerInfo, ServerSection> servers = Collections.synchronizedMap(new HashMap<>());
 
     public SectionManager(PlayerBalancer plugin) {
         this.props = plugin.getSettings().getBalancerProps();
@@ -33,18 +33,16 @@ public class SectionManager {
         plugin.getLogger().info("Executing section initialization stages, this may take a while...");
         long starting = System.currentTimeMillis();
 
-        props.getSectionProps().forEach((name, prop) -> {
-            plugin.getLogger().info(String.format("Construction of section with name \"%s\"", name));
-            ServerSection object = new ServerSection(name, prop);
-            sections.put(name, object);
-        });
-
-        Preconditions.checkNotNull(this.getPrincipal(),
-                "Could not set principal section, there is no section named \"%s\"",
-                props.getPrincipalSectionName()
-        );
-
-        sections.forEach(this::processSection);
+        for (Stage stage : stages) {
+            plugin.getLogger().info("Executing stage \"" + stage.title + "\"");
+            if (stage instanceof SectionStage) {
+                props.getSectionProps().forEach((name, props) -> {
+                    ((SectionStage) stage).execute(name, props, sections.get(name));
+                });
+            } else {
+                ((GlobalStage) stage).execute();
+            }
+        }
 
         long ending = System.currentTimeMillis() - starting;
         plugin.getLogger().info(String.format("A total of %s section(s) have been loaded in %sms", sections.size(), ending));
@@ -71,6 +69,7 @@ public class SectionManager {
             updateTask = null;
         }
 
+        principal = null;
         sections.clear();
         servers.clear();
     }
@@ -121,66 +120,118 @@ public class SectionManager {
     }
 
     private final Stage[] stages = {
-            new Stage("Creation") {
+            new SectionStage("Constructing sections") {
                 @Override
-                public void execute(SectionProps props, ServerSection section) throws RuntimeException {
-
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    ServerSection object = new ServerSection(name, props);
+                    sections.put(name, object);
                 }
             },
-            new Stage("") {
+            new GlobalStage("Processing principal section") {
                 @Override
-                public void execute(SectionProps props, ServerSection section) throws RuntimeException {
+                public void execute() {
+                    principal = sections.get(props.getPrincipalSectionName());
+                    if (principal == null) {
+                        throw new IllegalArgumentException(String.format(
+                                "Could not set principal section, there is no section called \"%s\"",
+                                props.getPrincipalSectionName()
+                        ));
+                    }
+                }
+            },
+            new SectionStage("Processing parents") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    if (props.getParentName() != null) {
+                        ServerSection parent = getByName(props.getParentName());
+                        if (principal.equals(section) && parent == null) {
+                            throw new IllegalArgumentException(String.format(
+                                    "The section \"%s\" has an invalid parent set",
+                                    section.getName()
+                            ));
+                        } else {
+                            section.setParent(parent);
+                        }
+                    }
+                }
+            },
+            new SectionStage("Validating parents") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    ServerSection parent = section.getParent();
+                    if (parent != null && parent.getParent() == section) {
+                        throw new IllegalStateException(String.format(
+                                "The sections \"%s\" and \"%s\" are parents of each other",
+                                section.getName(),
+                                parent.getName()
+                        ));
+                    }
+                }
+            },
+            new SectionStage("Validating providers") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    if (props.getProvider() == null) {
+                        ServerSection current = section.getParent();
+                        if (current != null) {
+                            while (current.getExplicitProvider() == null) {
+                                current = current.getParent();
+                            }
 
+                            plugin.getLogger().info(String.format(
+                                    "The section \"%s\" inherits the provider from the section \"%s\"",
+                                    section.getName(),
+                                    current.getName()
+                            ));
+
+                            section.setInherited(true);
+                        }
+                    } else {
+                        section.setInherited(false);
+                    }
+                }
+            },
+            new SectionStage("Calculating positions") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    section.setPosition(calculatePosition(section));
+                }
+            },
+            new SectionStage("Resolving servers") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    section.setServers(calculateServers(section));
+                }
+            },
+            new SectionStage("Section server processing") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    if (props.getServerName() != null) {
+                        FakeServer server = new FakeServer(section);
+                        section.setServer(server);
+                        plugin.getSectionManager().register(server, section);
+                        FixedAdapter.getFakeServers().put(server.getName(), server);
+                        plugin.getProxy().getServers().put(server.getName(), server);
+                    }
+                }
+            },
+            new SectionStage("Section command processing") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    if (props.getCommand() != null) {
+                        SectionCommand command = new SectionCommand(plugin, props.getCommand(), section);
+                        section.setCommand(command);
+                        plugin.getProxy().getPluginManager().registerCommand(plugin, command);
+                    }
+                }
+            },
+            new SectionStage("Finishing loading sections") {
+                @Override
+                public void execute(String name, SectionProps props, ServerSection section) throws RuntimeException {
+                    section.setValid(true);
                 }
             }
     };
-
-    public void processSection(String sectionName, ServerSection section) throws RuntimeException {
-        plugin.getLogger().info(String.format("Loading section with name \"%s\"", sectionName));
-
-        Optional.ofNullable(section.getProps().getParentName()).ifPresent(parentName -> {
-            ServerSection parent = getByName(parentName);
-            if (parent == null) {
-                throw new IllegalArgumentException(String.format("The section \"%s\" has an invalid parent set", sectionName));
-            } else {
-                section.setParent(parent);
-            }
-        });
-
-        Optional.ofNullable(section.getParent()).ifPresent(parent -> {
-            if (parent.getProps().getParentName().equals(sectionName)) {
-                throw new IllegalStateException(String.format("The sections \"%s\" and \"%s\" are parents of each other",
-                        sectionName,
-                        section.getParent().getName()
-                ));
-            }
-        });
-
-        Set<ServerInfo> servers = calculateServers(section);
-        section.getServers().addAll(servers);
-
-        //TODO Load sections
-
-        section.setPosition(calculatePosition(section));
-
-        Optional.ofNullable(section.getProps().getServerName()).ifPresent(serverName -> {
-            FakeServer server = new FakeServer(section);
-            section.setServer(server);
-
-            plugin.getSectionManager().register(server, section);
-            FixedAdapter.getFakeServers().put(server.getName(), server);
-            plugin.getProxy().getServers().put(server.getName(), server);
-        });
-
-        Optional.ofNullable(section.getProps().getCommand()).ifPresent(props -> {
-            SectionCommand command = new SectionCommand(plugin, props, section);
-            section.setCommand(command);
-
-            plugin.getProxy().getPluginManager().registerCommand(plugin, command);
-        });
-
-        section.setValid(true);
-    }
 
     public Set<ServerInfo> calculateServers(ServerSection section) {
         Set<ServerInfo> results = new HashSet<>();
@@ -203,7 +254,7 @@ public class SectionManager {
             }
         });
 
-        plugin.getLogger().info(String.format("Recognized %s server(s) out of %s entries on the section \"%s\"",
+        plugin.getLogger().info(String.format("Recognized %s server(s) out of %s in the section \"%s\"",
                 servers.size(),
                 section.getProps().getServerEntries(),
                 section.getName()
@@ -213,7 +264,6 @@ public class SectionManager {
     }
 
     public int calculatePosition(ServerSection section) {
-        ServerSection principal = this.getPrincipal();
         ServerSection current = section;
 
         //Calculate above principal
@@ -244,6 +294,14 @@ public class SectionManager {
         return iterations;
     }
 
+    public ServerSection getPrincipal() {
+        return principal;
+    }
+
+    public boolean isPrincipal(ServerSection section) {
+        return principal.equals(section);
+    }
+
     public boolean isDummy(ServerSection section) {
         List<String> dummySections = props.getDummySectionNames();
         return dummySections.contains(section.getName());
@@ -260,31 +318,34 @@ public class SectionManager {
         return Optional.ofNullable(res);
     }
 
-    //todo maybe store this as a variable?
-    public ServerSection getPrincipal() {
-        return getByName(props.getPrincipalSectionName());
-    }
-
-    public boolean isPrincipal(ServerSection section) {
-        return getPrincipal().equals(section);
-    }
-
     public Map<String, ServerSection> getSections() {
         return sections;
     }
 
-    private abstract static class Stage {
+    private static class Stage {
         private final String title;
 
-        public Stage(String title) {
+        private Stage(String title) {
             this.title = title;
         }
+    }
 
-        public String getTitle() {
-            return title;a
+    private static abstract class GlobalStage extends Stage {
+        private GlobalStage(String title) {
+            super(title);
         }
 
         public abstract void execute(
+        ) throws RuntimeException;
+    }
+
+    private static abstract class SectionStage extends Stage {
+        private SectionStage(String title) {
+            super(title);
+        }
+
+        public abstract void execute(
+                String name,
                 SectionProps props,
                 ServerSection section
         ) throws RuntimeException;

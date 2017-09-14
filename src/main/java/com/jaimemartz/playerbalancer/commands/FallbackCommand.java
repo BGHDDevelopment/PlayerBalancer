@@ -43,6 +43,7 @@ public class FallbackCommand extends Command {
                         } else if (number > target.getServers().size()) {
                             MessageUtils.send(player, messages.getFailureMessage());
                         } else {
+                            //todo improve this!!! javafx.collections.transformation.SortedList?
                             ServerInfo server = new ArrayList<>(target.getServers()).get(number - 1);
                             ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {
                                 //todo something missing

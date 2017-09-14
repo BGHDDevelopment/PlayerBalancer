@@ -23,7 +23,7 @@ public final class ServerStatus {
         this.maximum = maximum;
     }
 
-    //TODO improve this (set from the pinger if accessible or not)
+    //TODO improve this (set from the pinger if accessible or not) maybe?
     public boolean isAccessible(PlayerBalancer plugin, ProxiedPlayer player) {
         if (maximum == 0) {
             return false;

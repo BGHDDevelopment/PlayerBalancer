@@ -64,7 +64,15 @@ public class ServerSection {
     }
 
     public ProviderType getImplicitProvider() {
-        return inherited ? parent.getImplicitProvider() : props.getProvider();
+        if (inherited) {
+            return parent.getImplicitProvider();
+        } else {
+            return props.getProvider();
+        }
+    }
+
+    public ProviderType getExplicitProvider() {
+        return props.getProvider();
     }
 
     public void setExplicitProvider(ProviderType provider) {
@@ -94,6 +102,10 @@ public class ServerSection {
 
     public Set<ServerInfo> getServers() {
         return servers;
+    }
+
+    public void setServers(Set<ServerInfo> servers) {
+        this.servers = servers;
     }
 
     public boolean isValid() {
