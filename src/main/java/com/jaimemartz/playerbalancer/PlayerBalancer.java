@@ -71,33 +71,29 @@ public class PlayerBalancer extends Plugin {
         try {
             CommentedConfigurationNode node = loader.load();
             settings = node.getValue(TypeToken.of(SettingsHolder.class));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        mainCommand = new MainCommand(this);
-        getProxy().getPluginManager().registerCommand(this, mainCommand);
+            mainCommand = new MainCommand(this);
+            getProxy().getPluginManager().registerCommand(this, mainCommand);
 
-        if (settings.getGeneralProps().isEnabled()) {
-            if (settings.getGeneralProps().isSilent()) {
-                getLogger().setLevel(Level.WARNING);
-            }
+            if (settings.getGeneralProps().isEnabled()) {
+                if (settings.getGeneralProps().isSilent()) {
+                    getLogger().setLevel(Level.WARNING);
+                }
 
-            if (settings.getGeneralProps().isAutoReload()) {
-                reloadListener = new ProxyReloadListener(this);
-                getProxy().getPluginManager().registerListener(this, reloadListener);
-            }
+                if (settings.getGeneralProps().isAutoReload()) {
+                    reloadListener = new ProxyReloadListener(this);
+                    getProxy().getPluginManager().registerListener(this, reloadListener);
+                }
 
-            try {
-                new BungeeUpdater(this, 10788);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                try {
+                    new BungeeUpdater(this, 10788);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            networkManager = new NetworkManager(this);
-            sectionManager = new SectionManager(this);
+                networkManager = new NetworkManager(this);
 
-            try {
+                sectionManager = new SectionManager(this);
                 sectionManager.load();
 
                 statusManager = new StatusManager(this);
@@ -131,16 +127,16 @@ public class PlayerBalancer extends Plugin {
                 }
 
                 getLogger().info("The plugin has finished loading without any problems");
-            } catch (RuntimeException e) {
-                this.failed = true;
-                getLogger().severe("The plugin could not continue loading due to an unexpected exception");
-                e.printStackTrace();
+            } else {
+                getLogger().warning("-----------------------------------------------------");
+                getLogger().warning("WARNING: This plugin is disabled, do not forget to set enabled on the config to true");
+                getLogger().warning("Nothing is going to work until you do that, you can reload me by using the /balancer command");
+                getLogger().warning("-----------------------------------------------------");
             }
-        } else {
-            getLogger().warning("-----------------------------------------------------");
-            getLogger().warning("WARNING: This plugin is disabled, do not forget to set enabled on the config to true");
-            getLogger().warning("Nothing is going to work until you do that, you can reload me by using the /balancer command");
-            getLogger().warning("-----------------------------------------------------");
+        } catch (Exception e) {
+            this.failed = true;
+            getLogger().severe("The plugin could not continue loading due to an unexpected exception");
+            e.printStackTrace();
         }
     }
 
