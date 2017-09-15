@@ -63,8 +63,9 @@ public class StatusManager {
             }
 
             if (plugin.getSettings().getServerCheckerProps().isDebug()) {
-                plugin.getLogger().info(String.format("Updated server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
-                        server.getName(), status.getDescription(), status.getOnline(), status.getMaximum(), status.isAccessible(plugin, null)
+                plugin.getLogger().info(String.format(
+                        "Updated server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
+                        server.getName(), status.getDescription(), status.getOnline(), status.getMaximum(), status.isAccessible(plugin)
                 ));
             }
 

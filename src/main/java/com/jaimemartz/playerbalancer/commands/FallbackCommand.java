@@ -48,7 +48,7 @@ public class FallbackCommand extends Command {
                                 }
 
                                 ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {
-                                    //todo nothing to do?
+                                    //TODO Handle this
                                 });
 
                                 break;

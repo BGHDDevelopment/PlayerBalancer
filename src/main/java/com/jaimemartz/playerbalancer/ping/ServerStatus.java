@@ -2,7 +2,6 @@ package com.jaimemartz.playerbalancer.ping;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class ServerStatus {
     private final String description;
@@ -23,14 +22,13 @@ public final class ServerStatus {
         this.maximum = maximum;
     }
 
-    //TODO improve this (set from the pinger if accessible or not) maybe?
-    public boolean isAccessible(PlayerBalancer plugin, ProxiedPlayer player) {
+    public boolean isAccessible(PlayerBalancer plugin) {
         if (maximum == 0) {
             return false;
         }
 
         for (String pattern : plugin.getSettings().getServerCheckerProps().getMarkerDescs()) {
-            if (description.matches(pattern) || description.contains(pattern)) {
+            if (description.matches(pattern)) {
                 return false;
             }
         }

@@ -74,10 +74,18 @@ public class SectionManager {
             }
 
             ServerSection other = servers.get(server);
-            throw new IllegalArgumentException(String.format("The server \"%s\" is already in the section \"%s\"", server.getName(), other.getName()));
+            throw new IllegalArgumentException(String.format(
+                    "The server \"%s\" is already in the section \"%s\"",
+                    server.getName(),
+                    other.getName()
+            ));
         }
 
-        plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"", server.getName(), section.getName()));
+        plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"",
+                server.getName(),
+                section.getName()
+        ));
+
         servers.put(server, section);
 
     }
@@ -248,7 +256,7 @@ public class SectionManager {
         });
 
         plugin.getLogger().info(String.format("Recognized %s server(s) out of %s in the section \"%s\"",
-                servers.size(),
+                results.size(),
                 section.getProps().getServerEntries(),
                 section.getName()
         ));

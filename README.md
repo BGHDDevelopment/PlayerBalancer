@@ -9,7 +9,6 @@
 * Build with maven
 
 ### Things to do:
-- [ ] Add support for wildcards, contains, equalsIgnoreCase and regex at the same time
 - [ ] Create a spigot addon that adds connector signs and placeholders
 - [ ] Separate the types of connections in classes instead of being in ConnectionIntent
 - [ ] Make the plugin API be not so dependent on a instance of PlayerBalancer

@@ -40,7 +40,7 @@ public class ServerKickListener implements Listener {
         String reason = TextComponent.toPlainText(event.getKickReasonComponent());
 
         for (String string : props.getReasons()) {
-            if (reason.matches(string) || reason.contains(string)) { //todo improve this
+            if (reason.matches(string)) {
                 matches = true;
                 break;
             }
