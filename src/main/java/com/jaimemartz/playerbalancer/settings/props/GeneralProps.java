@@ -20,6 +20,9 @@ public class GeneralProps {
     @Setting(value = "fallback-principal")
     private boolean fallbackPrincipal;
 
+    @Setting
+    private String version;
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -60,6 +63,14 @@ public class GeneralProps {
         this.fallbackPrincipal = fallbackPrincipal;
     }
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "GeneralProps{" +
@@ -68,6 +79,7 @@ public class GeneralProps {
                 ", autoReload=" + autoReload +
                 ", redisBungee=" + redisBungee +
                 ", fallbackPrincipal=" + fallbackPrincipal +
+                ", version='" + version + '\'' +
                 '}';
     }
 }
