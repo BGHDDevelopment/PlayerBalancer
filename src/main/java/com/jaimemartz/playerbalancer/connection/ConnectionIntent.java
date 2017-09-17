@@ -42,7 +42,7 @@ public abstract class ConnectionIntent {
         }
 
         if (section.getImplicitProvider() != ProviderType.NONE) {
-            ServerInfo target = this.fetchServer(plugin, player, section, provider, servers);
+            ServerInfo target = this.fetchServer(player, section, provider, servers);
             if (target != null) {
                 this.connect(target, (response, throwable) -> {
                     if (response) { //only if the connect has been executed correctly
@@ -69,7 +69,7 @@ public abstract class ConnectionIntent {
         this(plugin, player, section.getImplicitProvider(), section, servers);
     }
 
-    private ServerInfo fetchServer(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {
+    private ServerInfo fetchServer(ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {
         if (plugin.getSectionManager().isReiterative(section)) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
