@@ -7,43 +7,44 @@ package com.jaimemartz.playerbalancer.utils;
  *
  * The Alphanum Algorithm is discussed at http://www.DaveKoelle.com
  *
+ * Released under the MIT License - https://opensource.org/licenses/MIT
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or any later version.
+ * Copyright 2007-2017 David Koelle
  *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
  *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+ * USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import java.util.Comparator;
 
 /**
  * This is an updated version with enhancements made by Daniel Migowski,
- * Andre Bogus, and David Koelle
- *
- * To convert to use Templates (Java 1.5+):
- *   - Change "implements Comparator" to "implements Comparator<String>"
- *   - Change "compare(Object o1, Object o2)" to "compare(String s1, String s2)"
- *   - Remove the type checking and casting in compare().
+ * Andre Bogus, and David Koelle. Updated by David Koelle in 2017.
  *
  * To use this class:
  *   Use the static "sort" method from the java.util.Collections class:
  *   Collections.sort(your list, new AlphanumComparator());
  */
-public final class AlphanumComparator<T> implements Comparator<T>
+public class AlphanumComparator implements Comparator<String>
 {
     private final boolean isDigit(char ch)
     {
-        return ch >= 48 && ch <= 57;
+        return ((ch >= 48) && (ch <= 57));
     }
 
     /** Length of string is passed in for improved efficiency (only need to calculate it once) **/
@@ -77,14 +78,12 @@ public final class AlphanumComparator<T> implements Comparator<T>
         return chunk.toString();
     }
 
-    public int compare(Object o1, Object o2)
+    public int compare(String s1, String s2)
     {
-        if (!(o1 instanceof String) || !(o2 instanceof String))
+        if ((s1 == null) || (s2 == null))
         {
             return 0;
         }
-        String s1 = (String)o1;
-        String s2 = (String)o2;
 
         int thisMarker = 0;
         int thatMarker = 0;
@@ -118,7 +117,8 @@ public final class AlphanumComparator<T> implements Comparator<T>
                         }
                     }
                 }
-            } else
+            }
+            else
             {
                 result = thisChunk.compareTo(thatChunk);
             }
@@ -128,5 +128,10 @@ public final class AlphanumComparator<T> implements Comparator<T>
         }
 
         return s1Length - s2Length;
+    }
+
+    private static final AlphanumComparator instance = new AlphanumComparator();
+    public static AlphanumComparator getInstance() {
+        return instance;
     }
 }

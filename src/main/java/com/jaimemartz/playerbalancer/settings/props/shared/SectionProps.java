@@ -17,8 +17,8 @@ public class SectionProps {
     @Setting(value = "servers")
     private List<String> serverEntries;
 
-    @Setting(value = "section-command")
-    private CommandProps command;
+    @Setting(value = "section-commandProps")
+    private CommandProps commandProps;
 
     @Setting(value = "section-server")
     private String serverName;
@@ -47,12 +47,12 @@ public class SectionProps {
         this.serverEntries = serverEntries;
     }
 
-    public CommandProps getCommand() {
-        return command;
+    public CommandProps getCommandProps() {
+        return commandProps;
     }
 
-    public void setCommand(CommandProps command) {
-        this.command = command;
+    public void setCommandProps(CommandProps commandProps) {
+        this.commandProps = commandProps;
     }
 
     public String getServerName() {
@@ -69,7 +69,7 @@ public class SectionProps {
                 "provider=" + provider +
                 ", parentName='" + parentName + '\'' +
                 ", serverEntries=" + serverEntries +
-                ", command=" + command +
+                ", commandProps=" + commandProps +
                 ", serverName='" + serverName + '\'' +
                 '}';
     }

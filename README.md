@@ -11,9 +11,8 @@
 ### Things to do:
 - [ ] Create a spigot addon that adds connector signs and placeholders
 - [ ] Separate the types of connections in classes instead of being in ConnectionIntent
-- [ ] Make the plugin API be not so dependent on a instance of PlayerBalancer
+- [x] Make the plugin API be not so dependent on a instance of PlayerBalancer
 - [ ] Separate connection providers in classes instead of being hardcoded in an enum
-- [ ] Make the feature `marker-descs` work per section
 - [ ] Implement fast connect (dimension change)
 - [ ] Implement a way to redirect premium players to a section and cracked ones to other section (not sure how this works)
 - [x] Unify the code that loads serverName into a section (duplicated at SectionManager and ServerSection) 

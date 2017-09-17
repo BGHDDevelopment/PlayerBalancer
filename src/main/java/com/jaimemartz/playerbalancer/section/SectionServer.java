@@ -1,6 +1,5 @@
-package com.jaimemartz.playerbalancer.utils;
+package com.jaimemartz.playerbalancer.section;
 
-import com.jaimemartz.playerbalancer.section.ServerSection;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -9,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class FakeServer extends BungeeServerInfo {
+public class SectionServer extends BungeeServerInfo {
     private final ServerSection section;
 
-    public FakeServer(ServerSection section) {
+    public SectionServer(ServerSection section) {
 
         super(
                 "@" + section.getProps().getServerName(),

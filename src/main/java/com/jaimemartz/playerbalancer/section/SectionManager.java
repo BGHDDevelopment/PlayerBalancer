@@ -3,7 +3,6 @@ package com.jaimemartz.playerbalancer.section;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.settings.props.features.BalancerProps;
 import com.jaimemartz.playerbalancer.settings.props.shared.SectionProps;
-import com.jaimemartz.playerbalancer.utils.FakeServer;
 import com.jaimemartz.playerbalancer.utils.FixedAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -208,7 +207,7 @@ public class SectionManager {
                 @Override
                 public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
                     if (sectionProps.getServerName() != null) {
-                        FakeServer server = new FakeServer(section);
+                        SectionServer server = new SectionServer(section);
                         section.setServer(server);
                         plugin.getSectionManager().register(server, section);
                         FixedAdapter.getFakeServers().put(server.getName(), server);
@@ -219,8 +218,8 @@ public class SectionManager {
             new SectionStage("Section command processing") {
                 @Override
                 public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    if (sectionProps.getCommand() != null) {
-                        SectionCommand command = new SectionCommand(plugin, sectionProps.getCommand(), section);
+                    if (sectionProps.getCommandProps() != null) {
+                        SectionCommand command = new SectionCommand(plugin, section);
                         section.setCommand(command);
                         plugin.getProxy().getPluginManager().registerCommand(plugin, command);
                     }

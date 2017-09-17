@@ -13,18 +13,18 @@ import java.util.concurrent.ThreadLocalRandom;
 public enum ProviderType {
     NONE {
         @Override
-        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
             return null;
         }
     },
 
     LOWEST {
         @Override
-        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
             int min = Integer.MAX_VALUE;
             ServerInfo target = null;
 
-            for (ServerInfo server : list) {
+            for (ServerInfo server : servers) {
                 int count = plugin.getNetworkManager().getPlayers(server);
 
                 if (count < min) {
@@ -39,11 +39,11 @@ public enum ProviderType {
 
     BALANCED {
         @Override
-        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
             List<ServerInfo> results = new ArrayList<>();
             int min = Integer.MAX_VALUE;
 
-            for (ServerInfo server : list) {
+            for (ServerInfo server : servers) {
                 int count = plugin.getNetworkManager().getPlayers(server);
 
                 if (count <= min) {
@@ -55,38 +55,38 @@ public enum ProviderType {
                 }
             }
 
-            return results.get(ThreadLocalRandom.current().nextInt(list.size()));
+            return results.get(ThreadLocalRandom.current().nextInt(servers.size()));
         }
     },
 
     RANDOM {
         @Override
-        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
-            return list.get(ThreadLocalRandom.current().nextInt(list.size()));
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
+            return servers.get(ThreadLocalRandom.current().nextInt(servers.size()));
         }
     },
 
     PROGRESSIVE {
         @Override
-        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
-            for (ServerInfo server : list) {
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
+            for (ServerInfo server : servers) {
                 ServerStatus status = plugin.getStatusManager().getStatus(server);
                 if (plugin.getNetworkManager().getPlayers(server) < status.getMaximum()) {
                     return server;
                 }
             }
 
-            return list.get(ThreadLocalRandom.current().nextInt(list.size()));
+            return servers.get(ThreadLocalRandom.current().nextInt(servers.size()));
         }
     },
 
     FILLER {
         @Override
-        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player) {
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
             int max = Integer.MIN_VALUE;
             ServerInfo target = null;
 
-            for (ServerInfo server : list) {
+            for (ServerInfo server : servers) {
                 ServerStatus status = plugin.getStatusManager().getStatus(server);
                 int count = plugin.getNetworkManager().getPlayers(server);
 
@@ -100,5 +100,5 @@ public enum ProviderType {
         }
     };
 
-    public abstract ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> list, ProxiedPlayer player);
+    public abstract ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player);
 }

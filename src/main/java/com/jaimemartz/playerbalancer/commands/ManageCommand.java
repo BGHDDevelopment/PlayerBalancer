@@ -79,6 +79,20 @@ public class ManageCommand extends Command {
                                         .color(manager.isPrincipal(section) ? ChatColor.GREEN : ChatColor.RED)
                                         .create());
 
+                                sender.sendMessage(new ComponentBuilder("Dummy: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(manager.isDummy(section) ? "yes" : "no")
+                                        .color(manager.isDummy(section) ? ChatColor.GREEN : ChatColor.RED)
+                                        .create()
+                                );
+
+                                sender.sendMessage(new ComponentBuilder("Reiterative: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(manager.isReiterative(section) ? "yes" : "no")
+                                        .color(manager.isReiterative(section) ? ChatColor.GREEN : ChatColor.RED)
+                                        .create()
+                                );
+
                                 if (section.getParent() != null) {
                                     sender.sendMessage(new ComponentBuilder("Parent: ")
                                             .color(ChatColor.GRAY)
@@ -108,20 +122,6 @@ public class ManageCommand extends Command {
                                         .color(ChatColor.AQUA)
                                         .append(String.format(" (%s)", section.isInherited() ? "Implicit" : "Explicit"))
                                         .color(ChatColor.GRAY)
-                                        .create()
-                                );
-
-                                sender.sendMessage(new ComponentBuilder("Dummy: ")
-                                        .color(ChatColor.GRAY)
-                                        .append(manager.isDummy(section) ? "yes" : "no")
-                                        .color(manager.isDummy(section) ? ChatColor.GREEN : ChatColor.RED)
-                                        .create()
-                                );
-
-                                sender.sendMessage(new ComponentBuilder("Reiterative: ")
-                                        .color(ChatColor.GRAY)
-                                        .append(manager.isReiterative(section) ? "yes" : "no")
-                                        .color(manager.isReiterative(section) ? ChatColor.GREEN : ChatColor.RED)
                                         .create()
                                 );
 

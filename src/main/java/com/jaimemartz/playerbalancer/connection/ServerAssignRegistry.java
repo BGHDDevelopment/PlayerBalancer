@@ -11,21 +11,21 @@ import java.util.Map;
 public class ServerAssignRegistry {
     private static final Table<ProxiedPlayer, ServerSection, ServerInfo> table = HashBasedTable.create();
 
-    public static void assignTarget(ProxiedPlayer player, ServerSection group, ServerInfo server) {
+    public static void assignTarget(ProxiedPlayer player, ServerSection section, ServerInfo server) {
         synchronized (table) {
-            table.put(player, group, server);
+            table.put(player, section, server);
         }
     }
 
-    public static void revokeTarget(ProxiedPlayer player, ServerSection group) {
+    public static void revokeTarget(ProxiedPlayer player, ServerSection section) {
         synchronized (table) {
-            table.remove(player, group);
+            table.remove(player, section);
         }
     }
 
-    public static ServerInfo getAssignedServer(ProxiedPlayer player, ServerSection group) {
+    public static ServerInfo getAssignedServer(ProxiedPlayer player, ServerSection section) {
         synchronized (table) {
-            return table.get(player, group);
+            return table.get(player, section);
         }
     }
 
@@ -41,9 +41,9 @@ public class ServerAssignRegistry {
         }
     }
 
-    public static boolean hasAssignedServer(ProxiedPlayer player, ServerSection group) {
+    public static boolean hasAssignedServer(ProxiedPlayer player, ServerSection section) {
         synchronized (table) {
-            return table.contains(player, group);
+            return table.contains(player, section);
         }
     }
 

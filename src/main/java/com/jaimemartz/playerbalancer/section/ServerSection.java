@@ -27,8 +27,9 @@ public class ServerSection {
         this.name = name;
         this.props = props;
 
-        AlphanumComparator<ServerInfo> comparator = new AlphanumComparator<>();
-        this.servers = Collections.synchronizedSortedSet(new TreeSet<>(comparator));
+        this.servers = Collections.synchronizedSortedSet(new TreeSet<>((lhs, rhs) ->
+                AlphanumComparator.getInstance().compare(lhs.getName(), rhs.getName())
+        ));
     }
 
     public String getName() {

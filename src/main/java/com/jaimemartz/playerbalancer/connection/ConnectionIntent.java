@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+//TODO I don't like this, improve it
 public abstract class ConnectionIntent {
     protected final PlayerBalancer plugin;
     protected final ProxiedPlayer player;
