@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class SectionManager {
     private final PlayerBalancer plugin;
@@ -32,13 +33,7 @@ public class SectionManager {
 
         for (Stage stage : stages) {
             plugin.getLogger().info("Executing stage \"" + stage.title + "\"");
-            if (stage instanceof SectionStage) {
-                props.getSectionProps().forEach((name, props) -> {
-                    ((SectionStage) stage).execute(name, props, sections.get(name));
-                });
-            } else {
-                ((GlobalStage) stage).execute();
-            }
+            stage.execute();
         }
 
         long ending = System.currentTimeMillis() - starting;
@@ -127,7 +122,7 @@ public class SectionManager {
                     sections.put(sectionName, object);
                 }
             },
-            new GlobalStage("Processing principal section") {
+            new Stage("Processing principal section") {
                 @Override
                 public void execute() {
                     principal = sections.get(props.getPrincipalSectionName());
@@ -200,7 +195,7 @@ public class SectionManager {
             new SectionStage("Resolving servers") {
                 @Override
                 public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    section.setServers(calculateServers(section));
+                    section.getServers().addAll(calculateServers(section));
                 }
             },
             new SectionStage("Section server processing") {
@@ -322,26 +317,26 @@ public class SectionManager {
         return sections;
     }
 
-    private static class Stage {
+    private abstract class Stage {
         private final String title;
 
         private Stage(String title) {
             this.title = title;
         }
+
+        public abstract void execute() throws RuntimeException;
     }
 
-    private static abstract class GlobalStage extends Stage {
-        private GlobalStage(String title) {
+    private abstract class SectionStage extends Stage {
+        private SectionStage(String title) {
             super(title);
         }
 
-        public abstract void execute(
-        ) throws RuntimeException;
-    }
-
-    private static abstract class SectionStage extends Stage {
-        private SectionStage(String title) {
-            super(title);
+        @Override
+        public void execute() throws RuntimeException {
+            props.getSectionProps().forEach((name, props) -> {
+                execute(name, props, sections.get(name));
+            });
         }
 
         public abstract void execute(

@@ -98,16 +98,8 @@ public class ServerSection {
         this.command = command;
     }
 
-    public void addServer(ServerInfo server) {
-        servers.add(server);
-    }
-
     public Set<ServerInfo> getServers() {
         return servers;
-    }
-
-    public void setServers(Set<ServerInfo> servers) {
-        this.servers = servers;
     }
 
     public boolean isValid() {
