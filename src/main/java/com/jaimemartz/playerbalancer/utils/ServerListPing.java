@@ -109,10 +109,10 @@ public final class ServerListPing {
                 if (id != 0x01) {
                     throw new IOException("Invalid packetID");
                 }
-                long pingtime = dataInputStream.readLong(); //read response
 
+                long pingTime = dataInputStream.readLong(); //read response
                 StatusResponse response = gson.fromJson(json, StatusResponse.class);
-                response.time = (int) (now - pingtime);
+                response.time = (int) (now - pingTime);
                 return response;
             }
         }
