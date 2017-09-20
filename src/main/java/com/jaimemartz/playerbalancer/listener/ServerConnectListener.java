@@ -29,6 +29,10 @@ public class ServerConnectListener implements Listener {
         ServerSection section = getSection(player, target);
 
         if (section != null) {
+            if (target.equals(section.getServer())) {
+                event.setCancelled(true);
+            }
+
             new ConnectionIntent(plugin, player, section) {
                 @Override
                 public void connect(ServerInfo server, Callback<Boolean> callback) {
@@ -36,6 +40,7 @@ public class ServerConnectListener implements Listener {
                         ServerAssignRegistry.assignTarget(player, section, server);
                     }
 
+                    event.setCancelled(false);
                     event.setTarget(server);
                     callback.done(true, null);
                 }
