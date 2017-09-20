@@ -21,6 +21,9 @@ public class BalancerProps {
     @Setting(value = "sections")
     private Map<String, SectionProps> sectionProps;
 
+    @Setting(value = "show-players")
+    private boolean showPlayers;
+
     public String getPrincipalSectionName() {
         return principalSectionName;
     }
@@ -53,6 +56,14 @@ public class BalancerProps {
         this.sectionProps = sectionProps;
     }
 
+    public boolean isShowPlayers() {
+        return showPlayers;
+    }
+
+    public void setShowPlayers(boolean showPlayers) {
+        this.showPlayers = showPlayers;
+    }
+
     @Override
     public String toString() {
         return "BalancerProps{" +
@@ -60,6 +71,7 @@ public class BalancerProps {
                 ", dummySectionNames=" + dummySectionNames +
                 ", reiterativeSectionNames=" + reiterativeSectionNames +
                 ", sectionProps=" + sectionProps +
+                ", showPlayers=" + showPlayers +
                 '}';
     }
 }

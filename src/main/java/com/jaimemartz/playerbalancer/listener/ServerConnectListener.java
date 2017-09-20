@@ -27,6 +27,7 @@ public class ServerConnectListener implements Listener {
         ServerInfo target = event.getTarget();
 
         ServerSection section = getSection(player, target);
+
         if (section != null) {
             new ConnectionIntent(plugin, player, section) {
                 @Override
