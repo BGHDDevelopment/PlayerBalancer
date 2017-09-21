@@ -18,6 +18,13 @@ public enum ProviderType {
         }
     },
 
+    RANDOM {
+        @Override
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
+            return ProviderType.getRandom(servers);
+        }
+    },
+
     LOWEST {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
@@ -55,14 +62,7 @@ public enum ProviderType {
                 }
             }
 
-            return results.get(ThreadLocalRandom.current().nextInt(servers.size()));
-        }
-    },
-
-    RANDOM {
-        @Override
-        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            return servers.get(ThreadLocalRandom.current().nextInt(servers.size()));
+            return ProviderType.getRandom(results);
         }
     },
 
@@ -76,7 +76,7 @@ public enum ProviderType {
                 }
             }
 
-            return servers.get(ThreadLocalRandom.current().nextInt(servers.size()));
+            return ProviderType.getRandom(servers);
         }
     },
 
@@ -101,4 +101,8 @@ public enum ProviderType {
     };
 
     public abstract ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player);
+
+    private static ServerInfo getRandom(List<ServerInfo> list) {
+        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
+    }
 }
