@@ -17,7 +17,7 @@ public class SectionProps {
     @Setting(value = "servers")
     private List<String> serverEntries;
 
-    @Setting(value = "section-commandProps")
+    @Setting(value = "section-command")
     private CommandProps commandProps;
 
     @Setting(value = "section-server")

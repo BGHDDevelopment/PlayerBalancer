@@ -47,10 +47,7 @@ public class FallbackCommand extends Command {
                                     continue;
                                 }
 
-                                ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {
-                                    //TODO Handle this
-                                });
-
+                                ConnectionIntent.direct(plugin, player, server, (response, throwable) -> { });
                                 break;
                             }
                         }

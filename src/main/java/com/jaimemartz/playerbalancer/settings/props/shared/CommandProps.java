@@ -49,7 +49,7 @@ public class CommandProps {
         if (aliases != null) {
             return aliases.toArray(new String[aliases.size()]);
         } else {
-            return new String[]{};
+            return new String[] {};
         }
     }
 
