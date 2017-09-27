@@ -40,6 +40,7 @@ public class SectionManager {
         }
 
         if (plugin.getSettings().getServerRefreshProps().isEnabled()) {
+            plugin.getLogger().info("Starting automatic server refresh task");
             refreshTask = plugin.getProxy().getScheduler().schedule(plugin, () -> {
                 props.getSectionProps().forEach((name, props) -> {
                     ServerSection section = sections.get(name);
@@ -271,21 +272,25 @@ public class SectionManager {
             }
         });
 
-        results.forEach(server -> {
+        int addedServers = 0;
+        for (ServerInfo server : results) {
             if (!section.getServers().contains(server)) {
                 section.getServers().add(server);
                 register(server, section);
+                addedServers++;
                 plugin.getLogger().info(String.format("Added the server %s to %s",
                         server.getName(), section.getName()
                 ));
             }
-        });
+        }
 
-        plugin.getLogger().info(String.format("Recognized %s server%s in the section \"%s\"",
-                results.size(),
-                results.size() != 1 ? "s" : "",
-                section.getName()
-        ));
+        if (addedServers > 0) {
+            plugin.getLogger().info(String.format("Recognized %s server%s in the section \"%s\"",
+                    addedServers,
+                    addedServers != 1 ? "s" : "",
+                    section.getName()
+            ));
+        }
     }
 
     public int calculatePosition(ServerSection section) {
