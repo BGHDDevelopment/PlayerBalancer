@@ -17,9 +17,6 @@ public class GeneralProps {
     @Setting(value = "redis-bungee")
     private boolean redisBungee;
 
-    @Setting(value = "fallback-principal")
-    private boolean fallbackPrincipal;
-
     @Setting
     private String version;
 
@@ -55,14 +52,6 @@ public class GeneralProps {
         this.redisBungee = redisBungee;
     }
 
-    public boolean isFallbackPrincipal() {
-        return fallbackPrincipal;
-    }
-
-    public void setFallbackPrincipal(boolean fallbackPrincipal) {
-        this.fallbackPrincipal = fallbackPrincipal;
-    }
-
     public String getVersion() {
         return version;
     }
@@ -78,7 +67,6 @@ public class GeneralProps {
                 ", silent=" + silent +
                 ", autoReload=" + autoReload +
                 ", redisBungee=" + redisBungee +
-                ", fallbackPrincipal=" + fallbackPrincipal +
                 ", version='" + version + '\'' +
                 '}';
     }

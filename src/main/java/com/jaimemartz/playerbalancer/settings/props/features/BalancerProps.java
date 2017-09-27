@@ -12,6 +12,9 @@ public class BalancerProps {
     @Setting(value = "principal-section")
     private String principalSectionName;
 
+    @Setting(value = "default-principal")
+    private boolean defaultPrincipal;
+
     @Setting(value = "dummy-sections")
     private List<String> dummySectionNames;
 
@@ -62,6 +65,14 @@ public class BalancerProps {
 
     public void setShowPlayers(boolean showPlayers) {
         this.showPlayers = showPlayers;
+    }
+
+    public boolean isDefaultPrincipal() {
+        return defaultPrincipal;
+    }
+
+    public void setDefaultPrincipal(boolean defaultPrincipal) {
+        this.defaultPrincipal = defaultPrincipal;
     }
 
     @Override

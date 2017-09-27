@@ -88,8 +88,10 @@ public class FallbackCommand extends Command {
 
             return target;
         } else {
-            if (plugin.getSettings().getGeneralProps().isFallbackPrincipal()) {
+            if (plugin.getSettings().getBalancerProps().isDefaultPrincipal()) {
                 return plugin.getSectionManager().getPrincipal();
+            } else {
+                MessageUtils.send(player, messages.getUnavailableServerMessage());
             }
         }
 

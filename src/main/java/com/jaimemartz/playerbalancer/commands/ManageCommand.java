@@ -190,6 +190,10 @@ public class ManageCommand extends Command {
                                                         .color(ChatColor.WHITE)
                                                         .append("\"")
                                                         .color(ChatColor.AQUA)
+                                                        .append("\nAddress: ")
+                                                        .color(ChatColor.GRAY)
+                                                        .append(server.getAddress().toString())
+                                                        .color(ChatColor.AQUA)
                                                         .create()))
                                                 .append(String.format(" (%d/%d) ",
                                                         status.getOnline(),

@@ -28,7 +28,8 @@ public class StatusManager {
         stopped = false;
         tactic = plugin.getSettings().getServerCheckerProps().getTactic();
         plugin.getLogger().info(String.format("Starting the ping task, the interval is %s",
-                plugin.getSettings().getServerCheckerProps().getInterval()));
+                plugin.getSettings().getServerCheckerProps().getInterval()
+        ));
 
         task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
             storage.forEach((k, v) -> v.setOutdated(true));
