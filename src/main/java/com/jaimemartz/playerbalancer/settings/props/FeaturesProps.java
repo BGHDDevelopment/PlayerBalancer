@@ -1,9 +1,6 @@
 package com.jaimemartz.playerbalancer.settings.props;
 
-import com.jaimemartz.playerbalancer.settings.props.features.BalancerProps;
-import com.jaimemartz.playerbalancer.settings.props.features.FallbackCommandProps;
-import com.jaimemartz.playerbalancer.settings.props.features.KickHandlerProps;
-import com.jaimemartz.playerbalancer.settings.props.features.ServerCheckerProps;
+import com.jaimemartz.playerbalancer.settings.props.features.*;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -20,6 +17,9 @@ public class FeaturesProps {
 
     @Setting(value = "kick-handler")
     private KickHandlerProps kickHandlerProps;
+
+    @Setting(value = "server-refresh")
+    private ServerRefreshProps serverRefreshProps;
 
     public BalancerProps getBalancerProps() {
         return balancerProps;
@@ -53,6 +53,14 @@ public class FeaturesProps {
         this.kickHandlerProps = kickHandlerProps;
     }
 
+    public ServerRefreshProps getServerRefreshProps() {
+        return serverRefreshProps;
+    }
+
+    public void setServerRefreshProps(ServerRefreshProps serverRefreshProps) {
+        this.serverRefreshProps = serverRefreshProps;
+    }
+
     @Override
     public String toString() {
         return "FeaturesProps{" +
@@ -60,6 +68,7 @@ public class FeaturesProps {
                 ", fallbackCommandProps=" + fallbackCommandProps +
                 ", serverCheckerProps=" + serverCheckerProps +
                 ", kickHandlerProps=" + kickHandlerProps +
+                ", serverRefreshProps=" + serverRefreshProps +
                 '}';
     }
 }

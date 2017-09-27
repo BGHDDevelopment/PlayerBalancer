@@ -7,8 +7,10 @@ import com.jaimemartz.playerbalancer.utils.FixedAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +20,7 @@ public class SectionManager {
     private final PlayerBalancer plugin;
     private final BalancerProps props;
     private ServerSection principal;
+    private ScheduledTask refreshTask;
 
     private final Map<String, ServerSection> sections = Collections.synchronizedMap(new HashMap<>());
     private final Map<ServerInfo, ServerSection> servers = Collections.synchronizedMap(new HashMap<>());
@@ -34,6 +37,19 @@ public class SectionManager {
         for (Stage stage : stages) {
             plugin.getLogger().info("Executing stage \"" + stage.title + "\"");
             stage.execute();
+        }
+
+        if (plugin.getSettings().getServerRefreshProps().isEnabled()) {
+            refreshTask = plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                props.getSectionProps().forEach((name, props) -> {
+                    ServerSection section = sections.get(name);
+                    calculateServers(section);
+                });
+            },
+                    plugin.getSettings().getServerRefreshProps().getDelay(),
+                    plugin.getSettings().getServerRefreshProps().getInterval(),
+                    TimeUnit.MILLISECONDS
+            );
         }
 
         long ending = System.currentTimeMillis() - starting;
@@ -55,6 +71,11 @@ public class SectionManager {
                 plugin.getProxy().getServers().remove(server.getName());
             }
         });
+
+        if (refreshTask != null) {
+            refreshTask.cancel();
+            refreshTask = null;
+        }
 
         principal = null;
         sections.clear();
@@ -195,7 +216,7 @@ public class SectionManager {
             new SectionStage("Resolving servers") {
                 @Override
                 public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    section.getServers().addAll(calculateServers(section));
+                    calculateServers(section);
                 }
             },
             new SectionStage("Section server processing") {
@@ -228,34 +249,43 @@ public class SectionManager {
             },
     };
 
-    public Set<ServerInfo> calculateServers(ServerSection section) {
+    public void calculateServers(ServerSection section) {
         Set<ServerInfo> results = new HashSet<>();
 
         section.getProps().getServerEntries().forEach(entry -> {
             Pattern pattern = Pattern.compile(entry);
-            AtomicBoolean matches = new AtomicBoolean(false);
             plugin.getProxy().getServers().forEach((name, server) -> {
                 Matcher matcher = pattern.matcher(name);
                 if (matcher.matches()) {
-                    plugin.getLogger().info(String.format("Found a match with \"%s\" for entry \"%s\"", name, entry));
                     results.add(server);
-                    register(server, section);
-                    matches.set(true);
                 }
             });
+        });
 
-            if (!matches.get()) {
-                plugin.getLogger().warning(String.format("Could not match any servers with the entry \"%s\"", entry));
+        section.getServers().forEach(server -> {
+            if (!results.contains(server)) {
+                servers.remove(server);
+                plugin.getLogger().info(String.format("Removed the server %s from %s as it does no longer exist",
+                        server.getName(), section.getName()
+                ));
             }
         });
 
-        plugin.getLogger().info(String.format("Recognized %s server(s) out of %s in the section \"%s\"",
+        results.forEach(server -> {
+            if (!section.getServers().contains(server)) {
+                section.getServers().add(server);
+                register(server, section);
+                plugin.getLogger().info(String.format("Added the server %s to %s",
+                        server.getName(), section.getName()
+                ));
+            }
+        });
+
+        plugin.getLogger().info(String.format("Recognized %s server%s in the section \"%s\"",
                 results.size(),
-                section.getProps().getServerEntries(),
+                results.size() != 1 ? "s" : "",
                 section.getName()
         ));
-
-        return results;
     }
 
     public int calculatePosition(ServerSection section) {

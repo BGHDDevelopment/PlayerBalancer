@@ -3,10 +3,7 @@ package com.jaimemartz.playerbalancer.settings;
 import com.jaimemartz.playerbalancer.settings.props.FeaturesProps;
 import com.jaimemartz.playerbalancer.settings.props.GeneralProps;
 import com.jaimemartz.playerbalancer.settings.props.MessagesProps;
-import com.jaimemartz.playerbalancer.settings.props.features.BalancerProps;
-import com.jaimemartz.playerbalancer.settings.props.features.FallbackCommandProps;
-import com.jaimemartz.playerbalancer.settings.props.features.KickHandlerProps;
-import com.jaimemartz.playerbalancer.settings.props.features.ServerCheckerProps;
+import com.jaimemartz.playerbalancer.settings.props.features.*;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -75,6 +72,14 @@ public class SettingsHolder {
 
     public void setKickHandlerProps(KickHandlerProps kickHandlerProps) {
         featuresProps.setKickHandlerProps(kickHandlerProps);
+    }
+
+    public ServerRefreshProps getServerRefreshProps() {
+        return featuresProps.getServerRefreshProps();
+    }
+
+    public void setKickHandlerProps(ServerRefreshProps serverRefreshProps) {
+        featuresProps.setServerRefreshProps(serverRefreshProps);
     }
 
     @Override
