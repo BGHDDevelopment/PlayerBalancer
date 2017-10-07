@@ -1,7 +1,6 @@
 package com.jaimemartz.playerbalancer.connection.provider.types;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.connection.ProviderType;
 import com.jaimemartz.playerbalancer.connection.provider.AbstractProvider;
 import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;

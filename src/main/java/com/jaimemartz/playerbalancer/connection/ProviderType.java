@@ -65,13 +65,14 @@ public enum ProviderType {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
             return provider.requestTarget(plugin, section, servers, player);
-        }
+    }
     },
 
     EXTERNAL {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            return section.getExternalProvider().requestTarget(plugin, section, servers, player);
+            AbstractProvider provider = section.getExternalProvider();
+            return provider.requestTarget(plugin, section, servers, player);
         }
     };
 
