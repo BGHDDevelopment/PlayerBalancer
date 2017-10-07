@@ -44,6 +44,7 @@ jobs:
           path: target/surefire-reports
 
       - store_artifacts:
-          paths:
-            - target/PlayerBalancer.jar
-            - target/PlayerBalancerAddon.jar
+          path: target/PlayerBalancer.jar
+
+      - store_artifacts:
+          path: target/PlayerBalancerAddon.jar
