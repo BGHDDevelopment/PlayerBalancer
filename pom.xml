@@ -1,31 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jaimemartz</groupId>
     <artifactId>playerbalancer</artifactId>
-    <version>2.1.1.0</version>
-    <name>PlayerBalancer</name>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>PlayerBalancer Parent</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>inventive-repo</id>
-            <url>https://repo.inventivetalent.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>bstats-repo</id>
-            <url>http://repo.bstats.org/content/repositories/releases/</url>
-        </repository>
-    </repositories>
+    <modules>
+        <module>Spigot Addon</module>
+        <module>Main Plugin</module>
+    </modules>
+
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>${project.name}</finalName>
         <plugins>
             <plugin>
                 <version>3.3</version>
@@ -36,27 +31,6 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>com.jaimemartz.playerbalancer.metrics</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -65,49 +39,4 @@
             </resource>
         </resources>
     </build>
-    <dependencies>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-proxy</artifactId>
-            <version>local</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.inventivetalent.update</groupId>
-            <artifactId>bungee</artifactId>
-            <version>1.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.imaginarycode.minecraft</groupId>
-            <artifactId>RedisBungee</artifactId>
-            <version>0.3.8-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>ninja.leaping.configurate</groupId>
-            <artifactId>configurate-hocon</artifactId>
-            <version>3.3</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <!-- Already shaded in bungee -->
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bungeecord</artifactId>
-            <version>1.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>

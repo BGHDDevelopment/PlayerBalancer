@@ -1,0 +1,4 @@
+name: PlayerBalancerAddon
+main: com.jaimemartz.playerbalanceraddon.PlayerBalancerAddon
+version: ${project.version}
+author: jaime29010
