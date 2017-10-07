@@ -38,7 +38,7 @@ public class PluginMessageManager implements PluginMessageListener {
             ByteArrayDataInput in = ByteStreams.newDataInput(message);
             String subchannel = in.readUTF();
 
-            contexts.get(new MessageContext(channel, subchannel, player))
+            contexts.get(new MessageContext(channel, subchannel, player.getUniqueId()))
                     .stream().findFirst().ifPresent(a -> a.accept(in));
         }
     }
@@ -64,7 +64,7 @@ public class PluginMessageManager implements PluginMessageListener {
         contexts.put(new MessageContext(
                 "PlayerBalancer",
                 "GetSectionByName",
-                player
+                player.getUniqueId()
         ), ByteArrayDataInput::readUTF);
 
         return true;
@@ -84,7 +84,7 @@ public class PluginMessageManager implements PluginMessageListener {
         contexts.put(new MessageContext(
                 "PlayerBalancer",
                 "GetSectionByServer",
-                player
+                player.getUniqueId()
         ), ByteArrayDataInput::readUTF);
         return true;
     }
@@ -98,16 +98,16 @@ public class PluginMessageManager implements PluginMessageListener {
         contexts.put(new MessageContext(
                 "PlayerBalancer",
                 "GetSectionOfPlayer",
-                player
+                player.getUniqueId()
         ), ByteArrayDataInput::readUTF);
     }
 
     private final class MessageContext {
         private final String channel;
         private final String subchannel;
-        private final Player player;
+        private final UUID player;
 
-        public MessageContext(String channel, String subchannel, Player player) {
+        public MessageContext(String channel, String subchannel, UUID player) {
             this.channel = channel;
             this.subchannel = subchannel;
             this.player = player;

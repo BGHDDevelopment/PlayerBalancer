@@ -6,14 +6,14 @@ public class PlayerBalancerAddon extends JavaPlugin {
     private PluginMessageManager manager;
 
     @Override
-    public void onDisable() {
+    public void onEnable() {
         manager = new PluginMessageManager(this);
-        getCommand("balancer").setExecutor(new MainCommand(this));
+        getCommand("balanceraddon").setExecutor(new MainCommand(this));
     }
 
     @Override
-    public void onEnable() {
-
+    public void onDisable() {
+        //Nothing to do...
     }
 
     public PluginMessageManager getManager() {
