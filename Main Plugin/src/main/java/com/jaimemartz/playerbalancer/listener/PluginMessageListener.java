@@ -111,6 +111,29 @@ public class PluginMessageListener implements Listener {
                     sender.sendData("PlayerBalancer", stream.toByteArray());
                     break;
                 }
+
+                case "GetSectionOfPlayer": {
+                    if (event.getReceiver() instanceof ProxiedPlayer) {
+                        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        DataOutputStream out = new DataOutputStream(stream);
+
+                        ServerSection section = plugin.getSectionManager().getByPlayer(player);
+                        if (section == null) {
+                            return;
+                        }
+
+                        try {
+                            String output = gson.toJson(section);
+                            out.writeUTF(output);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        sender.sendData("PlayerBalancer", stream.toByteArray());
+                    }
+                    break;
+                }
             }
         }
     }
