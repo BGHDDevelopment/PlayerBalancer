@@ -22,7 +22,7 @@ public class SectionManager {
     private ServerSection principal;
     private ScheduledTask refreshTask;
 
-    private final Map<String, Stage> stages = Collections.synchronizedMap(new HashMap<>());
+    private final Map<String, Stage> stages = Collections.synchronizedMap(new LinkedHashMap<>());
     private final Map<String, ServerSection> sections = Collections.synchronizedMap(new HashMap<>());
     private final Map<ServerInfo, ServerSection> servers = Collections.synchronizedMap(new HashMap<>());
 

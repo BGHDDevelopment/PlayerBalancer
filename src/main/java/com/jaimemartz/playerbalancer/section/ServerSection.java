@@ -7,6 +7,7 @@ import com.jaimemartz.playerbalancer.utils.AlphanumComparator;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.Collections;
+import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -20,7 +21,7 @@ public class ServerSection {
 
     private ServerInfo server;
     private SectionCommand command;
-    private Set<ServerInfo> servers;
+    private NavigableSet<ServerInfo> servers;
     private AbstractProvider externalProvider;
 
     private boolean valid = false;
@@ -29,7 +30,7 @@ public class ServerSection {
         this.name = name;
         this.props = props;
 
-        this.servers = Collections.synchronizedSortedSet(new TreeSet<>((lhs, rhs) ->
+        this.servers = Collections.synchronizedNavigableSet(new TreeSet<>((lhs, rhs) ->
                 AlphanumComparator.getInstance().compare(lhs.getName(), rhs.getName())
         ));
     }
@@ -108,7 +109,7 @@ public class ServerSection {
         this.command = command;
     }
 
-    public Set<ServerInfo> getServers() {
+    public NavigableSet<ServerInfo> getServers() {
         return servers;
     }
 

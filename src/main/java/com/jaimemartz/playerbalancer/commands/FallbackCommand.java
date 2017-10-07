@@ -1,5 +1,6 @@
 package com.jaimemartz.playerbalancer.commands;
 
+import com.google.common.collect.Iterables;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
@@ -41,15 +42,8 @@ public class FallbackCommand extends Command {
                         } else if (number > target.getServers().size()) {
                             MessageUtils.send(player, messages.getFailureMessage());
                         } else {
-                            int iterations = 0;
-                            for (ServerInfo server : target.getServers()) {
-                                if (iterations++ < number - 1) {
-                                    continue;
-                                }
-
-                                ConnectionIntent.direct(plugin, player, server, (response, throwable) -> { });
-                                break;
-                            }
+                            ServerInfo server = Iterables.get(target.getServers(), number - 1);
+                            ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {});
                         }
                     } catch (NumberFormatException e) {
                         MessageUtils.send(player, messages.getInvalidInputMessage());
