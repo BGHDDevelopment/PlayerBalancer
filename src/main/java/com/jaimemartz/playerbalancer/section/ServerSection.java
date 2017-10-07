@@ -1,6 +1,7 @@
 package com.jaimemartz.playerbalancer.section;
 
 import com.jaimemartz.playerbalancer.connection.ProviderType;
+import com.jaimemartz.playerbalancer.connection.provider.AbstractProvider;
 import com.jaimemartz.playerbalancer.settings.props.shared.SectionProps;
 import com.jaimemartz.playerbalancer.utils.AlphanumComparator;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -20,6 +21,7 @@ public class ServerSection {
     private ServerInfo server;
     private SectionCommand command;
     private Set<ServerInfo> servers;
+    private AbstractProvider externalProvider;
 
     private boolean valid = false;
 
@@ -80,6 +82,14 @@ public class ServerSection {
     public void setExplicitProvider(ProviderType provider) {
         props.setProvider(provider);
         inherited = false;
+    }
+
+    public void setExternalProvider(AbstractProvider externalProvider) {
+        this.externalProvider = externalProvider;
+    }
+
+    public AbstractProvider getExternalProvider() {
+        return externalProvider;
     }
 
     public ServerInfo getServer() {

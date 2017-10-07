@@ -22,6 +22,7 @@ public class SectionManager {
     private ServerSection principal;
     private ScheduledTask refreshTask;
 
+    private final Map<String, Stage> stages = Collections.synchronizedMap(new HashMap<>());
     private final Map<String, ServerSection> sections = Collections.synchronizedMap(new HashMap<>());
     private final Map<ServerInfo, ServerSection> servers = Collections.synchronizedMap(new HashMap<>());
 
@@ -34,10 +35,131 @@ public class SectionManager {
         plugin.getLogger().info("Executing section initialization stages, this may take a while...");
         long starting = System.currentTimeMillis();
 
-        for (Stage stage : stages) {
+        stages.put("constructing-sections", new SectionStage("Constructing sections") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                ServerSection object = new ServerSection(sectionName, sectionProps);
+                sections.put(sectionName, object);
+            }
+        });
+
+        stages.put("processing-principal-section", new Stage("Processing principal section") {
+            @Override
+            public void execute() {
+                principal = sections.get(props.getPrincipalSectionName());
+                if (principal == null) {
+                    throw new IllegalArgumentException(String.format(
+                            "Could not set principal section, there is no section called \"%s\"",
+                            props.getPrincipalSectionName()
+                    ));
+                }
+            }
+        });
+
+        stages.put("processing-parents", new SectionStage("Processing parents") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                if (sectionProps.getParentName() != null) {
+                    ServerSection parent = getByName(sectionProps.getParentName());
+                    if (principal.equals(section) && parent == null) {
+                        throw new IllegalArgumentException(String.format(
+                                "The section \"%s\" has an invalid parent set",
+                                section.getName()
+                        ));
+                    } else {
+                        section.setParent(parent);
+                    }
+                }
+            }
+        });
+
+        stages.put("validating-parents", new SectionStage("Validating parents") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                ServerSection parent = section.getParent();
+                if (parent != null && parent.getParent() == section) {
+                    throw new IllegalStateException(String.format(
+                            "The sections \"%s\" and \"%s\" are parents of each other",
+                            section.getName(),
+                            parent.getName()
+                    ));
+                }
+            }
+        });
+
+        stages.put("validating-providers", new SectionStage("Validating providers") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                if (sectionProps.getProvider() == null) {
+                    ServerSection current = section.getParent();
+                    if (current != null) {
+                        while (current.getExplicitProvider() == null) {
+                            current = current.getParent();
+                        }
+
+                        plugin.getLogger().info(String.format(
+                                "The section \"%s\" inherits the provider from the section \"%s\"",
+                                section.getName(),
+                                current.getName()
+                        ));
+
+                        section.setInherited(true);
+                    }
+                } else {
+                    section.setInherited(false);
+                }
+            }
+        });
+
+        stages.put("calculating-positions", new SectionStage("Calculating positions") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                section.setPosition(calculatePosition(section));
+            }
+        });
+
+        stages.put("resolving-servers", new SectionStage("Resolving servers") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                calculateServers(section);
+            }
+        });
+
+        stages.put("section-server-processing", new SectionStage("Section server processing") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                if (sectionProps.getServerName() != null) {
+                    SectionServer server = new SectionServer(props, section);
+                    section.setServer(server);
+                    plugin.getSectionManager().register(server, section);
+                    FixedAdapter.getFakeServers().put(server.getName(), server);
+                    plugin.getProxy().getServers().put(server.getName(), server);
+                }
+            }
+        });
+
+        stages.put("section-command-processing", new SectionStage("Section command processing") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                if (sectionProps.getCommandProps() != null) {
+                    SectionCommand command = new SectionCommand(plugin, section);
+                    section.setCommand(command);
+                    plugin.getProxy().getPluginManager().registerCommand(plugin, command);
+                }
+            }
+        });
+
+        stages.put("finishing-loading", new SectionStage("Finishing loading sections") {
+            @Override
+            public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
+                section.setValid(true);
+            }
+        });
+
+        stages.forEach((name, stage) -> {
             plugin.getLogger().info("Executing stage \"" + stage.title + "\"");
             stage.execute();
-        }
+        });
 
         if (plugin.getSettings().getServerRefreshProps().isEnabled()) {
             plugin.getLogger().info("Starting automatic server refresh task");
@@ -135,120 +257,6 @@ public class SectionManager {
 
         return getByServer(server.getInfo());
     }
-
-    private final Stage[] stages = {
-            new SectionStage("Constructing sections") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    ServerSection object = new ServerSection(sectionName, sectionProps);
-                    sections.put(sectionName, object);
-                }
-            },
-            new Stage("Processing principal section") {
-                @Override
-                public void execute() {
-                    principal = sections.get(props.getPrincipalSectionName());
-                    if (principal == null) {
-                        throw new IllegalArgumentException(String.format(
-                                "Could not set principal section, there is no section called \"%s\"",
-                                props.getPrincipalSectionName()
-                        ));
-                    }
-                }
-            },
-            new SectionStage("Processing parents") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    if (sectionProps.getParentName() != null) {
-                        ServerSection parent = getByName(sectionProps.getParentName());
-                        if (principal.equals(section) && parent == null) {
-                            throw new IllegalArgumentException(String.format(
-                                    "The section \"%s\" has an invalid parent set",
-                                    section.getName()
-                            ));
-                        } else {
-                            section.setParent(parent);
-                        }
-                    }
-                }
-            },
-            new SectionStage("Validating parents") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    ServerSection parent = section.getParent();
-                    if (parent != null && parent.getParent() == section) {
-                        throw new IllegalStateException(String.format(
-                                "The sections \"%s\" and \"%s\" are parents of each other",
-                                section.getName(),
-                                parent.getName()
-                        ));
-                    }
-                }
-            },
-            new SectionStage("Validating providers") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    if (sectionProps.getProvider() == null) {
-                        ServerSection current = section.getParent();
-                        if (current != null) {
-                            while (current.getExplicitProvider() == null) {
-                                current = current.getParent();
-                            }
-
-                            plugin.getLogger().info(String.format(
-                                    "The section \"%s\" inherits the provider from the section \"%s\"",
-                                    section.getName(),
-                                    current.getName()
-                            ));
-
-                            section.setInherited(true);
-                        }
-                    } else {
-                        section.setInherited(false);
-                    }
-                }
-            },
-            new SectionStage("Calculating positions") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    section.setPosition(calculatePosition(section));
-                }
-            },
-            new SectionStage("Resolving servers") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    calculateServers(section);
-                }
-            },
-            new SectionStage("Section server processing") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    if (sectionProps.getServerName() != null) {
-                        SectionServer server = new SectionServer(props, section);
-                        section.setServer(server);
-                        plugin.getSectionManager().register(server, section);
-                        FixedAdapter.getFakeServers().put(server.getName(), server);
-                        plugin.getProxy().getServers().put(server.getName(), server);
-                    }
-                }
-            },
-            new SectionStage("Section command processing") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    if (sectionProps.getCommandProps() != null) {
-                        SectionCommand command = new SectionCommand(plugin, section);
-                        section.setCommand(command);
-                        plugin.getProxy().getPluginManager().registerCommand(plugin, command);
-                    }
-                }
-            },
-            new SectionStage("Finishing loading sections") {
-                @Override
-                public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
-                    section.setValid(true);
-                }
-            },
-    };
 
     public void calculateServers(ServerSection section) {
         Set<ServerInfo> results = new HashSet<>();
@@ -350,6 +358,10 @@ public class SectionManager {
 
     public Map<String, ServerSection> getSections() {
         return sections;
+    }
+
+    public Stage getStage(String name) {
+        return stages.get(name);
     }
 
     private abstract class Stage {

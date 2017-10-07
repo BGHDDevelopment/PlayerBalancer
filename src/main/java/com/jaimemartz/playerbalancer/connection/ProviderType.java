@@ -1,8 +1,11 @@
 package com.jaimemartz.playerbalancer.connection;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
+import com.jaimemartz.playerbalancer.connection.provider.AbstractProvider;
+import com.jaimemartz.playerbalancer.connection.provider.types.*;
 import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;
+import com.jaimemartz.playerbalancer.settings.props.features.BalancerProps;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -12,97 +15,65 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public enum ProviderType {
     NONE {
+        NullProvider provider = new NullProvider();
+
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            return null;
+            return provider.requestTarget(plugin, section, servers, player);
         }
     },
 
     RANDOM {
+        RandomProvider provider = new RandomProvider();
+
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            return ProviderType.getRandom(servers);
+            return provider.requestTarget(plugin, section, servers, player);
         }
     },
 
     LOWEST {
+        LowestProvider provider = new LowestProvider();
+
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            int min = Integer.MAX_VALUE;
-            ServerInfo target = null;
-
-            for (ServerInfo server : servers) {
-                int count = plugin.getNetworkManager().getPlayers(server);
-
-                if (count < min) {
-                    min = count;
-                    target = server;
-                }
-            }
-
-            return target;
+            return provider.requestTarget(plugin, section, servers, player);
         }
     },
 
     BALANCED {
+        BalancedProvider provider = new BalancedProvider();
+
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            List<ServerInfo> results = new ArrayList<>();
-            int min = Integer.MAX_VALUE;
-
-            for (ServerInfo server : servers) {
-                int count = plugin.getNetworkManager().getPlayers(server);
-
-                if (count <= min) {
-                    if (count < min) {
-                        min = count;
-                        results.clear();
-                    }
-                    results.add(server);
-                }
-            }
-
-            return ProviderType.getRandom(results);
+            return provider.requestTarget(plugin, section, servers, player);
         }
     },
 
     PROGRESSIVE {
+        ProgressiveProvider provider = new ProgressiveProvider();
+
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            for (ServerInfo server : servers) {
-                ServerStatus status = plugin.getStatusManager().getStatus(server);
-                if (plugin.getNetworkManager().getPlayers(server) < status.getMaximum()) {
-                    return server;
-                }
-            }
-
-            return ProviderType.getRandom(servers);
+            return provider.requestTarget(plugin, section, servers, player);
         }
     },
 
     FILLER {
+        FillerProvider provider = new FillerProvider();
+
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-            int max = Integer.MIN_VALUE;
-            ServerInfo target = null;
+            return provider.requestTarget(plugin, section, servers, player);
+        }
+    },
 
-            for (ServerInfo server : servers) {
-                ServerStatus status = plugin.getStatusManager().getStatus(server);
-                int count = plugin.getNetworkManager().getPlayers(server);
-
-                if (count > max && count <= status.getMaximum()) {
-                    max = count;
-                    target = server;
-                }
-            }
-
-            return target;
+    EXTERNAL {
+        @Override
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
+            return section.getExternalProvider().requestTarget(plugin, section, servers, player);
         }
     };
 
     public abstract ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player);
-
-    private static ServerInfo getRandom(List<ServerInfo> list) {
-        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
-    }
 }

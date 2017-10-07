@@ -15,17 +15,18 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public enum PasteHelper {
-    PLUGIN((sender, url) -> {
+    PLUGIN((sender, address) -> {
         if (sender instanceof ProxiedPlayer) {
             sender.sendMessage(new ComponentBuilder("Click me for the PlayerBalancer configuration")
-                    .event(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString()))
+                    .event(new ClickEvent(ClickEvent.Action.OPEN_URL, address.toString()))
                     .color(ChatColor.GREEN)
                     .create()
             );
         } else {
-            sender.sendMessage(new ComponentBuilder("PlayerBalancer configuration link: " + url.toString()).create());
+            sender.sendMessage(new ComponentBuilder("PlayerBalancer configuration link: " + address.toString()).create());
         }
     }) {
         @Override
@@ -52,15 +53,15 @@ public enum PasteHelper {
         }
     },
 
-    BUNGEE((sender, url) -> {
+    BUNGEE((sender, address) -> {
         if (sender instanceof ProxiedPlayer) {
             sender.sendMessage(new ComponentBuilder("Click me for the BungeeCord configuration")
-                    .event(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString()))
+                    .event(new ClickEvent(ClickEvent.Action.OPEN_URL, address.toString()))
                     .color(ChatColor.GREEN)
                     .create()
             );
         } else {
-            sender.sendMessage(new ComponentBuilder("BungeeCord configuration link: " + url.toString()).create());
+            sender.sendMessage(new ComponentBuilder("BungeeCord configuration link: " + address.toString()).create());
         }
     }) {
         @Override

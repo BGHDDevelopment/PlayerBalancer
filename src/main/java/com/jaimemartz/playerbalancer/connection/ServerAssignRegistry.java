@@ -8,6 +8,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Map;
 
+//todo improve this
 public class ServerAssignRegistry {
     private static final Table<ProxiedPlayer, ServerSection, ServerInfo> table = HashBasedTable.create();
 
