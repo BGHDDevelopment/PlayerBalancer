@@ -1,9 +1,6 @@
 package com.jaimemartz.playerbalanceraddon;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.*;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
@@ -15,7 +12,7 @@ import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 public class PluginMessageManager implements PluginMessageListener {
-    private final Multimap<MessageContext, Consumer<ByteArrayDataInput>> contexts = HashMultimap.create();
+    private final Multimap<MessageContext, Consumer<ByteArrayDataInput>> contexts = LinkedHashMultimap.create();
     private final PlayerBalancerAddon plugin;
 
     public PluginMessageManager(PlayerBalancerAddon plugin) {
