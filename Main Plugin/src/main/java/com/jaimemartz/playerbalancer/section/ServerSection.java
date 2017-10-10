@@ -19,10 +19,10 @@ public class ServerSection {
     private ServerSection parent;
     private int position;
 
-    private ServerInfo server;
-    private SectionCommand command;
-    private NavigableSet<ServerInfo> servers;
-    private AbstractProvider externalProvider;
+    private transient ServerInfo server;
+    private transient SectionCommand command;
+    private transient AbstractProvider externalProvider;
+    private Set<ServerInfo> servers;
 
     private boolean valid = false;
 
@@ -109,7 +109,7 @@ public class ServerSection {
         this.command = command;
     }
 
-    public NavigableSet<ServerInfo> getServers() {
+    public Set<ServerInfo> getServers() {
         return servers;
     }
 

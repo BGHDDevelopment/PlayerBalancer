@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
+import com.jaimemartz.playerbalancer.json.ServerInfoAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -24,10 +25,9 @@ public class PluginMessageListener implements Listener {
 
     public PluginMessageListener(PlayerBalancer plugin) {
         this.plugin = plugin;
-
         GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(ServerInfo.class, new ServerInfoAdapter());
         builder.serializeNulls();
-        builder.excludeFieldsWithoutExposeAnnotation();
         gson = builder.create();
     }
 
@@ -37,6 +37,7 @@ public class PluginMessageListener implements Listener {
             ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
             String request = in.readUTF();
             ServerInfo sender = ((Server) event.getSender()).getInfo();
+
             switch (request) {
                 case "Connect": {
                     if (event.getReceiver() instanceof ProxiedPlayer) {
@@ -78,6 +79,7 @@ public class PluginMessageListener implements Listener {
 
                     try {
                         String output = gson.toJson(section);
+                        out.writeUTF("GetSectionByName");
                         out.writeUTF(output);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -103,6 +105,7 @@ public class PluginMessageListener implements Listener {
 
                     try {
                         String output = gson.toJson(section);
+                        out.writeUTF("GetSectionByServer");
                         out.writeUTF(output);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -125,6 +128,7 @@ public class PluginMessageListener implements Listener {
 
                         try {
                             String output = gson.toJson(section);
+                            out.writeUTF("GetSectionOfPlayer");
                             out.writeUTF(output);
                         } catch (IOException e) {
                             e.printStackTrace();

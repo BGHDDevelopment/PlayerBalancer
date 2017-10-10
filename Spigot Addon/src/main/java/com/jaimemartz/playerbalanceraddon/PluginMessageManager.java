@@ -1,24 +1,21 @@
 package com.jaimemartz.playerbalanceraddon;
 
-import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 
 public class PluginMessageManager implements PluginMessageListener {
-    private final Multimap<MessageContext, Consumer<ByteArrayDataInput>> contexts = LinkedListMultimap.create();
+    private final Multimap<MessageContext, Consumer<ByteArrayDataInput>> contexts = HashMultimap.create();
     private final PlayerBalancerAddon plugin;
 
     public PluginMessageManager(PlayerBalancerAddon plugin) {
@@ -38,8 +35,14 @@ public class PluginMessageManager implements PluginMessageListener {
             ByteArrayDataInput in = ByteStreams.newDataInput(message);
             String subchannel = in.readUTF();
 
-            contexts.get(new MessageContext(channel, subchannel, player.getUniqueId()))
-                    .stream().findFirst().ifPresent(a -> a.accept(in));
+            Iterator<Consumer<ByteArrayDataInput>> iterator = contexts.get(
+                    new MessageContext(channel, subchannel, player.getUniqueId())
+            ).iterator();
+
+            if (iterator.hasNext()) {
+                iterator.next().accept(in);
+                iterator.remove();
+            }
         }
     }
 
@@ -59,13 +62,14 @@ public class PluginMessageManager implements PluginMessageListener {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("GetSectionByName");
         out.writeUTF(section);
-        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
 
         contexts.put(new MessageContext(
                 "PlayerBalancer",
                 "GetSectionByName",
                 player.getUniqueId()
-        ), ByteArrayDataInput::readUTF);
+        ), (response) -> consumer.accept(response.readUTF()));
+
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
 
         return true;
     }
@@ -79,13 +83,14 @@ public class PluginMessageManager implements PluginMessageListener {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("GetSectionByServer");
         out.writeUTF(server);
-        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
 
         contexts.put(new MessageContext(
                 "PlayerBalancer",
                 "GetSectionByServer",
                 player.getUniqueId()
-        ), ByteArrayDataInput::readUTF);
+        ), (response) -> consumer.accept(response.readUTF()));
+
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
         return true;
     }
 
@@ -93,13 +98,14 @@ public class PluginMessageManager implements PluginMessageListener {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("GetSectionOfPlayer");
         out.writeUTF(player.getName());
-        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
 
         contexts.put(new MessageContext(
                 "PlayerBalancer",
                 "GetSectionOfPlayer",
                 player.getUniqueId()
-        ), ByteArrayDataInput::readUTF);
+        ), (response) -> consumer.accept(response.readUTF()));
+
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 
     private final class MessageContext {
@@ -131,6 +137,15 @@ public class PluginMessageManager implements PluginMessageListener {
             result = 31 * result + (subchannel != null ? subchannel.hashCode() : 0);
             result = 31 * result + (player != null ? player.hashCode() : 0);
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "MessageContext{" +
+                    "channel='" + channel + '\'' +
+                    ", subchannel='" + subchannel + '\'' +
+                    ", player=" + player +
+                    '}';
         }
     }
 }

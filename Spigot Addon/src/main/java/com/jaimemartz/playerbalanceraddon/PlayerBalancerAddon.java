@@ -8,7 +8,7 @@ public class PlayerBalancerAddon extends JavaPlugin {
     @Override
     public void onEnable() {
         manager = new PluginMessageManager(this);
-        getCommand("balanceraddon").setExecutor(new MainCommand(this));
+        getCommand("spb").setExecutor(new MainCommand(this));
     }
 
     @Override

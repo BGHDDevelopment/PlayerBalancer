@@ -2,5 +2,9 @@ name: PlayerBalancerAddon
 main: com.jaimemartz.playerbalanceraddon.PlayerBalancerAddon
 version: ${project.version}
 author: jaime29010
-
 softdepend: [PlaceholderAPI]
+
+commands:
+  spb:
+    description: Command to interact with the bungee side of PlayerBalancer
+    permission: playerbalancer.admin
