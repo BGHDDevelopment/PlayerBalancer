@@ -79,6 +79,7 @@ public class BalancerProps {
     public String toString() {
         return "BalancerProps{" +
                 "principalSectionName='" + principalSectionName + '\'' +
+                ", defaultPrincipal=" + defaultPrincipal +
                 ", dummySectionNames=" + dummySectionNames +
                 ", reiterativeSectionNames=" + reiterativeSectionNames +
                 ", sectionProps=" + sectionProps +
