@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.listener;
+package com.jaimemartz.playerbalancer.listeners;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;

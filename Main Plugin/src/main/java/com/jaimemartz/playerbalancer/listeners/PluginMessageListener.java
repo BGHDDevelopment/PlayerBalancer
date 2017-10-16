@@ -1,13 +1,12 @@
-package com.jaimemartz.playerbalancer.listener;
+package com.jaimemartz.playerbalancer.listeners;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.json.ServerInfoAdapter;
+import com.jaimemartz.playerbalancer.utils.ServerInfoAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -18,6 +17,9 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class PluginMessageListener implements Listener {
     private final PlayerBalancer plugin;
@@ -26,7 +28,11 @@ public class PluginMessageListener implements Listener {
     public PluginMessageListener(PlayerBalancer plugin) {
         this.plugin = plugin;
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(ServerInfo.class, new ServerInfoAdapter());
+
+        builder.registerTypeAdapter(ServerInfo.class, (JsonSerializer<ServerInfo>) (server, type, context) ->
+                context.serialize(server.getName())
+        );
+
         builder.serializeNulls();
         gson = builder.create();
     }
@@ -44,9 +50,8 @@ public class PluginMessageListener implements Listener {
                         ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
                         ServerSection section = plugin.getSectionManager().getByName(in.readUTF());
 
-                        if (section == null) {
-                            return;
-                        }
+                        if (section == null)
+                            break;
 
                         ConnectionIntent.simple(plugin, player, section);
                     }
@@ -55,14 +60,14 @@ public class PluginMessageListener implements Listener {
 
                 case "ConnectOther": {
                     ProxiedPlayer player = plugin.getProxy().getPlayer(in.readUTF());
-                    if (player == null) {
-                        return;
-                    }
+
+                    if (player == null)
+                        break;
 
                     ServerSection section = plugin.getSectionManager().getByName(in.readUTF());
-                    if (section == null) {
-                        return;
-                    }
+
+                    if (section == null)
+                        break;
 
                     ConnectionIntent.simple(plugin, player, section);
                     break;
@@ -73,9 +78,9 @@ public class PluginMessageListener implements Listener {
                     DataOutputStream out = new DataOutputStream(stream);
 
                     ServerSection section = plugin.getSectionManager().getByName(in.readUTF());
-                    if (section == null) {
-                        return;
-                    }
+
+                    if (section == null)
+                        break;
 
                     try {
                         String output = gson.toJson(section);
@@ -94,14 +99,14 @@ public class PluginMessageListener implements Listener {
                     DataOutputStream out = new DataOutputStream(stream);
 
                     ServerInfo server = plugin.getProxy().getServerInfo(in.readUTF());
-                    if (server == null) {
-                        return;
-                    }
+
+                    if (server == null)
+                        break;
 
                     ServerSection section = plugin.getSectionManager().getByServer(server);
-                    if (section == null) {
-                        return;
-                    }
+
+                    if (section == null)
+                        break;
 
                     try {
                         String output = gson.toJson(section);
@@ -122,9 +127,9 @@ public class PluginMessageListener implements Listener {
                         DataOutputStream out = new DataOutputStream(stream);
 
                         ServerSection section = plugin.getSectionManager().getByPlayer(player);
-                        if (section == null) {
-                            return;
-                        }
+
+                        if (section == null)
+                            break;
 
                         try {
                             String output = gson.toJson(section);
@@ -136,6 +141,27 @@ public class PluginMessageListener implements Listener {
 
                         sender.sendData("PlayerBalancer", stream.toByteArray());
                     }
+                    break;
+                }
+
+                case "GetSectionPlayerCount": {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    DataOutputStream out = new DataOutputStream(stream);
+
+                    ServerSection section = plugin.getSectionManager().getByName(in.readUTF());
+
+                    if (section == null)
+                        break;
+
+                    try {
+                        out.writeUTF("GetSectionPlayerCount");
+                        out.writeInt(section.getServers().stream()
+                                .mapToInt(a -> a.getPlayers().size()).sum());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    sender.sendData("PlayerBalancer", stream.toByteArray());
                     break;
                 }
             }

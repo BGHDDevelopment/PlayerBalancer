@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.json;
+package com.jaimemartz.playerbalancer.utils;
 
 import com.google.gson.*;
 import net.md_5.bungee.api.config.ServerInfo;

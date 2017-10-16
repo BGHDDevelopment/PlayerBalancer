@@ -1,6 +1,8 @@
-package com.jaimemartz.playerbalancer.commands;
+package com.jaimemartz.playerbalancer.services;
 
 import com.google.common.collect.Iterables;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
@@ -13,14 +15,18 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
-public class FallbackCommand extends Command {
+public class FallbackService extends Command implements Listener {
     protected final PlayerBalancer plugin;
     protected final MessagesProps messages;
     private final FallbackCommandProps props;
 
-    public FallbackCommand(PlayerBalancer plugin, CommandProps props) {
+    public FallbackService(PlayerBalancer plugin, CommandProps props) {
         super(props.getName(), props.getPermission(), props.getAliasesArray());
         this.props = plugin.getSettings().getFallbackCommandProps();
         this.messages = plugin.getSettings().getMessagesProps();
@@ -90,5 +96,54 @@ public class FallbackCommand extends Command {
         }
 
         return null;
+    }
+
+    @EventHandler
+    public void onPluginMessage(PluginMessageEvent event) {
+        if (event.getTag().equals("PlayerBalancer") && event.getSender() instanceof Server) {
+            ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
+            String request = in.readUTF();
+            ServerInfo sender = ((Server) event.getSender()).getInfo();
+
+            switch (request) {
+                case "FallbackPlayer": {
+                    if (event.getReceiver() instanceof ProxiedPlayer) {
+                        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+                        ServerSection target = getSection(player);
+
+                        if (target == null)
+                            break;
+
+                        ConnectionIntent.simple(
+                                plugin,
+                                player,
+                                target
+                        );
+                    }
+
+                    break;
+                }
+
+                case "FallbackOtherPlayer": {
+                    ProxiedPlayer player = plugin.getProxy().getPlayer(in.readUTF());
+
+                    if (player == null)
+                        break;
+
+                    ServerSection target = getSection(player);
+
+                    if (target == null)
+                        break;
+
+                    ConnectionIntent.simple(
+                            plugin,
+                            player,
+                            target
+                    );
+
+                    break;
+                }
+            }
+        }
     }
 }

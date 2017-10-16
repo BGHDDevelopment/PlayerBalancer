@@ -72,9 +72,18 @@ public enum ProviderType {
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
             AbstractProvider provider = section.getExternalProvider();
+            if (provider == null) {
+                plugin.getLogger().warning("Target requested to the EXTERNAL provider with the section not having a provider instance, falling back to RANDOM...");
+                return RANDOM.requestTarget(plugin, section, servers, player);
+            }
             return provider.requestTarget(plugin, section, servers, player);
         }
     };
 
-    public abstract ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player);
+    public abstract ServerInfo requestTarget(
+            PlayerBalancer plugin,
+            ServerSection section,
+            List<ServerInfo> servers,
+            ProxiedPlayer player
+    );
 }

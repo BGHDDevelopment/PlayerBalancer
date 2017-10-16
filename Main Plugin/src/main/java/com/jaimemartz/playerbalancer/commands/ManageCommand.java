@@ -46,7 +46,7 @@ public class ManageCommand extends Command {
                                     if (sender instanceof ProxiedPlayer) {
                                         ConnectionIntent.simple(plugin, (ProxiedPlayer) sender, section);
                                     } else {
-                                        sender.sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());
+                                        sender.sendMessage(new ComponentBuilder("This command variant can only be executed by a player").color(ChatColor.RED).create());
                                     }
                                 }
                             } else {

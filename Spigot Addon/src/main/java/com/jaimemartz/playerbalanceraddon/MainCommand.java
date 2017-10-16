@@ -23,18 +23,18 @@ public class MainCommand implements CommandExecutor {
                     case "connect": {
                         if (args.length >= 2) {
                             String input = args[1];
-                            if (args.length == 3) {
+                            if (args.length >= 3) {
                                 Player player = plugin.getServer().getPlayer(args[2]);
                                 if (player != null) {
                                     plugin.getManager().connectPlayer(player, input);
                                 } else {
-                                    sender.spigot().sendMessage(new ComponentBuilder("There is no player with that name connected to this proxy").color(ChatColor.RED).create());
+                                    sender.spigot().sendMessage(new ComponentBuilder("There is no player with that name connected to this server").color(ChatColor.RED).create());
                                 }
                             } else {
                                 if (sender instanceof Player) {
                                     plugin.getManager().connectPlayer((Player) sender, input);
                                 } else {
-                                    sender.spigot().sendMessage(new ComponentBuilder("This command can only be executed by a player").color(ChatColor.RED).create());
+                                    sender.spigot().sendMessage(new ComponentBuilder("This command variant can only be executed by a player").color(ChatColor.RED).create());
                                 }
                             }
                         } else {
@@ -43,6 +43,25 @@ public class MainCommand implements CommandExecutor {
                         break;
                     }
 
+                    case "fallback": {
+                        if (args.length >= 2) {
+                            Player player = plugin.getServer().getPlayer(args[1]);
+                            if (player != null) {
+                                plugin.getManager().fallbackPlayer((Player) sender);
+                            } else {
+                                sender.spigot().sendMessage(new ComponentBuilder("There is no player with that name connected to this server").color(ChatColor.RED).create());
+                            }
+                        } else {
+                            if (sender instanceof Player) {
+                                plugin.getManager().fallbackPlayer((Player) sender);
+                            } else {
+                                sender.spigot().sendMessage(new ComponentBuilder("This command variant can only be executed by a player").color(ChatColor.RED).create());
+                            }
+                        }
+                        break;
+                    }
+
+                    /*
                     case "info": {
                         plugin.getManager().getSectionOfPlayer((Player) sender, (a) -> {
                             System.out.println(a);
@@ -50,12 +69,13 @@ public class MainCommand implements CommandExecutor {
                         });
                         break;
                     }
+                    */
                 }
             } else {
                 sender.spigot().sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
                 sender.spigot().sendMessage(new ComponentBuilder("Available commands:").color(ChatColor.GRAY).create());
                 sender.spigot().sendMessage(new ComponentBuilder("/spb connect <section> [player]").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Connects you or the specified player to that section").color(ChatColor.RED).create());
-                sender.spigot().sendMessage(new ComponentBuilder("/spb fallback").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Connects you to the parent section").color(ChatColor.RED).create());
+                sender.spigot().sendMessage(new ComponentBuilder("/spb fallback [player]").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Connects you or the specified player to the parent of the current section").color(ChatColor.RED).create());
                 sender.spigot().sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
             }
         }

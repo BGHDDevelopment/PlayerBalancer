@@ -67,7 +67,6 @@ public class PluginMessageManager implements PluginMessageListener {
         ), (response) -> consumer.accept(response.readUTF()));
 
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
-
         return true;
     }
 
@@ -91,6 +90,26 @@ public class PluginMessageManager implements PluginMessageListener {
         return true;
     }
 
+    public boolean getSectionPlayerCount(String section, Consumer<Integer> consumer) {
+        Player player = Iterables.getFirst(plugin.getServer().getOnlinePlayers(), null);
+        if (player == null) {
+            return false;
+        }
+
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("GetSectionPlayerCount");
+        out.writeUTF(section);
+
+        contexts.put(new MessageContext(
+                "PlayerBalancer",
+                "GetSectionPlayerCount",
+                player.getUniqueId()
+        ), (response) -> consumer.accept(response.readInt()));
+
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+        return true;
+    }
+
     public void getSectionOfPlayer(Player player, Consumer<String> consumer) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("GetSectionOfPlayer");
@@ -102,6 +121,13 @@ public class PluginMessageManager implements PluginMessageListener {
                 player.getUniqueId()
         ), (response) -> consumer.accept(response.readUTF()));
 
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+
+    public void fallbackPlayer(Player player) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("FallbackPlayer");
+        out.writeUTF(player.getName());
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 
