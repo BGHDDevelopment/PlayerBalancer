@@ -31,7 +31,7 @@ public class PlaceholderHandler extends EZPlaceholderHook {
                 sectionPlayerCounts.put(section, count);
             });
 
-            return String.valueOf(sectionPlayerCounts.get(section));
+            return String.valueOf(sectionPlayerCounts.getOrDefault(section, 0));
         }
 
         return null;

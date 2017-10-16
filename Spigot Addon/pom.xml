@@ -5,12 +5,13 @@
     <parent>
         <artifactId>playerbalancer</artifactId>
         <groupId>com.jaimemartz</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>PlayerBalancer Addon</name>
     <artifactId>playerbalancer-addon</artifactId>
+    <version>1.0 for 2.1.2.0+</version>
 
     <build>
         <finalName>PlayerBalancerAddon</finalName>

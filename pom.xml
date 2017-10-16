@@ -7,7 +7,7 @@
     <groupId>com.jaimemartz</groupId>
     <artifactId>playerbalancer</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1</version>
     <name>PlayerBalancer Parent</name>
 
     <properties>
