@@ -1,12 +1,13 @@
-package com.jaimemartz.playerbalancer.listeners;
+package com.jaimemartz.playerbalancer.services;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSerializer;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
 import com.jaimemartz.playerbalancer.section.ServerSection;
-import com.jaimemartz.playerbalancer.utils.ServerInfoAdapter;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
@@ -17,18 +18,16 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.stream.Collectors;
 
-public class PluginMessageListener implements Listener {
+public class MessagingService implements Listener {
     private final PlayerBalancer plugin;
     private final Gson gson;
 
-    public PluginMessageListener(PlayerBalancer plugin) {
+    public MessagingService(PlayerBalancer plugin) {
         this.plugin = plugin;
         GsonBuilder builder = new GsonBuilder();
 
+        //Only serialize the name of ServerInfo
         builder.registerTypeAdapter(ServerInfo.class, (JsonSerializer<ServerInfo>) (server, type, context) ->
                 context.serialize(server.getName())
         );
@@ -168,3 +167,4 @@ public class PluginMessageListener implements Listener {
         }
     }
 }
+

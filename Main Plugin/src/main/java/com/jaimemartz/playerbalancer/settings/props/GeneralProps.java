@@ -17,6 +17,9 @@ public class GeneralProps {
     @Setting(value = "redis-bungee")
     private boolean redisBungee;
 
+    @Setting(value = "plugin-messaging")
+    private boolean pluginMessaging;
+
     @Setting
     private String version;
 
@@ -52,6 +55,14 @@ public class GeneralProps {
         this.redisBungee = redisBungee;
     }
 
+    public boolean isPluginMessaging() {
+        return pluginMessaging;
+    }
+
+    public void setPluginMessaging(boolean pluginMessaging) {
+        this.pluginMessaging = pluginMessaging;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -67,6 +78,7 @@ public class GeneralProps {
                 ", silent=" + silent +
                 ", autoReload=" + autoReload +
                 ", redisBungee=" + redisBungee +
+                ", pluginMessaging=" + pluginMessaging +
                 ", version='" + version + '\'' +
                 '}';
     }

@@ -11,6 +11,7 @@ import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
+import com.jaimemartz.playerbalancer.services.MessagingService;
 import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
@@ -37,7 +38,8 @@ public class PlayerBalancer extends Plugin {
     private ConfigurationLoader<CommentedConfigurationNode> loader;
     private FallbackService fallbackService;
     private Command mainCommand, manageCommand;
-    private Listener connectListener, kickListener, messageListener, reloadListener;
+    private MessagingService messagingService;
+    private Listener connectListener, kickListener, reloadListener;
 
     @Override
     public void onEnable() {
@@ -101,6 +103,7 @@ public class PlayerBalancer extends Plugin {
                 sectionManager.load();
 
                 statusManager = new StatusManager(this);
+
                 if (settings.getServerCheckerProps().isEnabled()) {
                     statusManager.start();
                 }
@@ -111,20 +114,20 @@ public class PlayerBalancer extends Plugin {
                     getProxy().getPluginManager().registerCommand(this, fallbackService);
                 }
 
-                getProxy().getPluginManager().registerListener(this, fallbackService);
-
                 connectListener = new ServerConnectListener(this);
                 getProxy().getPluginManager().registerListener(this, connectListener);
 
-                messageListener = new PluginMessageListener(this);
-                getProxy().getPluginManager().registerListener(this, messageListener);
+                if (settings.getGeneralProps().isPluginMessaging()) {
+                    getProxy().registerChannel("PlayerBalancer");
+                    messagingService = new MessagingService(this);
+                    getProxy().getPluginManager().registerListener(this, fallbackService);
+                    getProxy().getPluginManager().registerListener(this, messagingService);
+                }
 
                 manageCommand = new ManageCommand(this);
                 getProxy().getPluginManager().registerCommand(this, manageCommand);
 
                 getProxy().getPluginManager().registerListener(this, new PlayerDisconnectListener(this));
-
-                getProxy().registerChannel("PlayerBalancer");
 
                 PasteHelper.reset();
 
@@ -180,8 +183,11 @@ public class PlayerBalancer extends Plugin {
             getProxy().getPluginManager().unregisterListener(connectListener);
             connectListener = null;
 
-            getProxy().getPluginManager().unregisterListener(messageListener);
-            messageListener = null;
+            if (settings.getGeneralProps().isPluginMessaging()) {
+                getProxy().unregisterChannel("PlayerBalancer");
+                getProxy().getPluginManager().unregisterListener(messagingService);
+                messagingService = null;
+            }
 
             getProxy().getPluginManager().unregisterCommand(manageCommand);
             manageCommand = null;
