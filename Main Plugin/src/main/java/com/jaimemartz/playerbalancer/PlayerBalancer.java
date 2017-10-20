@@ -1,16 +1,19 @@
 package com.jaimemartz.playerbalancer;
 
 import com.google.common.reflect.TypeToken;
-import com.jaimemartz.playerbalancer.services.FallbackService;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
-import com.jaimemartz.playerbalancer.listeners.*;
+import com.jaimemartz.playerbalancer.listeners.PlayerDisconnectListener;
+import com.jaimemartz.playerbalancer.listeners.ProxyReloadListener;
+import com.jaimemartz.playerbalancer.listeners.ServerConnectListener;
+import com.jaimemartz.playerbalancer.listeners.ServerKickListener;
 import com.jaimemartz.playerbalancer.manager.NetworkManager;
 import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
+import com.jaimemartz.playerbalancer.services.FallbackService;
 import com.jaimemartz.playerbalancer.services.MessagingService;
 import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import net.md_5.bungee.api.plugin.Command;
@@ -21,11 +24,10 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.bstats.bungeecord.Metrics;
 import org.bstats.bungeecord.Metrics.SingleLineChart;
-import org.inventivetalent.update.bungee.BungeeUpdater;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.logging.Level;
 
@@ -48,15 +50,33 @@ public class PlayerBalancer extends Plugin {
                 () -> sectionManager.getSections().size()
         ));
 
-        this.enable();
+        if (!checkUpToDate()) {
+            getLogger().info("You are using a version of PlayerBalancer that is not the latest on spigot");
+            getLogger().info("You might want to update to benefit of new features, improvements and fixes");
+            getLogger().info("Access the plugin page at https://www.spigotmc.org/resources/10788");
+        }
+
+        this.execStart();
+    }
+
+    public boolean checkUpToDate() {
+        try {
+            URLConnection con = new URL("https://api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
+            String reply = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+            return getDescription().getVersion().equals(reply);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     @Override
     public void onDisable() {
-        disable();
+        //Nothing else to do than normal stop
+        this.execStop();
     }
 
-    private void enable() {
+    private void execStart() {
         if (!getDataFolder().exists())
             getDataFolder().mkdir();
 
@@ -89,12 +109,6 @@ public class PlayerBalancer extends Plugin {
                 if (settings.getGeneralProps().isAutoReload()) {
                     reloadListener = new ProxyReloadListener(this);
                     getProxy().getPluginManager().registerListener(this, reloadListener);
-                }
-
-                try {
-                    new BungeeUpdater(this, 10788);
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
                 networkManager = new NetworkManager(this);
@@ -150,7 +164,7 @@ public class PlayerBalancer extends Plugin {
         }
     }
 
-    private void disable() {
+    private void execStop() {
         getProxy().getPluginManager().unregisterCommand(mainCommand);
         mainCommand = null;
 
@@ -205,8 +219,8 @@ public class PlayerBalancer extends Plugin {
         getLogger().info("Reloading the plugin...");
         long starting = System.currentTimeMillis();
 
-        this.disable();
-        this.enable();
+        this.execStop();
+        this.execStart();
 
         if (!failed) {
             long ending = System.currentTimeMillis() - starting;

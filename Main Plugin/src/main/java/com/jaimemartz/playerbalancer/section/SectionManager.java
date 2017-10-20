@@ -11,10 +11,8 @@ import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class SectionManager {
     private final PlayerBalancer plugin;
@@ -22,9 +20,10 @@ public class SectionManager {
     private ServerSection principal;
     private ScheduledTask refreshTask;
 
-    private final Map<String, Stage> stages = Collections.synchronizedMap(new LinkedHashMap<>());
     private final Map<String, ServerSection> sections = Collections.synchronizedMap(new HashMap<>());
     private final Map<ServerInfo, ServerSection> servers = Collections.synchronizedMap(new HashMap<>());
+
+    private static final Map<String, Stage> stages = Collections.synchronizedMap(new LinkedHashMap<>());
 
     public SectionManager(PlayerBalancer plugin) {
         this.props = plugin.getSettings().getBalancerProps();
@@ -131,7 +130,7 @@ public class SectionManager {
                 if (sectionProps.getServerName() != null) {
                     SectionServer server = new SectionServer(props, section);
                     section.setServer(server);
-                    plugin.getSectionManager().register(server, section);
+                    plugin.getSectionManager().registerServer(server, section);
                     FixedAdapter.getFakeServers().put(server.getName(), server);
                     plugin.getProxy().getServers().put(server.getName(), server);
                 }
@@ -205,29 +204,6 @@ public class SectionManager {
         servers.clear();
     }
 
-    public void register(ServerInfo server, ServerSection section) {
-        if (servers.containsKey(server)) {
-            if (isDummy(section)) {
-                return;
-            }
-
-            ServerSection other = servers.get(server);
-            throw new IllegalArgumentException(String.format(
-                    "The server \"%s\" is already in the section \"%s\"",
-                    server.getName(),
-                    other.getName()
-            ));
-        }
-
-        plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"",
-                server.getName(),
-                section.getName()
-        ));
-
-        servers.put(server, section);
-
-    }
-
     public ServerSection getByName(String name) {
         if (name == null) {
             return null;
@@ -258,9 +234,29 @@ public class SectionManager {
         return getByServer(server.getInfo());
     }
 
+    public void registerServer(ServerInfo server, ServerSection section) {
+        //Checking for duplicated server on non dummy sections
+        if (servers.containsKey(server) && !isDummy(section)) {
+            ServerSection other = servers.get(server);
+            throw new IllegalArgumentException(String.format(
+                    "The server \"%s\" is already in the section \"%s\"",
+                    server.getName(),
+                    other.getName()
+            ));
+        }
+
+        plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"",
+                server.getName(),
+                section.getName()
+        ));
+
+        servers.put(server, section);
+    }
+
     public void calculateServers(ServerSection section) {
         Set<ServerInfo> results = new HashSet<>();
 
+        //Searches for matches
         section.getProps().getServerEntries().forEach(entry -> {
             Pattern pattern = Pattern.compile(entry);
             plugin.getProxy().getServers().forEach((name, server) -> {
@@ -271,20 +267,23 @@ public class SectionManager {
             });
         });
 
+        //Checks if there are servers previously matched that are no longer valid
         section.getServers().forEach(server -> {
             if (!results.contains(server)) {
                 servers.remove(server);
+                section.getServers().remove(server);
                 plugin.getLogger().info(String.format("Removed the server %s from %s as it does no longer exist",
                         server.getName(), section.getName()
                 ));
             }
         });
 
+        //Add matched servers to the section
         int addedServers = 0;
         for (ServerInfo server : results) {
             if (!section.getServers().contains(server)) {
                 section.getServers().add(server);
-                register(server, section);
+                registerServer(server, section);
                 addedServers++;
                 plugin.getLogger().info(String.format("Added the server %s to %s",
                         server.getName(), section.getName()

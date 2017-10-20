@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 public enum PasteHelper {
     PLUGIN((sender, address) -> {
