@@ -74,7 +74,7 @@ public abstract class ConnectionIntent {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
                 ServerStatus status = plugin.getStatusManager().getStatus(target);
-                if (status.isAccessible(plugin)) {
+                if (status.isAccessible()) {
                     return target;
                 } else {
                     ServerAssignRegistry.revokeTarget(player, section);
@@ -90,7 +90,7 @@ public abstract class ConnectionIntent {
             if (target == null) continue;
 
             ServerStatus status = plugin.getStatusManager().getStatus(target);
-            if (status.isAccessible(plugin)) {
+            if (status.isAccessible()) {
                 return target;
             } else {
                 servers.remove(target);

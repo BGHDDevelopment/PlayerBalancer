@@ -1,14 +1,16 @@
 package com.jaimemartz.playerbalanceraddon;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import java.util.*;
-import java.util.concurrent.Future;
+import java.util.Iterator;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class PluginMessageManager implements PluginMessageListener {
@@ -122,6 +124,26 @@ public class PluginMessageManager implements PluginMessageListener {
         ), (response) -> consumer.accept(response.readUTF()));
 
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+
+    public boolean getServerStatus(String server, Consumer<String> consumer) {
+        Player player = Iterables.getFirst(plugin.getServer().getOnlinePlayers(), null);
+        if (player == null) {
+            return false;
+        }
+
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("GetServerStatus");
+        out.writeUTF(player.getName());
+
+        contexts.put(new MessageContext(
+                "PlayerBalancer",
+                "GetServerStatus",
+                player.getUniqueId()
+        ), (response) -> consumer.accept(response.readUTF()));
+
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+        return true;
     }
 
     public void fallbackPlayer(Player player) {

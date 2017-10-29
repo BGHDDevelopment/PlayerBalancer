@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
+import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -162,6 +163,27 @@ public class MessagingService implements Listener {
 
                     sender.sendData("PlayerBalancer", stream.toByteArray());
                     break;
+                }
+
+                case "GetServerStatus": {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    DataOutputStream out = new DataOutputStream(stream);
+
+                    ServerInfo server = plugin.getProxy().getServerInfo(in.readUTF());
+                    if (server == null)
+                        break;
+
+                    ServerStatus status = plugin.getStatusManager().getStatus(server);
+
+                    try {
+                        String output = gson.toJson(status);
+                        out.writeUTF("GetServerStatus");
+                        out.writeUTF(output);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    sender.sendData("PlayerBalancer", stream.toByteArray());
                 }
             }
         }

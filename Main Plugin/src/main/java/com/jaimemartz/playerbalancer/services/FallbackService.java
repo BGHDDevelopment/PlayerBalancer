@@ -46,7 +46,7 @@ public class FallbackService extends Command implements Listener {
                         if (number <= 0) {
                             MessageUtils.send(player, messages.getInvalidInputMessage());
                         } else if (number > target.getServers().size()) {
-                            MessageUtils.send(player, messages.getFailureMessage());
+                            MessageUtils.send(player, messages.getInvalidInputMessage());
                         } else {
                             ServerInfo server = Iterables.get(target.getServers(), number - 1);
                             ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {});
