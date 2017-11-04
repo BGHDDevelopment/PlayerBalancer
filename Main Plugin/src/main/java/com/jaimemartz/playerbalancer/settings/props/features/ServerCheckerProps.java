@@ -20,6 +20,9 @@ public class ServerCheckerProps {
     @Setting
     private int interval;
 
+    @Setting
+    private int timeout;
+
     @Setting(value = "marker-descs")
     private List<String> markerDescs;
 
@@ -58,6 +61,14 @@ public class ServerCheckerProps {
         this.interval = interval;
     }
 
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
     public List<String> getMarkerDescs() {
         return markerDescs;
     }
@@ -81,6 +92,7 @@ public class ServerCheckerProps {
                 ", tactic=" + tactic +
                 ", attempts=" + attempts +
                 ", interval=" + interval +
+                ", timeout=" + timeout +
                 ", markerDescs=" + markerDescs +
                 ", debug=" + debug +
                 '}';

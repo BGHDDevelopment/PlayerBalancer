@@ -16,7 +16,9 @@ public enum PingTactic {
         public void ping(ServerInfo server, Callback<ServerStatus> callback, PlayerBalancer plugin) {
             plugin.getProxy().getScheduler().runAsync(plugin, () -> {
                 try {
-                    StatusResponse response = utility.ping(server.getAddress());
+                    StatusResponse response = utility.ping(
+                            server.getAddress(),
+                            plugin.getSettings().getServerCheckerProps().getTimeout());
                     callback.done(new ServerStatus(
                             response.getDescription().toLegacyText(),
                             response.getPlayers().getOnline(),

@@ -17,7 +17,6 @@ import java.net.Socket;
 import java.util.List;
 
 public final class ServerListPing {
-    private int timeout = 7000;
     private static Gson gson = new GsonBuilder()
             .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
             .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
@@ -48,7 +47,7 @@ public final class ServerListPing {
         }
     }
 
-    public StatusResponse ping(InetSocketAddress host) throws IOException {
+    public StatusResponse ping(InetSocketAddress host, int timeout) throws IOException {
         try (Socket socket = new Socket()) {
             socket.setSoTimeout(timeout);
             socket.connect(host, timeout);
@@ -116,14 +115,6 @@ public final class ServerListPing {
                 return response;
             }
         }
-    }
-
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
-    }
-
-    public int getTimeout() {
-        return timeout;
     }
 
     public static class StatusResponse {
