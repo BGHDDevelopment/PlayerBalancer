@@ -22,8 +22,7 @@ public enum PingTactic {
                     callback.done(new ServerStatus(
                             response.getDescription().toLegacyText(),
                             response.getPlayers().getOnline(),
-                            response.getPlayers().getMax(),
-                            plugin.getSettings().getServerCheckerProps().getMarkerDescs()),
+                            response.getPlayers().getMax()),
                             null);
                 } catch (IOException e) {
                     callback.done(null, e);
@@ -42,8 +41,7 @@ public enum PingTactic {
                         callback.done(new ServerStatus(
                                 ping.getDescription(),
                                 ping.getPlayers().getOnline(),
-                                ping.getPlayers().getMax(),
-                                plugin.getSettings().getServerCheckerProps().getMarkerDescs()
+                                ping.getPlayers().getMax()
                         ), throwable);
                     } else {
                         callback.done(null, throwable);

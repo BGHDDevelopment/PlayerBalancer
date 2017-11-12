@@ -2,6 +2,7 @@ package com.jaimemartz.playerbalancer.ping;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.section.ServerSection;
+import com.jaimemartz.playerbalancer.settings.props.features.ServerCheckerProps;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
@@ -11,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 public class StatusManager {
     private final PlayerBalancer plugin;
+    private final ServerCheckerProps props;
+
     private boolean stopped = true;
     private PingTactic tactic;
     private ScheduledTask task;
@@ -18,6 +21,7 @@ public class StatusManager {
 
     public StatusManager(PlayerBalancer plugin) {
         this.plugin = plugin;
+        this.props = plugin.getSettings().getServerCheckerProps();
     }
 
     public void start() {
@@ -65,8 +69,8 @@ public class StatusManager {
 
             if (plugin.getSettings().getServerCheckerProps().isDebug()) {
                 plugin.getLogger().info(String.format(
-                        "Updated server %s, status: [Description: \"%s\", Online Players: %s, Maximum Players: %s, Accessible: %s]",
-                        server.getName(), status.getDescription(), status.getOnline(), status.getMaximum(), status.isAccessible()
+                        "Updated server %s, status: [Description: \"%s\", Players: %s, Maximum Players: %s, Online: %s]",
+                        server.getName(), status.getDescription(), status.getPlayers(), status.getMaximum(), status.isOnline()
                 ));
             }
 
@@ -83,5 +87,17 @@ public class StatusManager {
         } else {
             return status;
         }
+    }
+
+    public boolean isAccessible(ServerInfo server) {
+        ServerStatus status = getStatus(server);
+
+        for (String pattern : props.getMarkerDescs()) {
+            if (status.getDescription().matches(pattern)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

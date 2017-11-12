@@ -2,46 +2,33 @@ package com.jaimemartz.playerbalancer.ping;
 
 import net.md_5.bungee.api.config.ServerInfo;
 
-import java.util.Collections;
-import java.util.List;
-
 public final class ServerStatus {
     private final String description;
-    private final int online, maximum;
+    private final int players, maximum;
     private boolean outdated = true;
-    private final boolean accessible;
+    private final boolean online;
 
     public ServerStatus() {
-        this("Server Unreachable", 0, 0, Collections.emptyList());
+        this("Server Unreachable", 0, 0);
     }
 
     public ServerStatus(ServerInfo server) {
-        this(server.getMotd(), server.getPlayers().size(), Integer.MAX_VALUE, Collections.emptyList());
+        this(server.getMotd(), server.getPlayers().size(), Integer.MAX_VALUE);
     }
 
-    public ServerStatus(String description, int online, int maximum, List<String> descs) {
+    public ServerStatus(String description, int players, int maximum) {
         this.description = description;
-        this.online = online;
+        this.players = players;
         this.maximum = maximum;
-
-        this.accessible = (maximum != 0 && online < maximum && !isMarked(descs));
-    }
-
-    private boolean isMarked(List<String> descs) {
-        for (String pattern : descs) {
-            if (description.matches(pattern)) {
-                return true;
-            }
-        }
-        return false;
+        this.online = maximum != 0 && players < maximum;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public int getOnline() {
-        return online;
+    public int getPlayers() {
+        return players;
     }
 
     public int getMaximum() {
@@ -56,7 +43,7 @@ public final class ServerStatus {
         this.outdated = outdated;
     }
 
-    public boolean isAccessible() {
-        return accessible;
+    public boolean isOnline() {
+        return online;
     }
 }

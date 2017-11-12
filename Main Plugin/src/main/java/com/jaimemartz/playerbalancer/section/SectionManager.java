@@ -359,6 +359,10 @@ public class SectionManager {
         return sections;
     }
 
+    public Map<ServerInfo, ServerSection> getServers() {
+        return servers;
+    }
+
     public Stage getStage(String name) {
         return stages.get(name);
     }

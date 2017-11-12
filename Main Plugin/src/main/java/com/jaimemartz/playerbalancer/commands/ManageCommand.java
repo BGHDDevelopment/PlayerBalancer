@@ -178,10 +178,10 @@ public class ManageCommand extends Command {
                                                 .color(ChatColor.GRAY)
                                                 .append(server.getName())
                                                 .color(ChatColor.AQUA)
-                                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Accessible: ")
+                                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Online: ")
                                                         .color(ChatColor.GRAY)
-                                                        .append(status.isAccessible() ? "yes" : "no")
-                                                        .color(status.isAccessible() ? ChatColor.GREEN : ChatColor.RED)
+                                                        .append(status.isOnline() ? "yes" : "no")
+                                                        .color(status.isOnline() ? ChatColor.GREEN : ChatColor.RED)
                                                         .append("\nDescription: ")
                                                         .color(ChatColor.GRAY)
                                                         .append("\"")
@@ -196,7 +196,7 @@ public class ManageCommand extends Command {
                                                         .color(ChatColor.AQUA)
                                                         .create()))
                                                 .append(String.format(" (%d/%d) ",
-                                                        status.getOnline(),
+                                                        status.getPlayers(),
                                                         status.getMaximum()))
                                                 .color(ChatColor.RED)
                                                 .create()

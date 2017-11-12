@@ -101,7 +101,7 @@ public enum PasteHelper {
             try {
                 url = paste(plugin);
             } catch (PasteException e) {
-                sender.sendMessage(new ComponentBuilder("A pastebin exception occurred: " + e.getMessage())
+                sender.sendMessage(new ComponentBuilder("An pastebin exception occurred: " + e.getMessage())
                         .color(ChatColor.RED)
                         .create()
                 );

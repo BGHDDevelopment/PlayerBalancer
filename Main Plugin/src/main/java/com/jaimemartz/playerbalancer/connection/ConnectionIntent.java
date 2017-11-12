@@ -2,7 +2,6 @@ package com.jaimemartz.playerbalancer.connection;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
-import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.Callback;
@@ -73,8 +72,7 @@ public abstract class ConnectionIntent {
         if (plugin.getSectionManager().isReiterative(section)) {
             if (ServerAssignRegistry.hasAssignedServer(player, section)) {
                 ServerInfo target = ServerAssignRegistry.getAssignedServer(player, section);
-                ServerStatus status = plugin.getStatusManager().getStatus(target);
-                if (status.isAccessible()) {
+                if (plugin.getStatusManager().isAccessible(target)) {
                     return target;
                 } else {
                     ServerAssignRegistry.revokeTarget(player, section);
@@ -89,8 +87,7 @@ public abstract class ConnectionIntent {
             ServerInfo target = provider.requestTarget(plugin, section, servers, player);
             if (target == null) continue;
 
-            ServerStatus status = plugin.getStatusManager().getStatus(target);
-            if (status.isAccessible()) {
+            if (plugin.getStatusManager().isAccessible(target)) {
                 return target;
             } else {
                 servers.remove(target);

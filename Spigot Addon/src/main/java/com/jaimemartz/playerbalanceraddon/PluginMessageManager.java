@@ -153,6 +153,55 @@ public class PluginMessageManager implements PluginMessageListener {
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 
+    //TODO Implement this on the bungeecord side
+    public boolean unmarkServer(String server) {
+        Player player = Iterables.getFirst(plugin.getServer().getOnlinePlayers(), null);
+        if (player == null) {
+            return false;
+        }
+
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("ServerUnmark");
+        out.writeUTF(server);
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+
+        return true;
+    }
+
+    public boolean markServer(String server, boolean status) {
+        Player player = Iterables.getFirst(plugin.getServer().getOnlinePlayers(), null);
+        if (player == null) {
+            return false;
+        }
+
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("ServerMark");
+        out.writeUTF(server);
+        out.writeBoolean(status);
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+
+        return true;
+    }
+
+    public void unbypassPlayer(Player player) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("PlayerUnbypass");
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+
+    public void bypassPlayer(Player player) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("PlayerBypass");
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+
+    public void bypassConnect(Player player, String server) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("BypassConnect");
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+    //END TODO Implement this on the bungeecord side
+
     private final class MessageContext {
         private final String channel;
         private final String subchannel;
