@@ -21,6 +21,9 @@ public class FeaturesProps {
     @Setting(value = "server-refresh")
     private ServerRefreshProps serverRefreshProps;
 
+    @Setting(value = "force-entry-section")
+    private ForcedEntrySectionProps forcedEntrySectionProps;
+
     public BalancerProps getBalancerProps() {
         return balancerProps;
     }
@@ -61,6 +64,14 @@ public class FeaturesProps {
         this.serverRefreshProps = serverRefreshProps;
     }
 
+    public ForcedEntrySectionProps getForcedEntrySectionProps() {
+        return forcedEntrySectionProps;
+    }
+
+    public void setForcedEntrySectionProps(ForcedEntrySectionProps forcedEntrySectionProps) {
+        this.forcedEntrySectionProps = forcedEntrySectionProps;
+    }
+
     @Override
     public String toString() {
         return "FeaturesProps{" +
@@ -69,6 +80,7 @@ public class FeaturesProps {
                 ", serverCheckerProps=" + serverCheckerProps +
                 ", kickHandlerProps=" + kickHandlerProps +
                 ", serverRefreshProps=" + serverRefreshProps +
+                ", forceEntrySectionProps=" + forcedEntrySectionProps +
                 '}';
     }
 }

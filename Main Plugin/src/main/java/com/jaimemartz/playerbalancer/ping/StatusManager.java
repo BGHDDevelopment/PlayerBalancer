@@ -1,27 +1,34 @@
 package com.jaimemartz.playerbalancer.ping;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.settings.props.features.ServerCheckerProps;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
+import net.md_5.bungee.event.EventHandler;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class StatusManager {
+public class StatusManager implements Listener {
     private final PlayerBalancer plugin;
     private final ServerCheckerProps props;
 
     private boolean stopped = true;
     private PingTactic tactic;
     private ScheduledTask task;
+
     private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
 
     public StatusManager(PlayerBalancer plugin) {
-        this.plugin = plugin;
         this.props = plugin.getSettings().getServerCheckerProps();
+        this.plugin = plugin;
     }
 
     public void start() {
@@ -30,9 +37,9 @@ public class StatusManager {
         }
 
         stopped = false;
-        tactic = plugin.getSettings().getServerCheckerProps().getTactic();
+        tactic = props.getTactic();
         plugin.getLogger().info(String.format("Starting the ping task, the interval is %s",
-                plugin.getSettings().getServerCheckerProps().getInterval()
+                props.getInterval()
         ));
 
         task = plugin.getProxy().getScheduler().schedule(plugin, () -> {
@@ -50,7 +57,7 @@ public class StatusManager {
                 }
             }
 
-        }, 0L, plugin.getSettings().getServerCheckerProps().getInterval(), TimeUnit.MILLISECONDS);
+        }, 0L, props.getInterval(), TimeUnit.MILLISECONDS);
     }
 
     public void stop() {
@@ -67,7 +74,7 @@ public class StatusManager {
                 status = new ServerStatus();
             }
 
-            if (plugin.getSettings().getServerCheckerProps().isDebug()) {
+            if (props.isDebug()) {
                 plugin.getLogger().info(String.format(
                         "Updated server %s, status: [Description: \"%s\", Players: %s, Maximum Players: %s, Online: %s]",
                         server.getName(), status.getDescription(), status.getPlayers(), status.getMaximum(), status.isOnline()
@@ -98,6 +105,37 @@ public class StatusManager {
             }
         }
 
-        return true;
+        return status.isOnline();
+    }
+
+    @EventHandler
+    public void onPluginMessage(PluginMessageEvent event) {
+        if (event.getTag().equals("PlayerBalancer") && event.getSender() instanceof Server) {
+            ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
+            String request = in.readUTF();
+            ServerInfo sender = ((Server) event.getSender()).getInfo();
+
+            switch (request) {
+                case "ClearStatusOverride": {
+                    ServerInfo server = plugin.getProxy().getServerInfo(in.readUTF());
+
+                    if (server == null)
+                        break;
+
+                    //REMOVE OVERRIDE
+                    break;
+                }
+
+                case "SetStatusOverride": {
+                    ServerInfo server = plugin.getProxy().getServerInfo(in.readUTF());
+
+                    if (server == null)
+                        break;
+
+                    //ADD OVERRIDE
+                    break;
+                }
+            }
+        }
     }
 }

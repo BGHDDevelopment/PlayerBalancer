@@ -133,8 +133,12 @@ public class PlayerBalancer extends Plugin {
 
                 if (settings.getGeneralProps().isPluginMessaging()) {
                     getProxy().registerChannel("PlayerBalancer");
-                    messagingService = new MessagingService(this);
+
                     getProxy().getPluginManager().registerListener(this, fallbackService);
+
+                    getProxy().getPluginManager().registerListener(this, statusManager);
+
+                    messagingService = new MessagingService(this);
                     getProxy().getPluginManager().registerListener(this, messagingService);
                 }
 

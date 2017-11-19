@@ -153,29 +153,28 @@ public class PluginMessageManager implements PluginMessageListener {
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 
-    //TODO Implement this on the bungeecord side
-    public boolean unmarkServer(String server) {
+    public boolean clearStatusOverride(String server) {
         Player player = Iterables.getFirst(plugin.getServer().getOnlinePlayers(), null);
         if (player == null) {
             return false;
         }
 
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("ServerUnmark");
+        out.writeUTF("ClearStatusOverride");
         out.writeUTF(server);
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
 
         return true;
     }
 
-    public boolean markServer(String server, boolean status) {
+    public boolean setStatusOverride(String server, boolean status) {
         Player player = Iterables.getFirst(plugin.getServer().getOnlinePlayers(), null);
         if (player == null) {
             return false;
         }
 
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("ServerMark");
+        out.writeUTF("SetStatusOverride");
         out.writeUTF(server);
         out.writeBoolean(status);
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
@@ -183,24 +182,24 @@ public class PluginMessageManager implements PluginMessageListener {
         return true;
     }
 
-    public void unbypassPlayer(Player player) {
+    public void clearPlayerBypass(Player player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("PlayerUnbypass");
+        out.writeUTF("ClearPlayerBypass");
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 
-    public void bypassPlayer(Player player) {
+    public void setPlayerBypass(Player player) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("PlayerBypass");
+        out.writeUTF("SetPlayerBypass");
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 
+    //TOODO Add this to the /balancer or some other command too
     public void bypassConnect(Player player, String server) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("BypassConnect");
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
-    //END TODO Implement this on the bungeecord side
 
     private final class MessageContext {
         private final String channel;

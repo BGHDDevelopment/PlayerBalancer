@@ -82,6 +82,14 @@ public class SettingsHolder {
         featuresProps.setServerRefreshProps(serverRefreshProps);
     }
 
+    public ForcedEntrySectionProps getForcedEntrySectionProps() {
+        return featuresProps.getForcedEntrySectionProps();
+    }
+
+    public void setForcedEntrySectionProps(ForcedEntrySectionProps forcedEntrySectionProps) {
+        featuresProps.setForcedEntrySectionProps(forcedEntrySectionProps);
+    }
+
     @Override
     public String toString() {
         return "SettingsHolder{" +
