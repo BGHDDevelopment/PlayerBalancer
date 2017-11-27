@@ -1,8 +1,7 @@
 package com.jaimemartz.playerbalanceraddon;
 
 import com.google.common.base.Strings;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,17 +27,17 @@ public class MainCommand implements CommandExecutor {
                                 if (player != null) {
                                     plugin.getManager().connectPlayer(player, input);
                                 } else {
-                                    sender.spigot().sendMessage(new ComponentBuilder("There is no player with that name connected to this server").color(ChatColor.RED).create());
+                                    sender.sendMessage(ChatColor.RED + "There is no player with that name connected to this server");
                                 }
                             } else {
                                 if (sender instanceof Player) {
                                     plugin.getManager().connectPlayer((Player) sender, input);
                                 } else {
-                                    sender.spigot().sendMessage(new ComponentBuilder("This command variant can only be executed by a player").color(ChatColor.RED).create());
+                                    sender.sendMessage("This command variant can only be executed by a player");
                                 }
                             }
                         } else {
-                            sender.spigot().sendMessage(new ComponentBuilder("Usage: /section connect <section> [player]").color(ChatColor.RED).create());
+                            sender.sendMessage(ChatColor.RED + "Usage: /section connect <section> [player]");
                         }
                         break;
                     }
@@ -49,13 +48,13 @@ public class MainCommand implements CommandExecutor {
                             if (player != null) {
                                 plugin.getManager().fallbackPlayer((Player) sender);
                             } else {
-                                sender.spigot().sendMessage(new ComponentBuilder("There is no player with that name connected to this server").color(ChatColor.RED).create());
+                                sender.sendMessage(ChatColor.RED + "There is no player with that name connected to this server");
                             }
                         } else {
                             if (sender instanceof Player) {
                                 plugin.getManager().fallbackPlayer((Player) sender);
                             } else {
-                                sender.spigot().sendMessage(new ComponentBuilder("This command variant can only be executed by a player").color(ChatColor.RED).create());
+                                sender.sendMessage(ChatColor.RED + "This command variant can only be executed by a player");
                             }
                         }
                         break;
@@ -72,11 +71,11 @@ public class MainCommand implements CommandExecutor {
                     */
                 }
             } else {
-                sender.spigot().sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
-                sender.spigot().sendMessage(new ComponentBuilder("Available commands:").color(ChatColor.GRAY).create());
-                sender.spigot().sendMessage(new ComponentBuilder("/spb connect <section> [player]").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Connects you or the specified player to that section").color(ChatColor.RED).create());
-                sender.spigot().sendMessage(new ComponentBuilder("/spb fallback [player]").color(ChatColor.AQUA).append(" - ").color(ChatColor.GRAY).append("Connects you or the specified player to the parent of the current section").color(ChatColor.RED).create());
-                sender.spigot().sendMessage(new ComponentBuilder(Strings.repeat("-", 53)).strikethrough(true).color(ChatColor.GRAY).create());
+                sender.sendMessage(ChatColor.STRIKETHROUGH + ChatColor.GRAY.toString() + Strings.repeat("-", 53));
+                sender.sendMessage(ChatColor.GRAY + "Available commands:");
+                sender.sendMessage(ChatColor.AQUA + "/spb connect <section> [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to that section");
+                sender.sendMessage(ChatColor.AQUA + "/spb fallback [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to the parent of the current section");
+                sender.sendMessage(ChatColor.STRIKETHROUGH + ChatColor.GRAY.toString() + Strings.repeat("-", 53));
             }
         }
         return false;
