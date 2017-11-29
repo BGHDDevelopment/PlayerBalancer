@@ -33,7 +33,7 @@ public class MainCommand implements CommandExecutor {
                                 if (sender instanceof Player) {
                                     plugin.getManager().connectPlayer((Player) sender, input);
                                 } else {
-                                    sender.sendMessage("This command variant can only be executed by a player");
+                                    sender.sendMessage(ChatColor.RED + "This command variant can only be executed by a player");
                                 }
                             }
                         } else {
@@ -60,21 +60,41 @@ public class MainCommand implements CommandExecutor {
                         break;
                     }
 
-                    /*
-                    case "info": {
-                        plugin.getManager().getSectionOfPlayer((Player) sender, (a) -> {
-                            System.out.println(a);
-                            sender.sendMessage(a);
-                        });
+                    case "bypassconnect": {
+                        sender.sendMessage(ChatColor.RED + "This command variant is not implemented yet");
                         break;
                     }
-                    */
+
+                    case "setbypass": {
+                        sender.sendMessage(ChatColor.RED + "This command variant is not implemented yet");
+                        break;
+                    }
+
+                    case "clearbypass": {
+                        sender.sendMessage(ChatColor.RED + "This command variant is not implemented yet");
+                        break;
+                    }
+
+                    case "overridestatus": {
+                        sender.sendMessage(ChatColor.RED + "This command variant is not implemented yet");
+                        break;
+                    }
+
+                    case "clearoverride": {
+                        sender.sendMessage(ChatColor.RED + "This command variant is not implemented yet");
+                        break;
+                    }
                 }
             } else {
                 sender.sendMessage(ChatColor.STRIKETHROUGH + ChatColor.GRAY.toString() + Strings.repeat("-", 53));
                 sender.sendMessage(ChatColor.GRAY + "Available commands:");
                 sender.sendMessage(ChatColor.AQUA + "/spb connect <section> [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to that section");
                 sender.sendMessage(ChatColor.AQUA + "/spb fallback [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to the parent of the current section");
+                sender.sendMessage(ChatColor.AQUA + "/spb bypassconnect <server> [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to a specific server without balancing");
+                sender.sendMessage(ChatColor.AQUA + "/spb setbypass [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Sets a bypass for you or the specified player");
+                sender.sendMessage(ChatColor.AQUA + "/spb clearbypass [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Clears the bypass for you or the specified player");
+                sender.sendMessage(ChatColor.AQUA + "/spb overridestatus <server> <status>" + ChatColor.GRAY + " - " + ChatColor.RED + "Overrides the accessible status of a specific server, over anything else");
+                sender.sendMessage(ChatColor.AQUA + "/spb clearoverride <server> <status>" + ChatColor.GRAY + " - " + ChatColor.RED + "Clears the overriden status of a specific server");
                 sender.sendMessage(ChatColor.STRIKETHROUGH + ChatColor.GRAY.toString() + Strings.repeat("-", 53));
             }
         }
