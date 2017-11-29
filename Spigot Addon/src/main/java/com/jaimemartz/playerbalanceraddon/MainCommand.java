@@ -94,7 +94,7 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(ChatColor.AQUA + "/spb setbypass [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Sets a bypass for you or the specified player");
                 sender.sendMessage(ChatColor.AQUA + "/spb clearbypass [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Clears the bypass for you or the specified player");
                 sender.sendMessage(ChatColor.AQUA + "/spb overridestatus <server> <status>" + ChatColor.GRAY + " - " + ChatColor.RED + "Overrides the accessible status of a specific server, over anything else");
-                sender.sendMessage(ChatColor.AQUA + "/spb clearoverride <server> <status>" + ChatColor.GRAY + " - " + ChatColor.RED + "Clears the overriden status of a specific server");
+                sender.sendMessage(ChatColor.AQUA + "/spb clearoverride <server>" + ChatColor.GRAY + " - " + ChatColor.RED + "Clears the overridden status of a specific server");
                 sender.sendMessage(ChatColor.STRIKETHROUGH + ChatColor.GRAY.toString() + Strings.repeat("-", 53));
             }
         }

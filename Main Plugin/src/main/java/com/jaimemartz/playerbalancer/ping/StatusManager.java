@@ -56,7 +56,6 @@ public class StatusManager implements Listener {
                     }
                 }
             }
-
         }, 0L, props.getInterval(), TimeUnit.MILLISECONDS);
     }
 
