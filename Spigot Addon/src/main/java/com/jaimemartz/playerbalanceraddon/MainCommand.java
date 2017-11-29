@@ -90,11 +90,15 @@ public class MainCommand implements CommandExecutor {
                 sender.sendMessage(ChatColor.GRAY + "Available commands:");
                 sender.sendMessage(ChatColor.AQUA + "/spb connect <section> [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to that section");
                 sender.sendMessage(ChatColor.AQUA + "/spb fallback [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to the parent of the current section");
+
+                /* TODO For version 2.1.3 of the main plugin
                 sender.sendMessage(ChatColor.AQUA + "/spb bypassconnect <server> [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Connects you or the specified player to a specific server without balancing");
                 sender.sendMessage(ChatColor.AQUA + "/spb setbypass [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Sets a bypass for you or the specified player");
                 sender.sendMessage(ChatColor.AQUA + "/spb clearbypass [player]" + ChatColor.GRAY + " - " + ChatColor.RED + "Clears the bypass for you or the specified player");
                 sender.sendMessage(ChatColor.AQUA + "/spb overridestatus <server> <status>" + ChatColor.GRAY + " - " + ChatColor.RED + "Overrides the accessible status of a specific server, over anything else");
                 sender.sendMessage(ChatColor.AQUA + "/spb clearoverride <server>" + ChatColor.GRAY + " - " + ChatColor.RED + "Clears the overridden status of a specific server");
+                */
+
                 sender.sendMessage(ChatColor.STRIKETHROUGH + ChatColor.GRAY.toString() + Strings.repeat("-", 53));
             }
         }

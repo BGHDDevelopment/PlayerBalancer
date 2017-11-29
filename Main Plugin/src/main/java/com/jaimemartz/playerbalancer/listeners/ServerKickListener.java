@@ -59,32 +59,34 @@ public class ServerKickListener implements Listener {
             ));
         }
 
-        if (matches) {
-            ServerSection section = getSection(player, from);
+        if (!matches)
+            return;
 
-            if (section != null) {
-                List<ServerInfo> servers = new ArrayList<>();
-                servers.addAll(section.getServers());
-                servers.remove(from);
+        ServerSection section = getSection(player, from);
 
-                new ConnectionIntent(plugin, player, section, servers) {
-                    @Override
-                    public void connect(ServerInfo server, Callback<Boolean> callback) {
-                        PlayerLocker.lock(player);
-                        event.setCancelled(true);
-                        event.setCancelServer(server);
-                        MessageUtils.send(player, messages.getKickMessage(), (str) -> str
-                                .replace("{reason}", event.getKickReason())
-                                .replace("{from}", from.getName())
-                                .replace("{to}", server.getName()));
-                        plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                            PlayerLocker.unlock(player);
-                        }, 5, TimeUnit.SECONDS);
-                        callback.done(true, null);
-                    }
-                };
+        if (section == null)
+            return;
+
+        List<ServerInfo> servers = new ArrayList<>();
+        servers.addAll(section.getServers());
+        servers.remove(from);
+
+        new ConnectionIntent(plugin, player, section, servers) {
+            @Override
+            public void connect(ServerInfo server, Callback<Boolean> callback) {
+                PlayerLocker.lock(player);
+                event.setCancelled(true);
+                event.setCancelServer(server);
+                MessageUtils.send(player, messages.getKickMessage(), (str) -> str
+                        .replace("{reason}", event.getKickReason())
+                        .replace("{from}", from.getName())
+                        .replace("{to}", server.getName()));
+                plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                    PlayerLocker.unlock(player);
+                }, 5, TimeUnit.SECONDS);
+                callback.done(true, null);
             }
-        }
+        };
     }
 
     private ServerSection getSection(ProxiedPlayer player, ServerInfo from) {

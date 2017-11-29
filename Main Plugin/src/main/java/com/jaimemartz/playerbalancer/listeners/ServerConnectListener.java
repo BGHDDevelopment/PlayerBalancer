@@ -28,24 +28,25 @@ public class ServerConnectListener implements Listener {
 
         ServerSection section = getSection(player, target);
 
-        if (section != null) {
-            if (target.equals(section.getServer())) {
-                event.setCancelled(true);
-            }
+        if (section == null)
+            return;
 
-            new ConnectionIntent(plugin, player, section) {
-                @Override
-                public void connect(ServerInfo server, Callback<Boolean> callback) {
-                    if (plugin.getSectionManager().isReiterative(section)) {
-                        ServerAssignRegistry.assignTarget(player, section, server);
-                    }
-
-                    event.setCancelled(false);
-                    event.setTarget(server);
-                    callback.done(true, null);
-                }
-            };
+        if (target.equals(section.getServer())) {
+            event.setCancelled(true);
         }
+
+        new ConnectionIntent(plugin, player, section) {
+            @Override
+            public void connect(ServerInfo server, Callback<Boolean> callback) {
+                if (plugin.getSectionManager().isReiterative(section)) {
+                    ServerAssignRegistry.assignTarget(player, section, server);
+                }
+
+                event.setCancelled(false);
+                event.setTarget(server);
+                callback.done(true, null);
+            }
+        };
     }
 
     private ServerSection getSection(ProxiedPlayer player, ServerInfo target) {
