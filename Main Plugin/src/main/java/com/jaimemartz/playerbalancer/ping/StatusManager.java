@@ -25,6 +25,7 @@ public class StatusManager implements Listener {
     private ScheduledTask task;
 
     private final Map<ServerInfo, ServerStatus> storage = new HashMap<>();
+    private final Map<ServerInfo, Boolean> overriders = new HashMap<>();
 
     public StatusManager(PlayerBalancer plugin) {
         this.props = plugin.getSettings().getServerCheckerProps();
@@ -96,6 +97,9 @@ public class StatusManager implements Listener {
     }
 
     public boolean isAccessible(ServerInfo server) {
+        if (overriders.containsKey(server))
+            return overriders.get(server);
+
         ServerStatus status = getStatus(server);
 
         for (String pattern : props.getMarkerDescs()) {
@@ -121,7 +125,7 @@ public class StatusManager implements Listener {
                     if (server == null)
                         break;
 
-                    //REMOVE OVERRIDE
+                    overriders.remove(server);
                     break;
                 }
 
@@ -131,7 +135,7 @@ public class StatusManager implements Listener {
                     if (server == null)
                         break;
 
-                    //ADD OVERRIDE
+                    overriders.put(server, in.readBoolean());
                     break;
                 }
             }

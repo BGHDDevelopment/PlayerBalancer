@@ -153,6 +153,24 @@ public class PluginMessageManager implements PluginMessageListener {
         return true;
     }
 
+    public void clearPlayerBypass(Player player) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("ClearPlayerBypass");
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+
+    public void setPlayerBypass(Player player) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("SetPlayerBypass");
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+
+    public void bypassConnect(Player player, String server) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("BypassConnect");
+        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
+    }
+
     public boolean clearStatusOverride(String server) {
         Player player = Iterables.getFirst(plugin.getServer().getOnlinePlayers(), null);
         if (player == null) {
@@ -180,24 +198,6 @@ public class PluginMessageManager implements PluginMessageListener {
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
 
         return true;
-    }
-
-    public void clearPlayerBypass(Player player) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("ClearPlayerBypass");
-        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
-    }
-
-    public void setPlayerBypass(Player player) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("SetPlayerBypass");
-        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
-    }
-
-    public void bypassConnect(Player player, String server) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("BypassConnect");
-        player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 
     private final class MessageContext {

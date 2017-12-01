@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
+import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -19,6 +20,7 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class MessagingService implements Listener {
     private final PlayerBalancer plugin;
@@ -184,6 +186,38 @@ public class MessagingService implements Listener {
                     }
 
                     sender.sendData("PlayerBalancer", stream.toByteArray());
+                }
+
+                case "ClearPlayerBypass": {
+                    if (event.getReceiver() instanceof ProxiedPlayer) {
+                        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+                        PlayerLocker.unlock(player);
+                    }
+                    break;
+                }
+
+                case "SetPlayerBypass": {
+                    if (event.getReceiver() instanceof ProxiedPlayer) {
+                        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+                        PlayerLocker.lock(player);
+                    }
+                    break;
+                }
+
+                case "BypassConnect": {
+                    if (event.getReceiver() instanceof ProxiedPlayer) {
+                        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+
+                        ServerInfo server = plugin.getProxy().getServerInfo(in.readUTF());
+                        if (server == null)
+                            break;
+
+                        PlayerLocker.lock(player);
+                        plugin.getProxy().getScheduler().schedule(plugin, () -> {
+                            PlayerLocker.unlock(player);
+                        }, 5, TimeUnit.SECONDS);
+                    }
+                    break;
                 }
             }
         }
