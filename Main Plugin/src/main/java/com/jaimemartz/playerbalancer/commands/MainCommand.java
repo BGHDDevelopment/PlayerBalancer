@@ -12,7 +12,7 @@ public class MainCommand extends Command {
     private final PlayerBalancer plugin;
 
     public MainCommand(PlayerBalancer plugin) {
-        super("balancer", "", "playerbalancer", "pb");
+        super("balancer", "", "playerbalancer");
         this.plugin = plugin;
     }
 

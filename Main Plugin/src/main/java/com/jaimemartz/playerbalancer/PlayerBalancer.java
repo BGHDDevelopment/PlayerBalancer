@@ -169,48 +169,66 @@ public class PlayerBalancer extends Plugin {
     }
 
     private void execStop() {
-        getProxy().getPluginManager().unregisterCommand(mainCommand);
-        mainCommand = null;
+        if (mainCommand != null) {
+            getProxy().getPluginManager().unregisterCommand(mainCommand);
+            mainCommand = null;
+        }
 
         if (settings.getGeneralProps().isEnabled()) {
             //Do not try to do anything if the plugin has not loaded correctly
             if (failed) return;
 
             if (settings.getGeneralProps().isAutoReload()) {
-                getProxy().getPluginManager().unregisterListener(reloadListener);
-                reloadListener = null;
+                if (reloadListener != null) {
+                    getProxy().getPluginManager().unregisterListener(reloadListener);
+                    reloadListener = null;
+                }
             }
 
             if (settings.getServerCheckerProps().isEnabled()) {
-                statusManager.stop();
+                if (statusManager != null) {
+                    statusManager.stop();
+                }
             }
 
-            if (settings.getFallbackCommandProps().isEnabled()) {
-                getProxy().getPluginManager().unregisterCommand(fallbackService);
+            if (fallbackService != null) {
+                if (settings.getFallbackCommandProps().isEnabled()) {
+                    getProxy().getPluginManager().unregisterCommand(fallbackService);
+                }
+
+                getProxy().getPluginManager().unregisterListener(fallbackService);
+
+                fallbackService = null;
             }
-
-            getProxy().getPluginManager().unregisterListener(fallbackService);
-
-            fallbackService = null;
 
             if (settings.getKickHandlerProps().isEnabled()) {
-                getProxy().getPluginManager().unregisterListener(kickListener);
-                kickListener = null;
+                if (kickListener != null) {
+                    getProxy().getPluginManager().unregisterListener(kickListener);
+                    kickListener = null;
+                }
             }
 
-            getProxy().getPluginManager().unregisterListener(connectListener);
-            connectListener = null;
+            if (connectListener != null) {
+                getProxy().getPluginManager().unregisterListener(connectListener);
+                connectListener = null;
+            }
 
             if (settings.getGeneralProps().isPluginMessaging()) {
-                getProxy().unregisterChannel("PlayerBalancer");
-                getProxy().getPluginManager().unregisterListener(messagingService);
-                messagingService = null;
+                if (messagingService != null) {
+                    getProxy().unregisterChannel("PlayerBalancer");
+                    getProxy().getPluginManager().unregisterListener(messagingService);
+                    messagingService = null;
+                }
             }
 
-            getProxy().getPluginManager().unregisterCommand(manageCommand);
-            manageCommand = null;
+            if (manageCommand != null) {
+                getProxy().getPluginManager().unregisterCommand(manageCommand);
+                manageCommand = null;
+            }
 
-            sectionManager.flush();
+            if (sectionManager != null) {
+                sectionManager.flush();
+            }
 
             ServerAssignRegistry.getTable().clear();
         }
