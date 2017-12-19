@@ -50,10 +50,6 @@ public class ServerConnectListener implements Listener {
     }
 
     private ServerSection getSection(ProxiedPlayer player, ServerInfo target) {
-        if (player.getServer() == null && plugin.getSettings().getForcedEntrySectionProps().isEnabled()) {
-            return plugin.getSectionManager().getByName(plugin.getSettings().getForcedEntrySectionProps().getSectionName());
-        }
-
         ServerSection section = plugin.getSectionManager().getByServer(target);
 
         if (section != null) {
