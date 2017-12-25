@@ -7,7 +7,6 @@ import com.jaimemartz.playerbalancer.utils.AlphanumComparator;
 import net.md_5.bungee.api.config.ServerInfo;
 
 import java.util.Collections;
-import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
