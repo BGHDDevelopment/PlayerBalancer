@@ -5,7 +5,6 @@ import com.google.common.io.ByteStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.settings.props.features.ServerCheckerProps;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -77,8 +76,8 @@ public class StatusManager implements Listener {
 
             if (props.isDebug()) {
                 plugin.getLogger().info(String.format(
-                        "Updated server %s, status: [Description: \"%s\", Players: %s, Maximum Players: %s, Accessible: %s]",
-                        server.getName(), ChatColor.stripColor(status.getDescription()), status.getPlayers(), status.getMaximum(), isAccessible(server)
+                        "Updated server %s, status: [Description: \"%s\", Players: %s, Maximum Players: %s, Online: %s]",
+                        server.getName(), status.getDescription(), status.getPlayers(), status.getMaximum(), status.isOnline()
                 ));
             }
 
@@ -98,10 +97,15 @@ public class StatusManager implements Listener {
     }
 
     public boolean isAccessible(ServerInfo server) {
-        if (overriders.containsKey(server))
+        if (overriders.containsKey(server)) {
             return overriders.get(server);
+        }
 
         ServerStatus status = getStatus(server);
+
+        if (!status.isOnline()) {
+            return false;
+        }
 
         for (String pattern : props.getMarkerDescs()) {
             if (status.getDescription().matches(pattern)) {
@@ -109,7 +113,7 @@ public class StatusManager implements Listener {
             }
         }
 
-        return status.isOnline();
+        return true;
     }
 
     @EventHandler

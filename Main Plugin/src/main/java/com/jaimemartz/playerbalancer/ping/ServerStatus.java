@@ -1,5 +1,6 @@
 package com.jaimemartz.playerbalancer.ping;
 
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
 
 public class ServerStatus {
@@ -26,7 +27,7 @@ public class ServerStatus {
      * @param server the server for providing basic info about itself
      */
     public ServerStatus(ServerInfo server) {
-        this.description = server.getMotd();
+        this.description = revertColor(server.getMotd());
         this.players = server.getPlayers().size();
         this.maximum = Integer.MAX_VALUE;
         this.online = true;
@@ -40,7 +41,7 @@ public class ServerStatus {
      * @param maximum the maximum amount of players possible from the ping result
      */
     public ServerStatus(String description, int players, int maximum) {
-        this.description = description;
+        this.description = revertColor(description);
         this.players = players;
         this.maximum = maximum;
         this.online = maximum != 0 && players < maximum;
@@ -73,5 +74,9 @@ public class ServerStatus {
 
     public void setOutdated(boolean outdated) {
         this.outdated = outdated;
+    }
+
+    private static String revertColor(String string) {
+        return string.replace(ChatColor.COLOR_CHAR, '&');
     }
 }

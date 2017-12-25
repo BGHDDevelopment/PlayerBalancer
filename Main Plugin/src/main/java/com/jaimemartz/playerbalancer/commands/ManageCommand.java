@@ -174,6 +174,7 @@ public class ManageCommand extends Command {
 
                                     section.getServers().forEach(server -> {
                                         ServerStatus status = plugin.getStatusManager().getStatus(server);
+                                        boolean accessible = plugin.getStatusManager().isAccessible(server);
                                         sender.sendMessage(new ComponentBuilder("\u2022 Server: ")
                                                 .color(ChatColor.GRAY)
                                                 .append(server.getName())
@@ -182,6 +183,10 @@ public class ManageCommand extends Command {
                                                         .color(ChatColor.GRAY)
                                                         .append(status.isOnline() ? "yes" : "no")
                                                         .color(status.isOnline() ? ChatColor.GREEN : ChatColor.RED)
+                                                        .append("\nAccessible: ")
+                                                        .color(ChatColor.GRAY)
+                                                        .append(accessible ? "yes" : "no")
+                                                        .color(accessible ? ChatColor.GREEN : ChatColor.RED)
                                                         .append("\nDescription: ")
                                                         .color(ChatColor.GRAY)
                                                         .append("\"")
