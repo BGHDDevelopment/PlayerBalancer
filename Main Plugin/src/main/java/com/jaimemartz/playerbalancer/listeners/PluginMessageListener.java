@@ -219,6 +219,44 @@ public class PluginMessageListener implements Listener {
                     }
                     break;
                 }
+
+                case "FallbackPlayer": {
+                    if (event.getReceiver() instanceof ProxiedPlayer) {
+                        ProxiedPlayer player = (ProxiedPlayer) event.getReceiver();
+                        ServerSection target = plugin.getFallbackCommand().getSection(player);
+
+                        if (target == null)
+                            break;
+
+                        ConnectionIntent.simple(
+                                plugin,
+                                player,
+                                target
+                        );
+                    }
+
+                    break;
+                }
+
+                case "FallbackOtherPlayer": {
+                    ProxiedPlayer player = plugin.getProxy().getPlayer(in.readUTF());
+
+                    if (player == null)
+                        break;
+
+                    ServerSection target = plugin.getFallbackCommand().getSection(player);
+
+                    if (target == null)
+                        break;
+
+                    ConnectionIntent.simple(
+                            plugin,
+                            player,
+                            target
+                    );
+
+                    break;
+                }
             }
         }
     }

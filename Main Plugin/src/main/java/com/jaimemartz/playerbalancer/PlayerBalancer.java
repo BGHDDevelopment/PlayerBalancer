@@ -1,6 +1,7 @@
 package com.jaimemartz.playerbalancer;
 
 import com.google.common.reflect.TypeToken;
+import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
@@ -10,7 +11,6 @@ import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
-import com.jaimemartz.playerbalancer.services.FallbackService;
 import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
@@ -34,7 +34,8 @@ public class PlayerBalancer extends Plugin {
     private SectionManager sectionManager;
     private NetworkManager networkManager;
     private ConfigurationLoader<CommentedConfigurationNode> loader;
-    private FallbackService fallbackService;
+
+    private FallbackCommand fallbackCommand;
     private Command mainCommand, manageCommand;
     private Listener connectListener, kickListener, reloadListener, pluginMessageListener;
 
@@ -117,10 +118,9 @@ public class PlayerBalancer extends Plugin {
                     statusManager.start();
                 }
 
-                fallbackService = new FallbackService(this, settings.getFallbackCommandProps().getCommand());
-
                 if (settings.getFallbackCommandProps().isEnabled()) {
-                    getProxy().getPluginManager().registerCommand(this, fallbackService);
+                    fallbackCommand = new FallbackCommand(this);
+                    getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
 
                 connectListener = new ServerConnectListener(this);
@@ -128,8 +128,6 @@ public class PlayerBalancer extends Plugin {
 
                 if (settings.getGeneralProps().isPluginMessaging()) {
                     getProxy().registerChannel("PlayerBalancer");
-
-                    getProxy().getPluginManager().registerListener(this, fallbackService);
 
                     getProxy().getPluginManager().registerListener(this, statusManager);
 
@@ -186,14 +184,11 @@ public class PlayerBalancer extends Plugin {
                 }
             }
 
-            if (fallbackService != null) {
-                if (settings.getFallbackCommandProps().isEnabled()) {
-                    getProxy().getPluginManager().unregisterCommand(fallbackService);
+            if (settings.getFallbackCommandProps().isEnabled()) {
+                if (fallbackCommand != null) {
+                    getProxy().getPluginManager().unregisterCommand(fallbackCommand);
+                    fallbackCommand = null;
                 }
-
-                getProxy().getPluginManager().unregisterListener(fallbackService);
-
-                fallbackService = null;
             }
 
             if (settings.getKickHandlerProps().isEnabled()) {
@@ -261,5 +256,9 @@ public class PlayerBalancer extends Plugin {
 
     public NetworkManager getNetworkManager() {
         return networkManager;
+    }
+
+    public FallbackCommand getFallbackCommand() {
+        return fallbackCommand;
     }
 }
