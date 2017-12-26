@@ -1,7 +1,8 @@
 package com.jaimemartz.playerbalancer.ping;
 
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.config.ServerInfo;
+
+import static com.jaimemartz.playerbalancer.utils.MessageUtils.revertColor;
 
 public class ServerStatus {
     private final String description;
@@ -74,9 +75,5 @@ public class ServerStatus {
 
     public void setOutdated(boolean outdated) {
         this.outdated = outdated;
-    }
-
-    private static String revertColor(String string) {
-        return string.replace(ChatColor.COLOR_CHAR, '&');
     }
 }

@@ -4,17 +4,13 @@ import com.google.common.reflect.TypeToken;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
-import com.jaimemartz.playerbalancer.listeners.PlayerDisconnectListener;
-import com.jaimemartz.playerbalancer.listeners.ProxyReloadListener;
-import com.jaimemartz.playerbalancer.listeners.ServerConnectListener;
-import com.jaimemartz.playerbalancer.listeners.ServerKickListener;
+import com.jaimemartz.playerbalancer.listeners.*;
 import com.jaimemartz.playerbalancer.manager.NetworkManager;
 import com.jaimemartz.playerbalancer.manager.PasteHelper;
 import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
 import com.jaimemartz.playerbalancer.services.FallbackService;
-import com.jaimemartz.playerbalancer.services.MessagingService;
 import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
@@ -40,8 +36,7 @@ public class PlayerBalancer extends Plugin {
     private ConfigurationLoader<CommentedConfigurationNode> loader;
     private FallbackService fallbackService;
     private Command mainCommand, manageCommand;
-    private MessagingService messagingService;
-    private Listener connectListener, kickListener, reloadListener;
+    private Listener connectListener, kickListener, reloadListener, pluginMessageListener;
 
     @Override
     public void onEnable() {
@@ -138,8 +133,8 @@ public class PlayerBalancer extends Plugin {
 
                     getProxy().getPluginManager().registerListener(this, statusManager);
 
-                    messagingService = new MessagingService(this);
-                    getProxy().getPluginManager().registerListener(this, messagingService);
+                    pluginMessageListener = new PluginMessageListener(this);
+                    getProxy().getPluginManager().registerListener(this, pluginMessageListener);
                 }
 
                 manageCommand = new ManageCommand(this);
@@ -214,10 +209,10 @@ public class PlayerBalancer extends Plugin {
             }
 
             if (settings.getGeneralProps().isPluginMessaging()) {
-                if (messagingService != null) {
+                if (pluginMessageListener != null) {
                     getProxy().unregisterChannel("PlayerBalancer");
-                    getProxy().getPluginManager().unregisterListener(messagingService);
-                    messagingService = null;
+                    getProxy().getPluginManager().unregisterListener(pluginMessageListener);
+                    pluginMessageListener = null;
                 }
             }
 

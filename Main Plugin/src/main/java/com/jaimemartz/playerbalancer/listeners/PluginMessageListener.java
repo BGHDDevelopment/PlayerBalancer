@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.services;
+package com.jaimemartz.playerbalancer.listeners;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -22,11 +22,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public class MessagingService implements Listener {
+public class PluginMessageListener implements Listener {
     private final PlayerBalancer plugin;
     private final Gson gson;
 
-    public MessagingService(PlayerBalancer plugin) {
+    public PluginMessageListener(PlayerBalancer plugin) {
         this.plugin = plugin;
         GsonBuilder builder = new GsonBuilder();
 
