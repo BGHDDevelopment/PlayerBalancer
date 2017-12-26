@@ -116,7 +116,9 @@ public abstract class ConnectionIntent {
             plugin.getProxy().getScheduler().schedule(plugin, () -> {
                 PlayerLocker.unlock(player);
             }, 5, TimeUnit.SECONDS);
-            callback.done(result, throwable);
+
+            if (callback != null)
+                callback.done(result, throwable);
         });
     }
 }

@@ -11,7 +11,7 @@
 
     <name>PlayerBalancer Addon</name>
     <artifactId>playerbalancer-addon</artifactId>
-    <version>1.3 for 2.1.3+</version>
+    <version>1.3 for 2.1.4+</version>
 
     <build>
         <finalName>PlayerBalancerAddon</finalName>

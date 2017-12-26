@@ -25,4 +25,6 @@ public final class MessageUtils {
     public static String revertColor(String string) {
         return string.replace(ChatColor.COLOR_CHAR, '&');
     }
+
+    private MessageUtils() {}
 }

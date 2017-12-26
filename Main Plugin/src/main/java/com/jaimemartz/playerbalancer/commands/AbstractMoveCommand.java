@@ -40,7 +40,7 @@ public abstract class AbstractMoveCommand extends Command {
                             MessageUtils.send(player, messages.getInvalidInputMessage());
                         } else {
                             ServerInfo server = Iterables.get(target.getServers(), number - 1);
-                            ConnectionIntent.direct(plugin, player, server, (response, throwable) -> {});
+                            ConnectionIntent.direct(plugin, player, server, null);
                         }
                     } catch (NumberFormatException e) {
                         MessageUtils.send(player, messages.getInvalidInputMessage());

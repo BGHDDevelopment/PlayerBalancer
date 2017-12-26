@@ -32,4 +32,6 @@ public final class DigitUtils {
 
         return Integer.parseInt(builder.toString());
     }
+
+    private DigitUtils() {}
 }

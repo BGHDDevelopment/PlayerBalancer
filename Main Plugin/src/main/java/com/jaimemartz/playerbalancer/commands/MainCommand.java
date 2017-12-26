@@ -34,7 +34,7 @@ public class MainCommand extends Command {
                     if (sender.hasPermission("playerbalancer.admin")) {
                         sender.sendMessage(new ComponentBuilder("Reloading the configuration, this may take a while...").color(ChatColor.GREEN).create());
                         if (plugin.reloadPlugin()) {
-                            sender.sendMessage(new ComponentBuilder("The plugin has successfully reloaded").color(ChatColor.GREEN).create());
+                            sender.sendMessage(new ComponentBuilder("The plugin has been successfully reloaded").color(ChatColor.GREEN).create());
                         } else {
                             sender.sendMessage(new ComponentBuilder("Something went badly while reloading the plugin").color(ChatColor.RED).create());
                         }

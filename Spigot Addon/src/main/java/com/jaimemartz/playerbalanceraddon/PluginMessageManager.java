@@ -168,6 +168,7 @@ public class PluginMessageManager implements PluginMessageListener {
     public void bypassConnect(Player player, String server) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("BypassConnect");
+        out.writeUTF(server);
         player.sendPluginMessage(plugin, "PlayerBalancer", out.toByteArray());
     }
 

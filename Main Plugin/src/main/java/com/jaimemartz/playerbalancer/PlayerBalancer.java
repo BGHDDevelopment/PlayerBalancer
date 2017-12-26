@@ -91,11 +91,11 @@ public class PlayerBalancer extends Plugin {
         }
 
         try {
-            CommentedConfigurationNode node = loader.load();
-            settings = node.getValue(TypeToken.of(SettingsHolder.class));
-
             mainCommand = new MainCommand(this);
             getProxy().getPluginManager().registerCommand(this, mainCommand);
+
+            CommentedConfigurationNode node = loader.load();
+            settings = node.getValue(TypeToken.of(SettingsHolder.class));
 
             if (settings.getGeneralProps().isEnabled()) {
                 if (settings.getGeneralProps().isSilent()) {

@@ -5,6 +5,7 @@ import com.google.common.io.ByteStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.settings.props.features.ServerCheckerProps;
+import com.jaimemartz.playerbalancer.utils.RegExUtils;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -108,7 +109,7 @@ public class StatusManager implements Listener {
         }
 
         for (String pattern : props.getMarkerDescs()) {
-            if (status.getDescription().matches(pattern)) {
+            if (RegExUtils.matches(status.getDescription(), pattern)) {
                 return false;
             }
         }

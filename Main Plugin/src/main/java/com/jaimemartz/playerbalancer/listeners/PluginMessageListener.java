@@ -20,7 +20,6 @@ import net.md_5.bungee.event.EventHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class PluginMessageListener implements Listener {
     private final PlayerBalancer plugin;
@@ -212,10 +211,12 @@ public class PluginMessageListener implements Listener {
                         if (server == null)
                             break;
 
-                        PlayerLocker.lock(player);
-                        plugin.getProxy().getScheduler().schedule(plugin, () -> {
-                            PlayerLocker.unlock(player);
-                        }, 5, TimeUnit.SECONDS);
+                        ConnectionIntent.direct(
+                                plugin,
+                                player,
+                                server,
+                                null
+                        );
                     }
                     break;
                 }
