@@ -32,14 +32,6 @@ public abstract class ConnectionIntent {
             throw new IllegalStateException("The servers list parameter is the same reference, this cannot happen");
         }
 
-        Server current = player.getServer();
-        if (current != null) {
-            if (section.getServers().contains(current.getInfo())) {
-                MessageUtils.send(player, plugin.getSettings().getMessagesProps().getSameSectionMessage());
-                return;
-            }
-        }
-
         if (section.getImplicitProvider() != ProviderType.NONE) {
             ServerInfo target = this.fetchServer(player, section, provider, servers);
             if (target != null) {
@@ -101,6 +93,16 @@ public abstract class ConnectionIntent {
 
     //TODO Create this as a type
     public static void simple(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section) {
+        //TODO Make this apply to all situations except kicks
+        //TODO (It already works like that, but I want a better way)
+        Server current = player.getServer();
+        if (current != null) {
+            if (section.getServers().contains(current.getInfo())) {
+                MessageUtils.send(player, plugin.getSettings().getMessagesProps().getSameSectionMessage());
+                return;
+            }
+        }
+
         new ConnectionIntent(plugin, player, section) {
             @Override
             public void connect(ServerInfo server, Callback<Boolean> callback) {

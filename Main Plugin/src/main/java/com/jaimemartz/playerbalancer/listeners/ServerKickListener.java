@@ -51,10 +51,10 @@ public class ServerKickListener implements Listener {
         }
 
         if (props.isDebug()) {
-            plugin.getLogger().info(String.format("The player %s got kicked from %s, reason: %s. Matched reasons: %s",
+            plugin.getLogger().info(String.format("The player %s got kicked from %s, reason: \"%s\". Matched reasons: %s",
                     player.getName(),
                     from.getName(),
-                    TextComponent.toPlainText(event.getKickReasonComponent()),
+                    reason,
                     matches
             ));
         }
@@ -78,7 +78,7 @@ public class ServerKickListener implements Listener {
                 event.setCancelled(true);
                 event.setCancelServer(server);
                 MessageUtils.send(player, messages.getKickMessage(), (str) -> str
-                        .replace("{reason}", event.getKickReason())
+                        .replace("{reason}", reason)
                         .replace("{from}", from.getName())
                         .replace("{to}", server.getName()));
                 plugin.getProxy().getScheduler().schedule(plugin, () -> {

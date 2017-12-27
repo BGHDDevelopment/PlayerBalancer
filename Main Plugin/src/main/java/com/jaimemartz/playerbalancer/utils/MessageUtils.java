@@ -26,5 +26,9 @@ public final class MessageUtils {
         return string.replace(ChatColor.COLOR_CHAR, '&');
     }
 
+    public static String safePrint(String string) {
+        return string.replace(ChatColor.COLOR_CHAR, '\u00A7');
+    }
+
     private MessageUtils() {}
 }
