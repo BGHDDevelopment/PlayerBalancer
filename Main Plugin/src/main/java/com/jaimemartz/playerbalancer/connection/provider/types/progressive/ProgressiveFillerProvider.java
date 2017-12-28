@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.connection.provider.types;
+package com.jaimemartz.playerbalancer.connection.provider.types.progressive;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.provider.AbstractProvider;
@@ -8,18 +8,23 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
-public class ProgressiveProvider extends AbstractProvider {
+public class ProgressiveFillerProvider extends AbstractProvider {
     @Override
     public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
+        int max = Integer.MIN_VALUE;
+        ServerInfo target = null;
+
         for (ServerInfo server : servers) {
             ServerStatus status = plugin.getStatusManager().getStatus(server);
-            if (plugin.getNetworkManager().getPlayers(server) < status.getMaximum()) {
-                return server;
+            int count = plugin.getNetworkManager().getPlayers(server);
+
+            if (count > max && count <= status.getMaximum()) {
+                max = count;
+                target = server;
             }
         }
 
-        return servers.get(ThreadLocalRandom.current().nextInt(servers.size()));
+        return target;
     }
 }

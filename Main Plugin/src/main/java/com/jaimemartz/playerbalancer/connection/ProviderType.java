@@ -2,7 +2,13 @@ package com.jaimemartz.playerbalancer.connection;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.provider.AbstractProvider;
-import com.jaimemartz.playerbalancer.connection.provider.types.*;
+import com.jaimemartz.playerbalancer.connection.provider.types.NullProvider;
+import com.jaimemartz.playerbalancer.connection.provider.types.progressive.ProgressiveFillerProvider;
+import com.jaimemartz.playerbalancer.connection.provider.types.progressive.ProgressiveLowestProvider;
+import com.jaimemartz.playerbalancer.connection.provider.types.progressive.ProgressiveProvider;
+import com.jaimemartz.playerbalancer.connection.provider.types.random.RandomFillerProvider;
+import com.jaimemartz.playerbalancer.connection.provider.types.random.RandomLowestProvider;
+import com.jaimemartz.playerbalancer.connection.provider.types.random.RandomProvider;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -28,8 +34,8 @@ public enum ProviderType {
         }
     },
 
-    LOWEST {
-        LowestProvider provider = new LowestProvider();
+    RANDOM_LOWEST {
+        RandomLowestProvider provider = new RandomLowestProvider();
 
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
@@ -37,8 +43,8 @@ public enum ProviderType {
         }
     },
 
-    BALANCED {
-        BalancedProvider provider = new BalancedProvider();
+    RANDOM_FILLER {
+        RandomFillerProvider provider = new RandomFillerProvider();
 
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
@@ -55,8 +61,17 @@ public enum ProviderType {
         }
     },
 
-    FILLER {
-        FillerProvider provider = new FillerProvider();
+    PROGRESSIVE_LOWEST {
+        ProgressiveLowestProvider provider = new ProgressiveLowestProvider();
+
+        @Override
+        public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
+            return provider.requestTarget(plugin, section, servers, player);
+        }
+    },
+
+    PROGRESSIVE_FILLER {
+        ProgressiveFillerProvider provider = new ProgressiveFillerProvider();
 
         @Override
         public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {

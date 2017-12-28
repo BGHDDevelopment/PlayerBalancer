@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.connection.provider.types;
+package com.jaimemartz.playerbalancer.connection.provider.types.random;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.provider.AbstractProvider;
@@ -7,11 +7,12 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+
+import static com.jaimemartz.playerbalancer.utils.RandomUtils.random;
 
 public class RandomProvider extends AbstractProvider {
     @Override
     public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
-        return servers.get(ThreadLocalRandom.current().nextInt(servers.size()));
+        return random(servers);
     }
 }
