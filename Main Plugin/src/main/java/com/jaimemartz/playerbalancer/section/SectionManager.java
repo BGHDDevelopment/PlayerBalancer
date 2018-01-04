@@ -92,7 +92,7 @@ public class SectionManager {
                 if (sectionProps.getProvider() == null) {
                     ServerSection current = section.getParent();
                     if (current != null) {
-                        while (current.getExplicitProvider() == null) {
+                        while (current.getProps().getProvider() == null) {
                             current = current.getParent();
                         }
 

@@ -1,5 +1,6 @@
 package com.jaimemartz.playerbalancer.settings.props.shared;
 
+import lombok.Data;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -7,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 @ConfigSerializable
+@Data
 public class CommandProps {
     @Setting
     private String name;
@@ -17,24 +19,12 @@ public class CommandProps {
     @Setting
     private List<String> aliases;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPermission() {
         if (permission != null) {
             return permission;
         } else {
             return "";
         }
-    }
-
-    public void setPermission(String permission) {
-        this.permission = permission;
     }
 
     public List<String> getAliases() {
@@ -51,18 +41,5 @@ public class CommandProps {
         } else {
             return new String[] {};
         }
-    }
-
-    public void setAliases(List<String> aliases) {
-        this.aliases = aliases;
-    }
-
-    @Override
-    public String toString() {
-        return "CommandProps{" +
-                "name='" + name + '\'' +
-                ", permission='" + permission + '\'' +
-                ", aliases=" + aliases +
-                '}';
     }
 }

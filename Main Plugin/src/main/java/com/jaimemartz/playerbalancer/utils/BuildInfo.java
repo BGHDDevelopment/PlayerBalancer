@@ -1,7 +1,15 @@
 package com.jaimemartz.playerbalancer.utils;
 
 public class BuildInfo {
-    public static final String USER_ID = "%%__USER__%%";
-    public static final String RESOURCE_ID = "%%__RESOURCE__%%";
-    public static final String NONCE_ID = "%%__NONCE__%%";
+    public static String getUserId() {
+        return "%%__USER__%%";
+    }
+
+    public static String getResourceId() {
+        return "%%__RESOURCE__%%";
+    }
+
+    public static String getNonceId() {
+        return "%%__NONCE__%%";
+    }
 }

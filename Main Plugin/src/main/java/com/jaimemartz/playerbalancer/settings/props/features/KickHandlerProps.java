@@ -1,5 +1,6 @@
 package com.jaimemartz.playerbalancer.settings.props.features;
 
+import lombok.Data;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 @ConfigSerializable
+@Data
 public class KickHandlerProps {
     @Setting
     private boolean enabled;
@@ -31,82 +33,4 @@ public class KickHandlerProps {
 
     @Setting(value = "debug-info")
     private boolean debug;
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public boolean isInverted() {
-        return inverted;
-    }
-
-    public void setInverted(boolean inverted) {
-        this.inverted = inverted;
-    }
-
-    public List<String> getReasons() {
-        return reasons;
-    }
-
-    public void setReasons(List<String> reasons) {
-        this.reasons = reasons;
-    }
-
-    public List<String> getExcludedSections() {
-        return excludedSections;
-    }
-
-    public void setExcludedSections(List<String> excludedSections) {
-        this.excludedSections = excludedSections;
-    }
-
-    public boolean isRestrictive() {
-        return restrictive;
-    }
-
-    public void setRestrictive(boolean restrictive) {
-        this.restrictive = restrictive;
-    }
-
-    public boolean isForcePrincipal() {
-        return forcePrincipal;
-    }
-
-    public void setForcePrincipal(boolean forcePrincipal) {
-        this.forcePrincipal = forcePrincipal;
-    }
-
-    public Map<String, String> getRules() {
-        return rules;
-    }
-
-    public void setRules(Map<String, String> rules) {
-        this.rules = rules;
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
-    @Override
-    public String toString() {
-        return "KickHandlerProps{" +
-                "enabled=" + enabled +
-                ", inverted=" + inverted +
-                ", reasons=" + reasons +
-                ", excludedSections=" + excludedSections +
-                ", restrictive=" + restrictive +
-                ", forcePrincipal=" + forcePrincipal +
-                ", rules=" + rules +
-                ", debug=" + debug +
-                '}';
-    }
 }
