@@ -27,7 +27,7 @@ public enum PasteHelper {
         } else {
             sender.sendMessage(new ComponentBuilder("PlayerBalancer configuration link: " + address.toString()).create());
         }
-    }) {
+    }, true) {
         @Override
         public URL paste(PlayerBalancer plugin) throws Exception {
             File file = new File(plugin.getDataFolder(), "plugin.conf");
@@ -62,7 +62,7 @@ public enum PasteHelper {
         } else {
             sender.sendMessage(new ComponentBuilder("BungeeCord configuration link: " + address.toString()).create());
         }
-    }) {
+    }, true) {
         @Override
         public URL paste(PlayerBalancer plugin) throws Exception {
             File file = new File("config.yml");
@@ -85,19 +85,51 @@ public enum PasteHelper {
                 }
             }
         }
+    },
+
+    LOGS((sender, address) -> {
+        if (sender instanceof ProxiedPlayer) {
+            sender.sendMessage(new ComponentBuilder("Click me for the plugin logs")
+                    .event(new ClickEvent(ClickEvent.Action.OPEN_URL, address.toString()))
+                    .color(ChatColor.GREEN)
+                    .create()
+            );
+        } else {
+            sender.sendMessage(new ComponentBuilder("Plugin logs link: " + address.toString()).create());
+        }
+    }, false) {
+        @Override
+        public URL paste(PlayerBalancer plugin) throws Exception {
+            GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd",
+                    plugin.getLogsBuilder().toString()
+            );
+
+            paste.setName("{name} ({version} on {bungee_version})"
+                    .replace("{name}", plugin.getDescription().getName())
+                    .replace("{version}", plugin.getDescription().getVersion())
+                    .replace("{bungee_version}", plugin.getProxy().getVersion())
+            );
+
+            paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
+            paste.setExposure(GuestPaste.Exposure.UNLISTED);
+            paste.setFormat("text");
+
+            return paste.paste();
+        }
     };
 
     private URL url;
 
     private final BiConsumer<CommandSender, URL> consumer;
+    private final boolean cache;
 
-    PasteHelper(BiConsumer<CommandSender, URL> consumer) {
+    PasteHelper(BiConsumer<CommandSender, URL> consumer, boolean cache) {
         this.consumer = consumer;
+        this.cache = cache;
     }
 
     public void send(PlayerBalancer plugin, CommandSender sender) {
-        boolean cached = url != null;
-        if (url == null) {
+        if (url == null || !cache) {
             try {
                 url = paste(plugin);
             } catch (PasteException e) {
@@ -113,16 +145,20 @@ public enum PasteHelper {
                 );
                 e.printStackTrace();
             }
+        } else {
+            sender.sendMessage(new ComponentBuilder("This is a cached link, reload the plugin for it to refresh!")
+                    .color(ChatColor.RED)
+                    .create()
+            );
         }
 
         if (url != null) {
             consumer.accept(sender, url);
-            if (cached) {
-                sender.sendMessage(new ComponentBuilder("This is a cached link, reload the plugin for it to refresh!")
-                        .color(ChatColor.RED)
-                        .create()
-                );
-            }
+        } else {
+            sender.sendMessage(new ComponentBuilder("Could not create the paste, try again...")
+                    .color(ChatColor.RED)
+                    .create()
+            );
         }
     }
 

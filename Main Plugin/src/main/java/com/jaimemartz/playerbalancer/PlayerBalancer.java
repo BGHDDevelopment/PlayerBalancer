@@ -15,6 +15,7 @@ import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.log.ConciseFormatter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -25,7 +26,9 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class PlayerBalancer extends Plugin {
     private boolean failed = false;
@@ -34,17 +37,46 @@ public class PlayerBalancer extends Plugin {
     private SectionManager sectionManager;
     private NetworkManager networkManager;
     private ConfigurationLoader<CommentedConfigurationNode> loader;
+    private final StringBuilder logsBuilder = new StringBuilder();
 
     private FallbackCommand fallbackCommand;
     private Command mainCommand, manageCommand;
     private Listener connectListener, kickListener, reloadListener, pluginMessageListener;
 
     @Override
+    public void onLoad() {
+        Handler handler = new Handler() {
+            @Override
+            public void publish(LogRecord record) {
+                logsBuilder.append(getFormatter().format(record));
+            }
+
+            @Override
+            public void flush() {
+                logsBuilder.setLength(0);
+            }
+
+            @Override
+            public void close() throws SecurityException {
+                //Nothing to do
+            }
+        };
+
+        handler.setFormatter(new ConciseFormatter());
+        getProxy().getLogger().addHandler(handler);
+        getProxy().getLogger().setUseParentHandlers(true);
+    }
+
+    @Override
     public void onEnable() {
         Metrics metrics = new Metrics(this);
-        metrics.addCustomChart(new SingleLineChart("configured_sections",
-                () -> sectionManager.getSections().size()
-        ));
+        metrics.addCustomChart(new SingleLineChart("configured_sections", () -> {
+            if (sectionManager != null) {
+                return sectionManager.getSections().size();
+            } else {
+                return 0;
+            }
+        }));
 
         if (!checkUpToDate()) {
             getLogger().info("You are using a version of PlayerBalancer that is not the latest on spigot");
@@ -260,5 +292,9 @@ public class PlayerBalancer extends Plugin {
 
     public FallbackCommand getFallbackCommand() {
         return fallbackCommand;
+    }
+
+    public StringBuilder getLogsBuilder() {
+        return logsBuilder;
     }
 }

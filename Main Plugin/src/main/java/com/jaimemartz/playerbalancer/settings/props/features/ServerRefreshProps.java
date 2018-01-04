@@ -23,11 +23,11 @@ public class ServerRefreshProps {
     }
 
     public int getDelay() {
-        return interval;
+        return delay;
     }
 
-    public void setDelay(int interval) {
-        this.interval = interval;
+    public void setDelay(int delay) {
+        this.delay = delay;
     }
 
     public int getInterval() {
