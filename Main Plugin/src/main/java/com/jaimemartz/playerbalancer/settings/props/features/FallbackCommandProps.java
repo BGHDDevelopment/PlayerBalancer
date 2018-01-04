@@ -21,6 +21,9 @@ public class FallbackCommandProps {
     @Setting
     private boolean restrictive;
 
+    @Setting(value = "prevent-same-section")
+    private boolean preventSameSection;
+
     @Setting
     private Map<String, String> rules;
 
@@ -56,6 +59,14 @@ public class FallbackCommandProps {
         this.restrictive = restrictive;
     }
 
+    public boolean isPreventSameSection() {
+        return preventSameSection;
+    }
+
+    public void setPreventSameSection(boolean preventSameSection) {
+        this.preventSameSection = preventSameSection;
+    }
+
     public Map<String, String> getRules() {
         return rules;
     }
@@ -71,6 +82,7 @@ public class FallbackCommandProps {
                 ", command=" + command +
                 ", excludedSections=" + excludedSections +
                 ", restrictive=" + restrictive +
+                ", preventSameSection=" + preventSameSection +
                 ", rules=" + rules +
                 '}';
     }

@@ -28,8 +28,15 @@ public abstract class ConnectionIntent {
                 (str) -> str.replace("{section}", section.getName())
         );
 
+        //Prevents removing servers from the section
         if (servers == section.getServers()) {
             throw new IllegalStateException("The servers list parameter is the same reference, this cannot happen");
+        }
+
+        //Prevents connections to the same server
+        Server current = player.getServer();
+        if (current != null) {
+            servers.remove(current.getInfo());
         }
 
         if (section.getImplicitProvider() != ProviderType.NONE) {
@@ -93,16 +100,6 @@ public abstract class ConnectionIntent {
 
     //TODO Create this as a type
     public static void simple(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section) {
-        //TODO Make this apply to all situations except kicks
-        //TODO (It already works like that, but I want a better way)
-        Server current = player.getServer();
-        if (current != null) {
-            if (section.getServers().contains(current.getInfo())) {
-                MessageUtils.send(player, plugin.getSettings().getMessagesProps().getSameSectionMessage());
-                return;
-            }
-        }
-
         new ConnectionIntent(plugin, player, section) {
             @Override
             public void connect(ServerInfo server, Callback<Boolean> callback) {
