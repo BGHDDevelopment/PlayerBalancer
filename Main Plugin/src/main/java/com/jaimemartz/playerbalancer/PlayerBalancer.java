@@ -12,10 +12,10 @@ import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
 import com.jaimemartz.playerbalancer.settings.SettingsHolder;
+import com.jaimemartz.playerbalancer.utils.CustomFormatter;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.log.ConciseFormatter;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -48,7 +48,10 @@ public class PlayerBalancer extends Plugin {
         Handler handler = new Handler() {
             @Override
             public void publish(LogRecord record) {
-                logsBuilder.append(getFormatter().format(record));
+                if (isLoggable(record)) {
+                    String formatted = getFormatter().format(record);
+                    logsBuilder.append(formatted);
+                }
             }
 
             @Override
@@ -62,7 +65,7 @@ public class PlayerBalancer extends Plugin {
             }
         };
 
-        handler.setFormatter(new ConciseFormatter());
+        handler.setFormatter(new CustomFormatter());
         getProxy().getLogger().addHandler(handler);
         getProxy().getLogger().setUseParentHandlers(true);
     }
