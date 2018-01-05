@@ -79,7 +79,7 @@ public abstract class ConnectionIntent {
             }
         }
 
-        int intents = plugin.getSettings().getServerCheckerProps().getAttempts();
+        int intents = plugin.getSettings().getFeaturesProps().getServerCheckerProps().getAttempts();
         for (int intent = 1; intent <= intents; intent++) {
             if (servers.size() == 0) return null;
 

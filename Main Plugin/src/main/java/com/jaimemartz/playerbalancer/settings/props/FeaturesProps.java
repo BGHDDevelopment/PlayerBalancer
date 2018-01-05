@@ -22,4 +22,13 @@ public class FeaturesProps {
 
     @Setting(value = "server-refresh")
     private ServerRefreshProps serverRefreshProps;
+
+    @Setting(value = "custom-find-command")
+    private CustomFindCommandProps customFindCommandProps;
+
+    @Setting(value = "custom-list-command")
+    private CustomListCommandProps customListCommandProps;
+
+    @Setting(value = "custom-server-command")
+    private CustomServerCommandProps customServerCommandProps;
 }

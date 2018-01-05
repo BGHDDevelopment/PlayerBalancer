@@ -26,7 +26,7 @@ public class ServerKickListener implements Listener {
     private final PlayerBalancer plugin;
 
     public ServerKickListener(PlayerBalancer plugin) {
-        this.props = plugin.getSettings().getKickHandlerProps();
+        this.props = plugin.getSettings().getFeaturesProps().getKickHandlerProps();
         this.messages = plugin.getSettings().getMessagesProps();
         this.plugin = plugin;
     }
@@ -126,7 +126,7 @@ public class ServerKickListener implements Listener {
 
             return target;
         } else {
-            if (plugin.getSettings().getBalancerProps().isDefaultPrincipal()) {
+            if (plugin.getSettings().getFeaturesProps().getBalancerProps().isDefaultPrincipal()) {
                 return plugin.getSectionManager().getPrincipal();
             } else {
                 MessageUtils.send(player, messages.getUnavailableServerMessage());

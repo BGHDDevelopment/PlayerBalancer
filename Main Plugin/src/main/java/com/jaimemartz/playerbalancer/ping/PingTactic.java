@@ -18,7 +18,7 @@ public enum PingTactic {
                 try {
                     StatusResponse response = utility.ping(
                             server.getAddress(),
-                            plugin.getSettings().getServerCheckerProps().getTimeout());
+                            plugin.getSettings().getFeaturesProps().getServerCheckerProps().getTimeout());
                     callback.done(new ServerStatus(
                             response.getDescription().toLegacyText(),
                             response.getPlayers().getOnline(),

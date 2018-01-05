@@ -26,7 +26,7 @@ public class SectionManager {
     private static final Map<String, Stage> stages = Collections.synchronizedMap(new LinkedHashMap<>());
 
     public SectionManager(PlayerBalancer plugin) {
-        this.props = plugin.getSettings().getBalancerProps();
+        this.props = plugin.getSettings().getFeaturesProps().getBalancerProps();
         this.plugin = plugin;
     }
 
@@ -160,7 +160,7 @@ public class SectionManager {
             stage.execute();
         });
 
-        if (plugin.getSettings().getServerRefreshProps().isEnabled()) {
+        if (plugin.getSettings().getFeaturesProps().getServerRefreshProps().isEnabled()) {
             plugin.getLogger().info("Starting automatic server refresh task");
             refreshTask = plugin.getProxy().getScheduler().schedule(plugin, () -> {
                 props.getSectionProps().forEach((name, props) -> {
@@ -168,8 +168,8 @@ public class SectionManager {
                     calculateServers(section);
                 });
             },
-                    plugin.getSettings().getServerRefreshProps().getDelay(),
-                    plugin.getSettings().getServerRefreshProps().getInterval(),
+                    plugin.getSettings().getFeaturesProps().getServerRefreshProps().getDelay(),
+                    plugin.getSettings().getFeaturesProps().getServerRefreshProps().getInterval(),
                     TimeUnit.MILLISECONDS
             );
         }

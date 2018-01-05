@@ -29,7 +29,7 @@ public class StatusManager implements Listener {
     private final Map<ServerInfo, Boolean> overriders = new HashMap<>();
 
     public StatusManager(PlayerBalancer plugin) {
-        this.props = plugin.getSettings().getServerCheckerProps();
+        this.props = plugin.getSettings().getFeaturesProps().getServerCheckerProps();
         this.plugin = plugin;
     }
 

@@ -25,7 +25,7 @@ public class FallbackCommand extends Command {
      * Constructor for `fallback-command`
      */
     public FallbackCommand(PlayerBalancer plugin) {
-        this(plugin, plugin.getSettings().getFallbackCommandProps().getCommand());
+        this(plugin, plugin.getSettings().getFeaturesProps().getFallbackCommandProps().getCommand());
     }
 
     /**
@@ -34,7 +34,7 @@ public class FallbackCommand extends Command {
     public FallbackCommand(PlayerBalancer plugin, CommandProps commandProps) {
         super(commandProps.getName(), commandProps.getPermission(), commandProps.getAliasesArray());
         this.messages = plugin.getSettings().getMessagesProps();
-        this.props = plugin.getSettings().getFallbackCommandProps();
+        this.props = plugin.getSettings().getFeaturesProps().getFallbackCommandProps();
         this.plugin = plugin;
     }
 
@@ -103,7 +103,7 @@ public class FallbackCommand extends Command {
 
             return target;
         } else {
-            if (plugin.getSettings().getBalancerProps().isDefaultPrincipal()) {
+            if (plugin.getSettings().getFeaturesProps().getBalancerProps().isDefaultPrincipal()) {
                 return plugin.getSectionManager().getPrincipal();
             } else {
                 MessageUtils.send(player, messages.getUnavailableServerMessage());

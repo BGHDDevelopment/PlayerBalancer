@@ -26,6 +26,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -149,11 +150,11 @@ public class PlayerBalancer extends Plugin {
 
                 statusManager = new StatusManager(this);
 
-                if (settings.getServerCheckerProps().isEnabled()) {
+                if (settings.getFeaturesProps().getServerCheckerProps().isEnabled()) {
                     statusManager.start();
                 }
 
-                if (settings.getFallbackCommandProps().isEnabled()) {
+                if (settings.getFeaturesProps().getFallbackCommandProps().isEnabled()) {
                     fallbackCommand = new FallbackCommand(this);
                     getProxy().getPluginManager().registerCommand(this, fallbackCommand);
                 }
@@ -175,13 +176,30 @@ public class PlayerBalancer extends Plugin {
 
                 getProxy().getPluginManager().registerListener(this, new PlayerDisconnectListener(this));
 
-                PasteHelper.reset();
-
-                if (settings.getKickHandlerProps().isEnabled()) {
+                if (settings.getFeaturesProps().getKickHandlerProps().isEnabled()) {
                     kickListener = new ServerKickListener(this);
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
 
+                getProxy().getScheduler().schedule(this, () -> {
+                    if (settings.getFeaturesProps().getCustomFindCommandProps().isEnabled()) {
+                        Plugin plugin = getProxy().getPluginManager().getPlugin("cmd_find");
+                        if (plugin != null) {
+                            getProxy().getPluginManager().unregisterCommands(plugin);
+                            getLogger().info("Unregistered commands of the plugin: " + plugin.getDescription().getName());
+                        }
+                    }
+
+                    if (settings.getFeaturesProps().getCustomListCommandProps().isEnabled()) {
+                        Plugin plugin = getProxy().getPluginManager().getPlugin("cmd_list");
+                        if (plugin != null) {
+                            getProxy().getPluginManager().unregisterCommands(plugin);
+                            getLogger().info("Unregistered commands of the plugin: " + plugin.getDescription().getName());
+                        }
+                    }
+                }, 1L, TimeUnit.SECONDS);
+
+                PasteHelper.reset();
                 getLogger().info("The plugin has finished loading without any problems");
             } else {
                 getLogger().warning("-----------------------------------------------------");
@@ -213,20 +231,20 @@ public class PlayerBalancer extends Plugin {
                 }
             }
 
-            if (settings.getServerCheckerProps().isEnabled()) {
+            if (settings.getFeaturesProps().getServerCheckerProps().isEnabled()) {
                 if (statusManager != null) {
                     statusManager.stop();
                 }
             }
 
-            if (settings.getFallbackCommandProps().isEnabled()) {
+            if (settings.getFeaturesProps().getFallbackCommandProps().isEnabled()) {
                 if (fallbackCommand != null) {
                     getProxy().getPluginManager().unregisterCommand(fallbackCommand);
                     fallbackCommand = null;
                 }
             }
 
-            if (settings.getKickHandlerProps().isEnabled()) {
+            if (settings.getFeaturesProps().getKickHandlerProps().isEnabled()) {
                 if (kickListener != null) {
                     getProxy().getPluginManager().unregisterListener(kickListener);
                     kickListener = null;
