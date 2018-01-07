@@ -1,21 +1,21 @@
-package com.jaimemartz.playerbalancer.commands.custom;
+package com.jaimemartz.playerbalancer.commands;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.settings.props.features.CustomFindCommandProps;
+import com.jaimemartz.playerbalancer.settings.props.features.CustomListCommandProps;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.plugin.Command;
 
-public class CustomFindCommand extends Command {
+public class CustomListCommand extends Command {
     private final PlayerBalancer plugin;
-    private final CustomFindCommandProps props;
+    private final CustomListCommandProps props;
 
-    public CustomFindCommand(PlayerBalancer plugin) {
-        this(plugin, plugin.getSettings().getFeaturesProps().getCustomFindCommandProps());
+    public CustomListCommand(PlayerBalancer plugin) {
+        this(plugin, plugin.getSettings().getFeaturesProps().getCustomListCommandProps());
     }
 
-    private CustomFindCommand(PlayerBalancer plugin, CustomFindCommandProps props) {
+    private CustomListCommand(PlayerBalancer plugin, CustomListCommandProps props) {
         super(
                 props.getCommand().getName(),
                 props.getCommand().getPermission(),

@@ -1,14 +1,12 @@
 package com.jaimemartz.playerbalancer;
 
 import com.google.common.reflect.TypeToken;
-import com.jaimemartz.playerbalancer.commands.FallbackCommand;
-import com.jaimemartz.playerbalancer.commands.MainCommand;
-import com.jaimemartz.playerbalancer.commands.ManageCommand;
+import com.jaimemartz.playerbalancer.commands.*;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
+import com.jaimemartz.playerbalancer.helper.NetworkManager;
+import com.jaimemartz.playerbalancer.helper.PasteHelper;
+import com.jaimemartz.playerbalancer.helper.PlayerLocker;
 import com.jaimemartz.playerbalancer.listeners.*;
-import com.jaimemartz.playerbalancer.manager.NetworkManager;
-import com.jaimemartz.playerbalancer.manager.PasteHelper;
-import com.jaimemartz.playerbalancer.manager.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
 import com.jaimemartz.playerbalancer.settings.SettingsHolder;
@@ -41,7 +39,7 @@ public class PlayerBalancer extends Plugin {
     private final StringBuilder logsBuilder = new StringBuilder();
 
     private FallbackCommand fallbackCommand;
-    private Command mainCommand, manageCommand;
+    private Command mainCommand, manageCommand, findCommand, listCommand, serverCommand;
     private Listener connectListener, kickListener, reloadListener, pluginMessageListener;
 
     @Override
@@ -181,23 +179,27 @@ public class PlayerBalancer extends Plugin {
                     getProxy().getPluginManager().registerListener(this, kickListener);
                 }
 
+                //After the modules have loaded (hopefully?)
                 getProxy().getScheduler().schedule(this, () -> {
                     if (settings.getFeaturesProps().getCustomFindCommandProps().isEnabled()) {
-                        Plugin plugin = getProxy().getPluginManager().getPlugin("cmd_find");
-                        if (plugin != null) {
-                            getProxy().getPluginManager().unregisterCommands(plugin);
-                            getLogger().info("Unregistered commands of the plugin: " + plugin.getDescription().getName());
-                        }
+                        tryUnregisterCommands("cmd_find");
+                        findCommand = new CustomFindCommand(this);
+                        getProxy().getPluginManager().registerCommand(this, findCommand);
                     }
 
                     if (settings.getFeaturesProps().getCustomListCommandProps().isEnabled()) {
-                        Plugin plugin = getProxy().getPluginManager().getPlugin("cmd_list");
-                        if (plugin != null) {
-                            getProxy().getPluginManager().unregisterCommands(plugin);
-                            getLogger().info("Unregistered commands of the plugin: " + plugin.getDescription().getName());
-                        }
+                        tryUnregisterCommands("cmd_list");
+                        listCommand = new CustomListCommand(this);
+                        getProxy().getPluginManager().registerCommand(this, listCommand);
                     }
-                }, 1L, TimeUnit.SECONDS);
+
+                    if (settings.getFeaturesProps().getCustomServerCommandProps().isEnabled()) {
+                        tryUnregisterCommands("cmd_server");
+                        serverCommand = new CustomServerCommand(this);
+                        getProxy().getPluginManager().registerCommand(this, serverCommand);
+                    }
+
+                }, 5L, TimeUnit.SECONDS);
 
                 PasteHelper.reset();
                 getLogger().info("The plugin has finished loading without any problems");
@@ -211,6 +213,16 @@ public class PlayerBalancer extends Plugin {
             this.failed = true;
             getLogger().severe("The plugin could not continue loading due to an unexpected exception");
             e.printStackTrace();
+        }
+    }
+
+    private void tryUnregisterCommands(String pluginName) {
+        Plugin plugin = getProxy().getPluginManager().getPlugin(pluginName);
+        if (plugin != null) {
+            getProxy().getPluginManager().unregisterCommands(plugin);
+            getLogger().info("Unregistered all commands of the plugin: " + pluginName);
+        } else {
+            getLogger().warning("Could not find the plugin: " + pluginName);
         }
     }
 
@@ -267,6 +279,27 @@ public class PlayerBalancer extends Plugin {
             if (manageCommand != null) {
                 getProxy().getPluginManager().unregisterCommand(manageCommand);
                 manageCommand = null;
+            }
+
+            if (settings.getFeaturesProps().getCustomFindCommandProps().isEnabled()) {
+                if (findCommand != null) {
+                    getProxy().getPluginManager().unregisterCommand(findCommand);
+                    findCommand = null;
+                }
+            }
+
+            if (settings.getFeaturesProps().getCustomListCommandProps().isEnabled()) {
+                if (listCommand != null) {
+                    getProxy().getPluginManager().unregisterCommand(listCommand);
+                    listCommand = null;
+                }
+            }
+
+            if (settings.getFeaturesProps().getCustomServerCommandProps().isEnabled()) {
+                if (serverCommand != null) {
+                    getProxy().getPluginManager().unregisterCommand(serverCommand);
+                    serverCommand = null;
+                }
             }
 
             if (sectionManager != null) {

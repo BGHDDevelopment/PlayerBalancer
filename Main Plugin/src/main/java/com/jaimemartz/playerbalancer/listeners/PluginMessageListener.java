@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
-import com.jaimemartz.playerbalancer.manager.PlayerLocker;
+import com.jaimemartz.playerbalancer.helper.PlayerLocker;
 import com.jaimemartz.playerbalancer.ping.ServerStatus;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import net.md_5.bungee.api.config.ServerInfo;

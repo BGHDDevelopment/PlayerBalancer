@@ -1,7 +1,7 @@
 package com.jaimemartz.playerbalancer.connection;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.manager.PlayerLocker;
+import com.jaimemartz.playerbalancer.helper.PlayerLocker;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.Callback;
@@ -26,6 +26,7 @@ public abstract class ConnectionIntent {
 
         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectingMessage(),
                 (str) -> str.replace("{section}", section.getName())
+                        .replace("{alias}", section.getProps().getAlias())
         );
 
         //Prevents removing servers from the section
@@ -46,6 +47,8 @@ public abstract class ConnectionIntent {
                     if (response) { //only if the connect has been executed correctly
                         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectedMessage(),
                                 (str) -> str.replace("{server}", target.getName())
+                                        .replace("{section}", section.getName())
+                                        .replace("{alias}", section.getProps().getAlias())
                         );
                     }
                 });

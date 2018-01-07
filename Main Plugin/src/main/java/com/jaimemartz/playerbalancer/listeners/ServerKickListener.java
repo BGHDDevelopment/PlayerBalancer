@@ -2,7 +2,7 @@ package com.jaimemartz.playerbalancer.listeners;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ConnectionIntent;
-import com.jaimemartz.playerbalancer.manager.PlayerLocker;
+import com.jaimemartz.playerbalancer.helper.PlayerLocker;
 import com.jaimemartz.playerbalancer.section.ServerSection;
 import com.jaimemartz.playerbalancer.settings.props.MessagesProps;
 import com.jaimemartz.playerbalancer.settings.props.features.KickHandlerProps;
@@ -111,8 +111,16 @@ public class ServerKickListener implements Listener {
         }
 
         if (current != null) {
-            ServerSection target = plugin.getSectionManager().getBind(props.getRules(), current)
-                    .orElse(current.getParent());
+            ServerSection target = current.getParent();
+
+            String bindName = props.getRules().get(current.getName());
+            if (bindName != null) {
+                ServerSection bind = plugin.getSectionManager().getByName(bindName);
+                if (bind != null) {
+                    target = bind;
+                }
+            }
+
             if (target == null) {
                 MessageUtils.send(player, messages.getUnavailableServerMessage());
                 return null;

@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.manager;
+package com.jaimemartz.playerbalancer.helper;
 
 import com.google.common.io.CharStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;

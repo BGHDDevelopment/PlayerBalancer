@@ -109,6 +109,13 @@ public class ManageCommand extends Command {
                                             .create());
                                 }
 
+                                sender.sendMessage(new ComponentBuilder("Alias: ")
+                                        .color(ChatColor.GRAY)
+                                        .append(String.valueOf(section.getProps().getAlias()))
+                                        .color(ChatColor.AQUA)
+                                        .create()
+                                );
+
                                 sender.sendMessage(new ComponentBuilder("Position: ")
                                         .color(ChatColor.GRAY)
                                         .append(String.valueOf(section.getPosition()))

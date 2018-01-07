@@ -349,12 +349,6 @@ public class SectionManager {
         return reiterativeSections.contains(section.getName());
     }
 
-    public Optional<ServerSection> getBind(Map<String, String> rules, ServerSection section) {
-        String bind = rules.get(section.getName());
-        ServerSection res = this.getByName(bind);
-        return Optional.ofNullable(res);
-    }
-
     public Map<String, ServerSection> getSections() {
         return sections;
     }

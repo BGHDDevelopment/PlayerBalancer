@@ -2,7 +2,7 @@ package com.jaimemartz.playerbalancer.listeners;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
-import com.jaimemartz.playerbalancer.manager.PlayerLocker;
+import com.jaimemartz.playerbalancer.helper.PlayerLocker;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;

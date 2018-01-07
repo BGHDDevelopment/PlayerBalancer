@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.manager;
+package com.jaimemartz.playerbalancer.helper;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import com.jaimemartz.playerbalancer.PlayerBalancer;

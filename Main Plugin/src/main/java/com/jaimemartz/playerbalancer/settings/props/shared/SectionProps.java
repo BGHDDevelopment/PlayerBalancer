@@ -13,6 +13,9 @@ public class SectionProps {
     @Setting
     private ProviderType provider;
 
+    @Setting
+    private String alias;
+
     @Setting(value = "parent")
     private String parentName;
 

@@ -2,7 +2,7 @@ package com.jaimemartz.playerbalancer.commands;
 
 import com.google.common.base.Strings;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.manager.PasteHelper;
+import com.jaimemartz.playerbalancer.helper.PasteHelper;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;

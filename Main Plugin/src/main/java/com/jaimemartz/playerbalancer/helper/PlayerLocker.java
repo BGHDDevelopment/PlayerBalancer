@@ -1,4 +1,4 @@
-package com.jaimemartz.playerbalancer.manager;
+package com.jaimemartz.playerbalancer.helper;
 
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

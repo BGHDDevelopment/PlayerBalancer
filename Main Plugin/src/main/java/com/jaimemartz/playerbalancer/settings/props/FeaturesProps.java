@@ -31,4 +31,7 @@ public class FeaturesProps {
 
     @Setting(value = "custom-server-command")
     private CustomServerCommandProps customServerCommandProps;
+
+    @Setting(value = "permission-router")
+    private PermissionRouterProps permissionRouterProps;
 }
