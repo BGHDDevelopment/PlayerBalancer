@@ -2,9 +2,9 @@ package com.jaimemartz.playerbalancer.commands;
 
 import com.jaimemartz.playerbalancer.PlayerBalancer;
 import com.jaimemartz.playerbalancer.settings.props.features.CustomFindCommandProps;
-import net.md_5.bungee.api.ChatColor;
+import com.jaimemartz.playerbalancer.utils.MessageUtils;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class CustomFindCommand extends Command {
@@ -28,6 +28,21 @@ public class CustomFindCommand extends Command {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(new ComponentBuilder("Not implemented yet.").color(ChatColor.RED).create());
+        if (args.length == 1) {
+            ProxiedPlayer player = plugin.getProxy().getPlayer(args[0]);
+
+            if (player != null && player.getServer() != null) {
+                MessageUtils.send(player, props.getFormats().getResult(), (str) ->
+                        str.replace("{server}", player.getServer().getInfo().getName())
+                                .replace("{name}", player.getName())
+                );
+            } else {
+                MessageUtils.send(player, props.getFormats().getMissing(), (str) ->
+                        str.replace("{name}", player.getName())
+                );
+            }
+        } else {
+            MessageUtils.send(sender, props.getFormats().getUsage());
+        }
     }
 }

@@ -15,7 +15,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import java.util.Optional;
+import java.util.Map;
 
 public class ServerConnectListener implements Listener {
     private final PlayerBalancer plugin;
@@ -64,17 +64,29 @@ public class ServerConnectListener implements Listener {
 
         if (section != null) {
             if (permissionRouterProps.isEnabled()) {
-                Optional<String> bindName = permissionRouterProps.getRouteBind(player, section);
-                if (bindName.isPresent()) {
-                    ServerSection bind = plugin.getSectionManager().getByName(bindName.get());
-                    if (bind != null) {
-                        return bind;
+                Map<String, String> routes = permissionRouterProps.getRules().get(section.getName());
+
+                if (routes != null) {
+                    for (Map.Entry<String, String> route : routes.entrySet()) {
+                        if (player.hasPermission(route.getKey())) {
+                            ServerSection bind = plugin.getSectionManager().getByName(route.getValue());
+                            ServerSection current = plugin.getSectionManager().getByPlayer(player);
+
+                            if (bind != null) {
+                                if (current == bind)
+                                    break;
+
+                                return bind;
+                            }
+
+                            break;
+                        }
                     }
                 }
             }
 
             //Checks only for servers (not the section server)
-            if (section.getServers().contains(target)) {
+            if (!target.equals(section.getServer())) {
                 if (plugin.getSectionManager().isDummy(section)) {
                     return null;
                 }

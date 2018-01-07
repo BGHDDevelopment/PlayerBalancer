@@ -98,8 +98,10 @@ public class StatusManager implements Listener {
     }
 
     public boolean isAccessible(ServerInfo server) {
-        if (overriders.containsKey(server)) {
-            return overriders.get(server);
+        Boolean override = overriders.get(server);
+
+        if (override != null) {
+            return override;
         }
 
         ServerStatus status = getStatus(server);

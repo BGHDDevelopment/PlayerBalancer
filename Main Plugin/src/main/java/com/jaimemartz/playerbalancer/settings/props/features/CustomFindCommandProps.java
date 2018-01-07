@@ -19,11 +19,14 @@ public class CustomFindCommandProps {
 
     @ConfigSerializable
     @Data
-    private static class Formats {
+    public static class Formats {
         @Setting
         private String result;
 
         @Setting
-        private String offline;
+        private String missing;
+
+        @Setting
+        private String usage;
     }
 }
