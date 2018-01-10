@@ -26,8 +26,11 @@ public final class MessageUtils {
         return string.replace(ChatColor.COLOR_CHAR, '&');
     }
 
-    public static String safePrint(String string) {
-        return string.replace(ChatColor.COLOR_CHAR, '\u00A7');
+    public static String safeNull(String string) {
+        if (string == null) {
+            return "Undefined";
+        }
+        return string;
     }
 
     private MessageUtils() {}

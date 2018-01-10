@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.jaimemartz.playerbalancer.utils.MessageUtils.safeNull;
+
 //TODO I don't like this, improve it
 public abstract class ConnectionIntent {
     protected final PlayerBalancer plugin;
@@ -26,7 +28,7 @@ public abstract class ConnectionIntent {
 
         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectingMessage(),
                 (str) -> str.replace("{section}", section.getName())
-                        .replace("{alias}", section.getProps().getAlias())
+                        .replace("{alias}", safeNull(section.getProps().getAlias()))
         );
 
         //Prevents removing servers from the section
@@ -48,7 +50,7 @@ public abstract class ConnectionIntent {
                         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectedMessage(),
                                 (str) -> str.replace("{server}", target.getName())
                                         .replace("{section}", section.getName())
-                                        .replace("{alias}", section.getProps().getAlias())
+                                        .replace("{alias}", safeNull(section.getProps().getAlias()))
                         );
                     }
                 });

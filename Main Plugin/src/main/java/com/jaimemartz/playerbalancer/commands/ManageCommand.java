@@ -109,12 +109,25 @@ public class ManageCommand extends Command {
                                             .create());
                                 }
 
-                                sender.sendMessage(new ComponentBuilder("Alias: ")
-                                        .color(ChatColor.GRAY)
-                                        .append(String.valueOf(section.getProps().getAlias()))
-                                        .color(ChatColor.AQUA)
-                                        .create()
-                                );
+                                if (section.getProps().getAlias() != null) {
+                                    sender.sendMessage(new ComponentBuilder("Alias: ")
+                                            .color(ChatColor.GRAY)
+                                            .append("\"")
+                                            .color(ChatColor.AQUA)
+                                            .append(section.getProps().getAlias())
+                                            .color(ChatColor.RED)
+                                            .append("\"")
+                                            .color(ChatColor.AQUA)
+                                            .create()
+                                    );
+                                } else {
+                                    sender.sendMessage(new ComponentBuilder("Alias: ")
+                                            .color(ChatColor.GRAY)
+                                            .append("None")
+                                            .color(ChatColor.AQUA)
+                                            .create()
+                                    );
+                                }
 
                                 sender.sendMessage(new ComponentBuilder("Position: ")
                                         .color(ChatColor.GRAY)
