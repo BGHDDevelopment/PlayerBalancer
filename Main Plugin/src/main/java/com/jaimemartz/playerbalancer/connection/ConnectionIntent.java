@@ -11,11 +11,11 @@ import net.md_5.bungee.api.connection.Server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.jaimemartz.playerbalancer.utils.MessageUtils.safeNull;
 
-//TODO I don't like this, improve it
 public abstract class ConnectionIntent {
     protected final PlayerBalancer plugin;
     protected final ProxiedPlayer player;
@@ -24,7 +24,7 @@ public abstract class ConnectionIntent {
     public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ProviderType provider, ServerSection section, List<ServerInfo> servers) {
         this.plugin = plugin;
         this.player = player;
-        this.section = section;
+        this.section = tryRoute(player, section);
 
         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectingMessage(),
                 (str) -> str.replace("{section}", section.getName())
@@ -101,9 +101,33 @@ public abstract class ConnectionIntent {
         return null;
     }
 
+    private ServerSection tryRoute(ProxiedPlayer player, ServerSection section) {
+        if (plugin.getSettings().getFeaturesProps().getPermissionRouterProps().isEnabled()) {
+            Map<String, String> routes = plugin.getSettings().getFeaturesProps().getPermissionRouterProps().getRules().get(section.getName());
+
+            if (routes != null) {
+                for (Map.Entry<String, String> route : routes.entrySet()) {
+                    if (player.hasPermission(route.getKey())) {
+                        ServerSection bind = plugin.getSectionManager().getByName(route.getValue());
+                        ServerSection current = plugin.getSectionManager().getByPlayer(player);
+
+                        if (bind != null) {
+                            if (current == bind)
+                                break;
+
+                            return bind;
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
+        return section;
+    }
+
     public abstract void connect(ServerInfo server, Callback<Boolean> callback);
 
-    //TODO Create this as a type
     public static void simple(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section) {
         new ConnectionIntent(plugin, player, section) {
             @Override
@@ -113,7 +137,6 @@ public abstract class ConnectionIntent {
         };
     }
 
-    //TODO Create this as a type
     public static void direct(PlayerBalancer plugin, ProxiedPlayer player, ServerInfo server, Callback<Boolean> callback) {
         PlayerLocker.lock(player);
         player.connect(server, (result, throwable) -> {
