@@ -17,19 +17,29 @@ import java.util.concurrent.TimeUnit;
 import static com.jaimemartz.playerbalancer.utils.MessageUtils.safeNull;
 
 public abstract class ConnectionIntent {
-    protected final PlayerBalancer plugin;
-    protected final ProxiedPlayer player;
-    protected final ServerSection section;
+    private final PlayerBalancer plugin;
+    private final ProxiedPlayer player;
+    private final ServerSection section;
+    private final List<ServerInfo> exclusions;
 
-    public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ProviderType provider, ServerSection section, List<ServerInfo> servers) {
+    public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section) {
         this.plugin = plugin;
         this.player = player;
         this.section = tryRoute(player, section);
+        this.exclusions = new ArrayList<>();
+    }
 
+    public List<ServerInfo> getExclusions() {
+        return exclusions;
+    }
+
+    public boolean execute() {
         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectingMessage(),
                 (str) -> str.replace("{section}", section.getName())
                         .replace("{alias}", safeNull(section.getProps().getAlias()))
         );
+
+        List<ServerInfo> servers = new ArrayList<>(section.getServers());
 
         //Prevents removing servers from the section
         if (servers == section.getServers()) {
@@ -43,7 +53,7 @@ public abstract class ConnectionIntent {
         }
 
         if (section.getImplicitProvider() != ProviderType.NONE) {
-            ServerInfo target = this.fetchServer(player, section, provider, servers);
+            ServerInfo target = this.fetchServer(player, section, section.getImplicitProvider(), servers);
             if (target != null) {
                 this.connect(target, (response, throwable) -> {
                     if (response) { //only if the connect has been executed correctly
@@ -58,18 +68,8 @@ public abstract class ConnectionIntent {
                 MessageUtils.send(player, plugin.getSettings().getMessagesProps().getFailureMessage());
             }
         }
-    }
 
-    public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section) {
-        this(plugin, player, section.getImplicitProvider(), section);
-    }
-
-    public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ProviderType type, ServerSection section) {
-        this(plugin, player, type, section, new ArrayList<>(section.getServers()));
-    }
-
-    public ConnectionIntent(PlayerBalancer plugin, ProxiedPlayer player, ServerSection section, List<ServerInfo> servers) {
-        this(plugin, player, section.getImplicitProvider(), section, servers);
+        return false;
     }
 
     private ServerInfo fetchServer(ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {
@@ -104,16 +104,17 @@ public abstract class ConnectionIntent {
     private ServerSection tryRoute(ProxiedPlayer player, ServerSection section) {
         if (plugin.getSettings().getFeaturesProps().getPermissionRouterProps().isEnabled()) {
             Map<String, String> routes = plugin.getSettings().getFeaturesProps().getPermissionRouterProps().getRules().get(section.getName());
+            ServerSection current = plugin.getSectionManager().getByPlayer(player);
 
             if (routes != null) {
                 for (Map.Entry<String, String> route : routes.entrySet()) {
                     if (player.hasPermission(route.getKey())) {
                         ServerSection bind = plugin.getSectionManager().getByName(route.getValue());
-                        ServerSection current = plugin.getSectionManager().getByPlayer(player);
 
                         if (bind != null) {
-                            if (current == bind)
+                            if (current == bind) {
                                 break;
+                            }
 
                             return bind;
                         }
@@ -123,6 +124,7 @@ public abstract class ConnectionIntent {
                 }
             }
         }
+
         return section;
     }
 
@@ -134,7 +136,7 @@ public abstract class ConnectionIntent {
             public void connect(ServerInfo server, Callback<Boolean> callback) {
                 ConnectionIntent.direct(plugin, player, server, callback);
             }
-        };
+        }.execute();
     }
 
     public static void direct(PlayerBalancer plugin, ProxiedPlayer player, ServerInfo server, Callback<Boolean> callback) {

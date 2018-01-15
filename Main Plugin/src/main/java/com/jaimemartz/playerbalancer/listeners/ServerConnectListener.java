@@ -49,7 +49,7 @@ public class ServerConnectListener implements Listener {
                 event.setTarget(server);
                 callback.done(true, null);
             }
-        };
+        }.execute();
     }
 
     private ServerSection getSection(ProxiedPlayer player, ServerInfo target) {

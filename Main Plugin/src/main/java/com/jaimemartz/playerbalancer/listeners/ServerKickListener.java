@@ -16,8 +16,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.md_5.bungee.event.EventPriority;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ServerKickListener implements Listener {
@@ -67,11 +65,7 @@ public class ServerKickListener implements Listener {
         if (section == null)
             return;
 
-        List<ServerInfo> servers = new ArrayList<>();
-        servers.addAll(section.getServers());
-        servers.remove(from);
-
-        new ConnectionIntent(plugin, player, section, servers) {
+        ConnectionIntent intent = new ConnectionIntent(plugin, player, section) {
             @Override
             public void connect(ServerInfo server, Callback<Boolean> callback) {
                 PlayerLocker.lock(player);
@@ -87,6 +81,9 @@ public class ServerKickListener implements Listener {
                 callback.done(true, null);
             }
         };
+
+        intent.getExclusions().add(from);
+        intent.execute();
     }
 
     private ServerSection getSection(ProxiedPlayer player, ServerInfo from) {
