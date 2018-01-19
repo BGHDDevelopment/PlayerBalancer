@@ -33,7 +33,7 @@ public abstract class ConnectionIntent {
         return exclusions;
     }
 
-    public boolean execute() {
+    public void execute() {
         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectingMessage(),
                 (str) -> str.replace("{section}", section.getName())
                         .replace("{alias}", safeNull(section.getProps().getAlias()))
@@ -68,8 +68,6 @@ public abstract class ConnectionIntent {
                 MessageUtils.send(player, plugin.getSettings().getMessagesProps().getFailureMessage());
             }
         }
-
-        return false;
     }
 
     private ServerInfo fetchServer(ProxiedPlayer player, ServerSection section, ProviderType provider, List<ServerInfo> servers) {

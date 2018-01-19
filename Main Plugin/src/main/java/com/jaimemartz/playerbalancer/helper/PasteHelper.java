@@ -2,8 +2,8 @@ package com.jaimemartz.playerbalancer.helper;
 
 import com.google.common.io.CharStreams;
 import com.jaimemartz.playerbalancer.PlayerBalancer;
-import com.jaimemartz.playerbalancer.utils.GuestPaste;
 import com.jaimemartz.playerbalancer.utils.GuestPaste.PasteException;
+import com.jaimemartz.playerbalancer.utils.HastebinPaste;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -34,18 +34,7 @@ public enum PasteHelper {
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
                     String content = CharStreams.toString(reader);
-                    GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd", content);
-
-                    paste.setName("{name} ({version} on {bungee_version})"
-                            .replace("{name}", plugin.getDescription().getName())
-                            .replace("{version}", plugin.getDescription().getVersion())
-                            .replace("{bungee_version}", plugin.getProxy().getVersion())
-                    );
-
-                    paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
-                    paste.setExposure(GuestPaste.Exposure.UNLISTED);
-                    paste.setFormat("properties");
-
+                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
                     return paste.paste();
                 }
             }
@@ -70,17 +59,7 @@ public enum PasteHelper {
                 try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
                     String content = CharStreams.toString(reader);
                     content = content.replaceAll("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", "?.?.?.?");
-                    GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd", content);
-
-                    paste.setName("{name} ({version})"
-                            .replace("{name}", plugin.getProxy().getName())
-                            .replace("{version}", plugin.getProxy().getVersion())
-                    );
-
-                    paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
-                    paste.setExposure(GuestPaste.Exposure.UNLISTED);
-                    paste.setFormat("yaml");
-
+                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
                     return paste.paste();
                 }
             }
@@ -100,19 +79,9 @@ public enum PasteHelper {
     }, false) {
         @Override
         public URL paste(PlayerBalancer plugin) throws Exception {
-            GuestPaste paste = new GuestPaste("e3ff18d8fb001a3ece08ae0d7d4a87bd",
+            HastebinPaste paste = new HastebinPaste("https://file.properties/paste/",
                     plugin.getLogsBuilder().toString()
             );
-
-            paste.setName("{name} ({version} on {bungee_version})"
-                    .replace("{name}", plugin.getDescription().getName())
-                    .replace("{version}", plugin.getDescription().getVersion())
-                    .replace("{bungee_version}", plugin.getProxy().getVersion())
-            );
-
-            paste.setExpiration(GuestPaste.Expiration.ONE_MONTH);
-            paste.setExposure(GuestPaste.Exposure.UNLISTED);
-            paste.setFormat("text");
 
             return paste.paste();
         }
