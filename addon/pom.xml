@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>playerbalancer</artifactId>
-        <groupId>com.jaimemartz</groupId>
-        <version>1</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>PlayerBalancer Addon</name>
-    <artifactId>playerbalancer-addon</artifactId>
-    <version>1.3 for 2.1.4+</version>
+    <parent>
+        <groupId>com.jaimemartz</groupId>
+        <version>2.1.5.5-SNAPSHOT</version>
+        <artifactId>playerbalancer-parent</artifactId>
+    </parent>
 
-    <build>
-        <finalName>PlayerBalancerAddon</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.0.2</version>
-                <configuration>
-                    <outputDirectory>../target</outputDirectory>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <artifactId>playerbalancer-addon</artifactId>
+
+    <name>PlayerBalancerAddon</name>
 
     <repositories>
         <repository>

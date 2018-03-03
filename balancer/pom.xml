@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>playerbalancer</artifactId>
-        <groupId>com.jaimemartz</groupId>
-        <version>1</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <name>PlayerBalancer Plugin</name>
-    <artifactId>playerbalancer-plugin</artifactId>
-    <version>2.1.5.4</version>
+    <parent>
+        <groupId>com.jaimemartz</groupId>
+        <version>2.1.5.5-SNAPSHOT</version>
+        <artifactId>playerbalancer-parent</artifactId>
+    </parent>
+
+    <artifactId>playerbalancer</artifactId>
+
+    <name>PlayerBalancer</name>
 
     <build>
-        <finalName>PlayerBalancer</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
                 <configuration>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
                             <shadedPattern>com.jaimemartz.playerbalancer.metrics</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>ninja.leaping.configurate</pattern>
+                            <shadedPattern>com.jaimemartz.playerbalancer.libs.ninja.leaping.configurate</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.typesafe.config</pattern>
+                            <shadedPattern>com.jaimemartz.playerbalancer.libs.com.typesafe.config</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
@@ -37,29 +44,13 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <outputDirectory>../target</outputDirectory>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <repositories>
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
             <id>md_5-snapshots</id>
             <url>http://repo.md-5.net/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>inventive-repo</id>
-            <url>https://repo.inventivetalent.org/content/groups/public/</url>
         </repository>
         <repository>
             <id>bstats-repo</id>
@@ -102,18 +93,6 @@
             <artifactId>bstats-bungeecord</artifactId>
             <version>1.2</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.16</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
