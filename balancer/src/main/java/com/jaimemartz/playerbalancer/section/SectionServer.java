@@ -5,18 +5,13 @@ import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import javax.xml.soap.Text;
-import java.awt.*;
 import java.net.InetSocketAddress;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Queue;
-import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 public class SectionServer extends BungeeServerInfo {
