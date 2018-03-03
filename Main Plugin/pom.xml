@@ -75,7 +75,7 @@
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-proxy</artifactId>
-            <version>LATEST</version>
+            <version>1.12-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
