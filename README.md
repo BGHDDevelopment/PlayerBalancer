@@ -5,5 +5,4 @@
 
 ### Build
 * Clone this repository
-* Run the appropriate setup script according to your OS
 * Build with maven
