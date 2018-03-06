@@ -128,11 +128,8 @@ public class SectionManager {
             @Override
             public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
                 if (sectionProps.getServerName() != null) {
-                    SectionServer server = new SectionServer(props, section);
-                    section.setServer(server);
-                    plugin.getSectionManager().registerServer(server, section);
-                    FixedAdapter.getFakeServers().put(server.getName(), server);
-                    plugin.getProxy().getServers().put(server.getName(), server);
+                    SectionServer server = new SectionServer(plugin, props, section);
+                    plugin.getProxy().getPluginManager().registerListener(plugin, server);
                 }
             }
         });

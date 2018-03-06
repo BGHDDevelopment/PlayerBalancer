@@ -16,10 +16,13 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class PluginMessageListener implements Listener {
     private final PlayerBalancer plugin;
@@ -38,7 +41,7 @@ public class PluginMessageListener implements Listener {
         gson = builder.create();
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPluginMessage(PluginMessageEvent event) {
         if (event.getTag().equals("PlayerBalancer") && event.getSender() instanceof Server) {
             ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
