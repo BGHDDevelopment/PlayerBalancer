@@ -26,12 +26,10 @@ import java.util.stream.Collectors;
 
 public class SectionServer implements Listener {
     private final PlayerBalancer plugin;
-    private final BalancerProps props;
     private final ServerSection section;
 
-    public SectionServer(PlayerBalancer plugin, BalancerProps props, ServerSection section) {
+    public SectionServer(PlayerBalancer plugin, ServerSection section) {
         this.plugin = plugin;
-        this.props = props;
         this.section = section;
     }
 

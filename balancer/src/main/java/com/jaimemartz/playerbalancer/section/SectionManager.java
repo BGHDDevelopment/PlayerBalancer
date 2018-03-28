@@ -128,7 +128,7 @@ public class SectionManager {
             @Override
             public void execute(String sectionName, SectionProps sectionProps, ServerSection section) throws RuntimeException {
                 if (sectionProps.getServerName() != null) {
-                    SectionServer server = new SectionServer(plugin, props, section);
+                    SectionServer server = new SectionServer(plugin, section);
                     plugin.getProxy().getPluginManager().registerListener(plugin, server);
                 }
             }
