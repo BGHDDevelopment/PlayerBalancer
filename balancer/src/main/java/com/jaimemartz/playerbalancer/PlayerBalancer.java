@@ -143,7 +143,7 @@ public class PlayerBalancer extends Plugin {
                 }
 
                 networkManager = new NetworkManager(this);
-                getProxy().registerChannel("BungeeCord");
+
                 sectionManager = new SectionManager(this);
                 sectionManager.load();
 
