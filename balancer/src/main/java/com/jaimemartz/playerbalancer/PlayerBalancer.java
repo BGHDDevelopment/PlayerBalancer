@@ -26,9 +26,8 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
-import java.util.logging.Handler;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 
 public class PlayerBalancer extends Plugin {
     private boolean failed = false;
@@ -37,37 +36,23 @@ public class PlayerBalancer extends Plugin {
     private SectionManager sectionManager;
     private NetworkManager networkManager;
     private ConfigurationLoader<CommentedConfigurationNode> loader;
-    private final StringBuilder logsBuilder = new StringBuilder();
 
     private FallbackCommand fallbackCommand;
-    private Command mainCommand, manageCommand, findCommand, listCommand, serverCommand;
+    private Command mainCommand, manageCommand;
     private Listener connectListener, kickListener, reloadListener, pluginMessageListener;
+
+    public static final String LOG_FILE_PATTERN = "balancer.log";
 
     @Override
     public void onLoad() {
-        Handler handler = new Handler() {
-            @Override
-            public void publish(LogRecord record) {
-                if (isLoggable(record)) {
-                    String formatted = getFormatter().format(record);
-                    logsBuilder.append(formatted);
-                }
-            }
-
-            @Override
-            public void flush() {
-                logsBuilder.setLength(0);
-            }
-
-            @Override
-            public void close() throws SecurityException {
-                //Nothing to do
-            }
-        };
-
-        handler.setFormatter(new CustomFormatter());
-        getProxy().getLogger().addHandler(handler);
-        getProxy().getLogger().setUseParentHandlers(true);
+        try {
+            FileHandler handler = new FileHandler(LOG_FILE_PATTERN);
+            handler.setFormatter(new CustomFormatter());
+            getProxy().getLogger().addHandler(handler);
+            getProxy().getLogger().setUseParentHandlers(true);
+        } catch (Exception e) {
+            getLogger().log(Level.WARNING, "Could not set custom log handler", e);
+        }
     }
 
     @Override
@@ -304,9 +289,5 @@ public class PlayerBalancer extends Plugin {
 
     public FallbackCommand getFallbackCommand() {
         return fallbackCommand;
-    }
-
-    public StringBuilder getLogsBuilder() {
-        return logsBuilder;
     }
 }
