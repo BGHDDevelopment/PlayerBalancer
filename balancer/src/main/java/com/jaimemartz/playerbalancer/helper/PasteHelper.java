@@ -14,7 +14,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
+
+import static com.jaimemartz.playerbalancer.PlayerBalancer.LOG_FILE_PATTERN;
 
 public enum PasteHelper {
     PLUGIN((sender, address) -> {
@@ -56,7 +59,7 @@ public enum PasteHelper {
         public URL paste(PlayerBalancer plugin) throws Exception {
             File file = new File("config.yml");
             try (FileInputStream stream = new FileInputStream(file)) {
-                try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
+                try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
                     String content = CharStreams.toString(reader);
                     content = content.replaceAll("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", "?.?.?.?");
                     HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
@@ -79,11 +82,14 @@ public enum PasteHelper {
     }, false) {
         @Override
         public URL paste(PlayerBalancer plugin) throws Exception {
-            HastebinPaste paste = new HastebinPaste("https://file.properties/paste/",
-                    plugin.getLogsBuilder().toString()
-            );
-
-            return paste.paste();
+            File file = new File(LOG_FILE_PATTERN);
+            try (FileInputStream stream = new FileInputStream(file)) {
+                try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+                    String content = CharStreams.toString(reader);
+                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
+                    return paste.paste();
+                }
+            }
         }
     };
 
