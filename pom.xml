@@ -25,11 +25,6 @@
         <url>https://github.com/jamezrin/PlayerBalancer</url>
     </scm>
 
-    <ciManagement>
-        <system>jenkins</system>
-        <url>http://ci.codemc.org/job/PlayerBalancer/</url>
-    </ciManagement>
-
     <issueManagement>
         <system>GitHub</system>
         <url>https://github.com/jamezrin/PlayerBalancer/issues</url>

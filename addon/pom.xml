@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.jaimemartz</groupId>
-        <version>2.1.5.5-SNAPSHOT</version>
+        <version>2.1.6-SNAPSHOT</version>
         <artifactId>playerbalancer-parent</artifactId>
     </parent>
 
@@ -20,7 +20,7 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>papi-repo</id>
+            <id>extendedclip-repo</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
     </repositories>
