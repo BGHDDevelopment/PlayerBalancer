@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -201,7 +202,7 @@ public class PluginMessageManager implements PluginMessageListener {
         return true;
     }
 
-    private final class MessageContext {
+    private static final class MessageContext {
         private final String channel;
         private final String subchannel;
         private final UUID player;
@@ -216,20 +217,15 @@ public class PluginMessageManager implements PluginMessageListener {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-
             MessageContext that = (MessageContext) o;
-
-            if (channel != null ? !channel.equals(that.channel) : that.channel != null) return false;
-            if (subchannel != null ? !subchannel.equals(that.subchannel) : that.subchannel != null) return false;
-            return player != null ? player.equals(that.player) : that.player == null;
+            return Objects.equals(channel, that.channel) &&
+                    Objects.equals(subchannel, that.subchannel) &&
+                    Objects.equals(player, that.player);
         }
 
         @Override
         public int hashCode() {
-            int result = channel != null ? channel.hashCode() : 0;
-            result = 31 * result + (subchannel != null ? subchannel.hashCode() : 0);
-            result = 31 * result + (player != null ? player.hashCode() : 0);
-            return result;
+            return Objects.hash(channel, subchannel, player);
         }
 
         @Override

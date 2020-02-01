@@ -57,7 +57,7 @@ public class PlayerBalancer extends Plugin {
 
     @Override
     public void onEnable() {
-        Metrics metrics = new Metrics(this);
+        Metrics metrics = new Metrics(this, 1636);
         metrics.addCustomChart(new SingleLineChart("configured_sections", () -> {
             if (sectionManager != null) {
                 return sectionManager.getSections().size();
