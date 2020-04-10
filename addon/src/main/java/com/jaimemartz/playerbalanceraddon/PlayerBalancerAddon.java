@@ -4,7 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class PlayerBalancerAddon extends JavaPlugin {
     private PluginMessageManager manager;
-    private PlaceholderHandler handler;
+    private PlayerBalancerPlaceholderExpansion expansion;
 
     @Override
     public void onEnable() {
@@ -12,8 +12,8 @@ public class PlayerBalancerAddon extends JavaPlugin {
         getCommand("spb").setExecutor(new MainCommand(this));
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            handler = new PlaceholderHandler(this);
-            handler.hook();
+            expansion = new PlayerBalancerPlaceholderExpansion(this);
+            expansion.register();
         }
     }
 

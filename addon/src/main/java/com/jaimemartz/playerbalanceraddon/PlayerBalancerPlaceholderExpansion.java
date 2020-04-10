@@ -1,24 +1,23 @@
 package com.jaimemartz.playerbalanceraddon;
 
-import me.clip.placeholderapi.external.EZPlaceholderHook;
-import org.bukkit.entity.Player;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import org.bukkit.OfflinePlayer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class PlaceholderHandler extends EZPlaceholderHook {
+public class PlayerBalancerPlaceholderExpansion extends PlaceholderExpansion {
     private final Map<String, Integer> sectionPlayerCounts = new LinkedHashMap<>();
     private final PlayerBalancerAddon plugin;
 
-    public PlaceholderHandler(PlayerBalancerAddon plugin) {
-        super(plugin, "balancer");
+    public PlayerBalancerPlaceholderExpansion(PlayerBalancerAddon plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public String onPlaceholderRequest(Player player, String identifier) {
-        if (identifier.startsWith("playercount_")) {
-            String section = identifier.split("playercount_")[1];
+    public String onRequest(OfflinePlayer player, String identifier) {
+        if (identifier.startsWith("pc")) {
+            String section = identifier.split("pc_")[1];
 
             if (section == null)
                 return null;
@@ -33,5 +32,20 @@ public class PlaceholderHandler extends EZPlaceholderHook {
         }
 
         return null;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return "pb";
+    }
+
+    @Override
+    public String getAuthor() {
+        return "Jamezrin <jaime@jamezrin.name>";
+    }
+
+    @Override
+    public String getVersion() {
+        return "bundled";
     }
 }
