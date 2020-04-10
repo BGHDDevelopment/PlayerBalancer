@@ -42,6 +42,7 @@ public class PlayerBalancer extends Plugin {
     private Listener connectListener, kickListener, reloadListener, pluginMessageListener;
 
     public static final String LOG_FILE_PATTERN = "balancer.log";
+    public static final String PB_CHANNEL = "playerbalancer:main";
 
     @Override
     public void onLoad() {
@@ -147,7 +148,7 @@ public class PlayerBalancer extends Plugin {
                 getProxy().getPluginManager().registerListener(this, connectListener);
 
                 if (settings.getGeneralProps().isPluginMessaging()) {
-                    getProxy().registerChannel("PlayerBalancer");
+                    getProxy().registerChannel(PB_CHANNEL);
 
                     getProxy().getPluginManager().registerListener(this, statusManager);
 
@@ -234,7 +235,7 @@ public class PlayerBalancer extends Plugin {
 
             if (settings.getGeneralProps().isPluginMessaging()) {
                 if (pluginMessageListener != null) {
-                    getProxy().unregisterChannel("PlayerBalancer");
+                    getProxy().unregisterChannel(PB_CHANNEL);
                     getProxy().getPluginManager().unregisterListener(pluginMessageListener);
                     pluginMessageListener = null;
                 }

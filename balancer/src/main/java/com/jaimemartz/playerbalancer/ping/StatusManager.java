@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.jaimemartz.playerbalancer.PlayerBalancer.PB_CHANNEL;
+
 public class StatusManager implements Listener {
     private final PlayerBalancer plugin;
     private final ServerCheckerProps props;
@@ -121,7 +123,7 @@ public class StatusManager implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals("PlayerBalancer") && event.getSender() instanceof Server) {
+        if (event.getTag().equals(PB_CHANNEL) && event.getSender() instanceof Server) {
             ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
             String request = in.readUTF();
             ServerInfo sender = ((Server) event.getSender()).getInfo();

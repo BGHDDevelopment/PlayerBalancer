@@ -21,6 +21,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import static com.jaimemartz.playerbalancer.PlayerBalancer.PB_CHANNEL;
+
 public class PluginMessageListener implements Listener {
     private final PlayerBalancer plugin;
     private final Gson gson;
@@ -40,7 +42,7 @@ public class PluginMessageListener implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
-        if (event.getTag().equals("PlayerBalancer") && event.getSender() instanceof Server) {
+        if (event.getTag().equals(PB_CHANNEL) && event.getSender() instanceof Server) {
             ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
             String request = in.readUTF();
             ServerInfo sender = ((Server) event.getSender()).getInfo();
@@ -91,7 +93,7 @@ public class PluginMessageListener implements Listener {
                         e.printStackTrace();
                     }
 
-                    sender.sendData("PlayerBalancer", stream.toByteArray());
+                    sender.sendData(PB_CHANNEL, stream.toByteArray());
                     break;
                 }
 
@@ -117,7 +119,7 @@ public class PluginMessageListener implements Listener {
                         e.printStackTrace();
                     }
 
-                    sender.sendData("PlayerBalancer", stream.toByteArray());
+                    sender.sendData(PB_CHANNEL, stream.toByteArray());
                     break;
                 }
 
@@ -140,7 +142,7 @@ public class PluginMessageListener implements Listener {
                             e.printStackTrace();
                         }
 
-                        sender.sendData("PlayerBalancer", stream.toByteArray());
+                        sender.sendData(PB_CHANNEL, stream.toByteArray());
                     }
                     break;
                 }
@@ -162,7 +164,7 @@ public class PluginMessageListener implements Listener {
                         e.printStackTrace();
                     }
 
-                    sender.sendData("PlayerBalancer", stream.toByteArray());
+                    sender.sendData(PB_CHANNEL, stream.toByteArray());
                     break;
                 }
 
@@ -184,7 +186,7 @@ public class PluginMessageListener implements Listener {
                         e.printStackTrace();
                     }
 
-                    sender.sendData("PlayerBalancer", stream.toByteArray());
+                    sender.sendData(PB_CHANNEL, stream.toByteArray());
                 }
 
                 case "ClearPlayerBypass": {
