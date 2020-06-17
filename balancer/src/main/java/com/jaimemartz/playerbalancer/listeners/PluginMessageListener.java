@@ -158,10 +158,8 @@ public class PluginMessageListener implements Listener {
 
                     try {
                         out.writeUTF("GetSectionPlayerCount");
-                        out.writeInt(section.getServers().stream().reduce(
-                                0,
-                                (integer, serverInfo) -> integer + serverInfo.getPlayers().size(),
-                                Integer::sum));
+                        out.writeInt(section.getServers().stream()
+                                .mapToInt(a -> a.getPlayers().size()).sum());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
