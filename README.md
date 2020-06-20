@@ -1,5 +1,5 @@
 # PlayerBalancer
-[Spigot Resource](https://www.spigotmc.org/resources/10788/)
+[Spigot Resource](https://www.spigotmc.org/resources/playerbalancer.55011/)
 
 ### Build
 * Clone this repository
