@@ -14,7 +14,7 @@ public class ProgressiveProvider extends AbstractProvider {
     public ServerInfo requestTarget(PlayerBalancer plugin, ServerSection section, List<ServerInfo> servers, ProxiedPlayer player) {
         for (ServerInfo server : servers) {
             ServerStatus status = plugin.getStatusManager().getStatus(server);
-            if (plugin.getNetworkManager().getPlayers(server) < status.getMaximum()) {
+            if (server.getPlayers().size() < status.getMaximum()) {
                 return server;
             }
         }

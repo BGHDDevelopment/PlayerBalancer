@@ -15,7 +15,7 @@ public class ProgressiveLowestProvider extends AbstractProvider {
         ServerInfo target = null;
 
         for (ServerInfo server : servers) {
-            int count = plugin.getNetworkManager().getPlayers(server);
+            int count = server.getPlayers().size();
 
             if (count < min) {
                 min = count;

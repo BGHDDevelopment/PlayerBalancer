@@ -5,7 +5,6 @@ import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
-import com.jaimemartz.playerbalancer.helper.NetworkManager;
 import com.jaimemartz.playerbalancer.helper.PasteHelper;
 import com.jaimemartz.playerbalancer.helper.PlayerLocker;
 import com.jaimemartz.playerbalancer.listeners.*;
@@ -34,7 +33,6 @@ public class PlayerBalancer extends Plugin {
     private StatusManager statusManager;
     private SettingsHolder settings;
     private SectionManager sectionManager;
-    private NetworkManager networkManager;
     private ConfigurationLoader<CommentedConfigurationNode> loader;
 
     private FallbackCommand fallbackCommand;
@@ -127,8 +125,6 @@ public class PlayerBalancer extends Plugin {
                     reloadListener = new ProxyReloadListener(this);
                     getProxy().getPluginManager().registerListener(this, reloadListener);
                 }
-
-                networkManager = new NetworkManager(this);
 
                 sectionManager = new SectionManager(this);
                 sectionManager.load();
@@ -282,10 +278,6 @@ public class PlayerBalancer extends Plugin {
 
     public StatusManager getStatusManager() {
         return statusManager;
-    }
-
-    public NetworkManager getNetworkManager() {
-        return networkManager;
     }
 
     public FallbackCommand getFallbackCommand() {
