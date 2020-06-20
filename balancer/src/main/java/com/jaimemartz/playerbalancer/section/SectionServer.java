@@ -47,7 +47,7 @@ public class SectionServer extends BungeeServerInfo {
 
     @Override
     public boolean sendData(String channel, byte[] data, boolean queue) {
-        //Nothing to do
+        // Nothing to do
         return true;
     }
 

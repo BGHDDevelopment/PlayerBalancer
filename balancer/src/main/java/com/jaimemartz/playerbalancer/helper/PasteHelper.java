@@ -37,7 +37,7 @@ public enum PasteHelper {
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
                     String content = CharStreams.toString(reader);
-                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
+                    HastebinPaste paste = new HastebinPaste("https:// file.properties/paste/", content);
                     return paste.paste();
                 }
             }
@@ -62,7 +62,7 @@ public enum PasteHelper {
                 try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
                     String content = CharStreams.toString(reader);
                     content = content.replaceAll("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", "?.?.?.?");
-                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
+                    HastebinPaste paste = new HastebinPaste("https:// file.properties/paste/", content);
                     return paste.paste();
                 }
             }
@@ -86,7 +86,7 @@ public enum PasteHelper {
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
                     String content = CharStreams.toString(reader);
-                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
+                    HastebinPaste paste = new HastebinPaste("https:// file.properties/paste/", content);
                     return paste.paste();
                 }
             }

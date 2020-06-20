@@ -78,7 +78,7 @@ public class PlayerBalancer extends Plugin {
 
     public boolean checkUpToDate() {
         try {
-            URLConnection con = new URL("https://api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
+            URLConnection con = new URL("https:// api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
             String reply = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
             return getDescription().getVersion().equals(reply);
         } catch (IOException e) {
@@ -89,7 +89,7 @@ public class PlayerBalancer extends Plugin {
 
     @Override
     public void onDisable() {
-        //Nothing else to do than normal stop
+        // Nothing else to do than normal stop
         this.execStop();
     }
 
@@ -198,7 +198,7 @@ public class PlayerBalancer extends Plugin {
         }
 
         if (settings.getGeneralProps().isEnabled()) {
-            //Do not try to do anything if the plugin has not loaded correctly
+            // Do not try to do anything if the plugin has not loaded correctly
             if (failed) return;
 
             if (settings.getGeneralProps().isAutoReload()) {

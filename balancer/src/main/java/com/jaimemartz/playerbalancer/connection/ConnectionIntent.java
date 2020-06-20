@@ -39,14 +39,10 @@ public abstract class ConnectionIntent {
                         .replace("{alias}", safeNull(section.getProps().getAlias()))
         );
 
+        // Ensure a new copy of the section servers
         List<ServerInfo> servers = new ArrayList<>(section.getServers());
 
-        //Prevents removing servers from the section
-        if (servers == section.getServers()) {
-            throw new IllegalStateException("The servers list parameter is the same reference, this cannot happen");
-        }
-
-        //Prevents connections to the same server
+        // Prevents connections to the same server
         Server current = player.getServer();
         if (current != null) {
             servers.remove(current.getInfo());
@@ -56,7 +52,7 @@ public abstract class ConnectionIntent {
             ServerInfo target = this.fetchServer(player, section, section.getImplicitProvider(), servers);
             if (target != null) {
                 this.connect(target, (response, throwable) -> {
-                    if (response) { //only if the connect has been executed correctly
+                    if (response) { // only if the connect has been executed correctly
                         MessageUtils.send(player, plugin.getSettings().getMessagesProps().getConnectedMessage(),
                                 (str) -> str.replace("{server}", target.getName())
                                         .replace("{section}", section.getName())

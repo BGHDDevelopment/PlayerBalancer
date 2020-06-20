@@ -56,7 +56,7 @@ public class ServerConnectListener implements Listener {
         ServerSection section = plugin.getSectionManager().getByServer(target);
 
         if (section != null) {
-            //Checks only for servers (not the section server)
+            // Checks only for servers (not the section server)
             if (!target.equals(section.getServer())) {
                 if (plugin.getSectionManager().isDummy(section)) {
                     return null;

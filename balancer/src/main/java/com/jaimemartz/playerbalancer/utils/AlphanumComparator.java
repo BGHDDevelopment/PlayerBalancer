@@ -98,14 +98,14 @@ public class AlphanumComparator implements Comparator<String>
             String thatChunk = getChunk(s2, s2Length, thatMarker);
             thatMarker += thatChunk.length();
 
-            // If both chunks contain numeric characters, sort them numerically
+            //  If both chunks contain numeric characters, sort them numerically
             int result = 0;
             if (isDigit(thisChunk.charAt(0)) && isDigit(thatChunk.charAt(0)))
             {
-                // Simple chunk comparison by length.
+                //  Simple chunk comparison by length.
                 int thisChunkLength = thisChunk.length();
                 result = thisChunkLength - thatChunk.length();
-                // If equal, the first different number counts
+                //  If equal, the first different number counts
                 if (result == 0)
                 {
                     for (int i = 0; i < thisChunkLength; i++)

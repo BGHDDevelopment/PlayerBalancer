@@ -31,7 +31,7 @@ public class PluginMessageListener implements Listener {
         this.plugin = plugin;
         GsonBuilder builder = new GsonBuilder();
 
-        //Only serialize the name of ServerInfo
+        // Only serialize the name of ServerInfo
         builder.registerTypeAdapter(ServerInfo.class, (JsonSerializer<ServerInfo>) (server, type, context) ->
                 context.serialize(server.getName())
         );

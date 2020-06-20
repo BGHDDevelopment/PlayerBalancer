@@ -22,8 +22,8 @@ public class PlayerBalancerPlaceholderExpansion extends PlaceholderExpansion {
             if (section == null)
                 return null;
 
-            //For the first call this placeholder will return 0
-            //For the next one, the result of the previous one
+            // For the first call this placeholder will return 0
+            // For the next one, the result of the previous one
             plugin.getManager().getSectionPlayerCount(section, (count) -> {
                 sectionPlayerCounts.put(section, count);
             });
