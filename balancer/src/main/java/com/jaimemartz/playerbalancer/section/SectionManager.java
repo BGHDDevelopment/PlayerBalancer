@@ -235,22 +235,25 @@ public class SectionManager {
     }
 
     public void registerServer(ServerInfo server, ServerSection section) {
-        //Checking for duplicated server on non dummy sections
-        if (servers.containsKey(server) && !isDummy(section)) {
-            ServerSection other = servers.get(server);
-            throw new IllegalArgumentException(String.format(
-                    "The server \"%s\" is already in the section \"%s\"",
+        if (!isDummy(section)) {
+            // Checking for already we already added this server to other section
+            // This can only happen if another non dummy section registers this server
+            if (servers.containsKey(server)) {
+                ServerSection other = servers.get(server);
+                throw new IllegalArgumentException(String.format(
+                        "The server \"%s\" is already in the section \"%s\"",
+                        server.getName(),
+                        other.getName()
+                ));
+            }
+
+            plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"",
                     server.getName(),
-                    other.getName()
+                    section.getName()
             ));
+
+            servers.put(server, section);
         }
-
-        plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"",
-                server.getName(),
-                section.getName()
-        ));
-
-        servers.put(server, section);
     }
 
     public void calculateServers(ServerSection section) {
