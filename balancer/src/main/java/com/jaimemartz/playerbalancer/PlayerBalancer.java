@@ -82,7 +82,7 @@ public class PlayerBalancer extends Plugin {
             String reply = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
             return getDescription().getVersion().equals(reply);
         } catch (IOException e) {
-            e.printStackTrace();
+            getLogger().log(Level.WARNING, "Could not access Spigot API, maybe you have a firewall or something that blocks request to it", e);
         }
         return true;
     }
