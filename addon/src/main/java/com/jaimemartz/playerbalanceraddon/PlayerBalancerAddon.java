@@ -19,7 +19,7 @@ public class PlayerBalancerAddon extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        //Nothing to do...
+        // Nothing to do...
     }
 
     public PluginMessageManager getManager() {

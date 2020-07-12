@@ -16,9 +16,6 @@ public class GeneralProps {
     @Setting(value = "auto-reload")
     private boolean autoReload;
 
-    @Setting(value = "redis-bungee")
-    private boolean redisBungee;
-
     @Setting(value = "plugin-messaging")
     private boolean pluginMessaging;
 

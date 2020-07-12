@@ -235,28 +235,31 @@ public class SectionManager {
     }
 
     public void registerServer(ServerInfo server, ServerSection section) {
-        //Checking for duplicated server on non dummy sections
-        if (servers.containsKey(server) && !isDummy(section)) {
-            ServerSection other = servers.get(server);
-            throw new IllegalArgumentException(String.format(
-                    "The server \"%s\" is already in the section \"%s\"",
+        if (!isDummy(section)) {
+            //  Checking for already we already added this server to other section
+            //  This can only happen if another non dummy section registers this server
+            if (servers.containsKey(server)) {
+                ServerSection other = servers.get(server);
+                throw new IllegalArgumentException(String.format(
+                        "The server \"%s\" is already in the section \"%s\"",
+                        server.getName(),
+                        other.getName()
+                ));
+            }
+
+            plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"",
                     server.getName(),
-                    other.getName()
+                    section.getName()
             ));
+
+            servers.put(server, section);
         }
-
-        plugin.getLogger().info(String.format("Registering server \"%s\" to section \"%s\"",
-                server.getName(),
-                section.getName()
-        ));
-
-        servers.put(server, section);
     }
 
     public void calculateServers(ServerSection section) {
         Set<ServerInfo> results = new HashSet<>();
 
-        //Searches for matches
+        // Searches for matches
         section.getProps().getServerEntries().forEach(entry -> {
             Pattern pattern = Pattern.compile(entry);
             plugin.getProxy().getServers().forEach((name, server) -> {
@@ -267,7 +270,7 @@ public class SectionManager {
             });
         });
 
-        //Checks if there are servers previously matched that are no longer valid
+        // Checks if there are servers previously matched that are no longer valid
         section.getServers().forEach(server -> {
             if (!results.contains(server)) {
                 servers.remove(server);
@@ -278,7 +281,7 @@ public class SectionManager {
             }
         });
 
-        //Add matched servers to the section
+        // Add matched servers to the section
         int addedServers = 0;
         for (ServerInfo server : results) {
             if (!section.getServers().contains(server)) {
@@ -303,7 +306,7 @@ public class SectionManager {
     public int calculatePosition(ServerSection section) {
         ServerSection current = section;
 
-        //Calculate above principal
+        // Calculate above principal
         int iterations = 0;
         while (current != null) {
             if (current == principal) {
@@ -314,7 +317,7 @@ public class SectionManager {
             iterations++;
         }
 
-        //Calculate below principal
+        // Calculate below principal
         if (principal != null) {
             iterations = 0;
             current = principal;

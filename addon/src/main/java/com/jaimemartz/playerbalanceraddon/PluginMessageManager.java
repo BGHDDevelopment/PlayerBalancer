@@ -27,7 +27,7 @@ public class PluginMessageManager implements PluginMessageListener {
         plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, PB_CHANNEL, this);
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, PB_CHANNEL);
 
-        //In case we need to use BungeeCord channels
+        // In case we need to use BungeeCord channels
         plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, BC_CHANNEL, this);
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, BC_CHANNEL);
     }

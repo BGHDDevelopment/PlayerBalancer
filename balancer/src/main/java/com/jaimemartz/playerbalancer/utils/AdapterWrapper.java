@@ -11,7 +11,7 @@ public class AdapterWrapper implements ConfigurationAdapter {
     private final ConfigurationAdapter wrapped;
 
     public AdapterWrapper(ConfigurationAdapter adapter) {
-        //Prevents memory leak
+        // Prevents memory leak
         if (adapter instanceof AdapterWrapper) {
             this.wrapped = ((AdapterWrapper) adapter).wrapped;
         } else {

@@ -5,7 +5,6 @@ import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
 import com.jaimemartz.playerbalancer.connection.ServerAssignRegistry;
-import com.jaimemartz.playerbalancer.helper.NetworkManager;
 import com.jaimemartz.playerbalancer.helper.PasteHelper;
 import com.jaimemartz.playerbalancer.helper.PlayerLocker;
 import com.jaimemartz.playerbalancer.listeners.*;
@@ -34,7 +33,6 @@ public class PlayerBalancer extends Plugin {
     private StatusManager statusManager;
     private SettingsHolder settings;
     private SectionManager sectionManager;
-    private NetworkManager networkManager;
     private ConfigurationLoader<CommentedConfigurationNode> loader;
 
     private FallbackCommand fallbackCommand;
@@ -78,7 +76,7 @@ public class PlayerBalancer extends Plugin {
 
     public boolean checkUpToDate() {
         try {
-            URLConnection con = new URL("https://api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
+            URLConnection con = new URL("https:// api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
             String reply = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
             return getDescription().getVersion().equals(reply);
         } catch (IOException e) {
@@ -89,7 +87,7 @@ public class PlayerBalancer extends Plugin {
 
     @Override
     public void onDisable() {
-        //Nothing else to do than normal stop
+        // Nothing else to do than normal stop
         this.execStop();
     }
 
@@ -127,8 +125,6 @@ public class PlayerBalancer extends Plugin {
                     reloadListener = new ProxyReloadListener(this);
                     getProxy().getPluginManager().registerListener(this, reloadListener);
                 }
-
-                networkManager = new NetworkManager(this);
 
                 sectionManager = new SectionManager(this);
                 sectionManager.load();
@@ -198,7 +194,7 @@ public class PlayerBalancer extends Plugin {
         }
 
         if (settings.getGeneralProps().isEnabled()) {
-            //Do not try to do anything if the plugin has not loaded correctly
+            // Do not try to do anything if the plugin has not loaded correctly
             if (failed) return;
 
             if (settings.getGeneralProps().isAutoReload()) {
@@ -282,10 +278,6 @@ public class PlayerBalancer extends Plugin {
 
     public StatusManager getStatusManager() {
         return statusManager;
-    }
-
-    public NetworkManager getNetworkManager() {
-        return networkManager;
     }
 
     public FallbackCommand getFallbackCommand() {

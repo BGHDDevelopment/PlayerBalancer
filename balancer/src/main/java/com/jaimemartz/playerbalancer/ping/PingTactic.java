@@ -37,7 +37,7 @@ public enum PingTactic {
             try {
                 server.ping((ping, throwable) -> {
                     if (ping != null) {
-                        //using deprecated method for bungee 1.8 compatibility
+                        //  Using deprecated method for bungee 1.8 compatibility
                         callback.done(new ServerStatus(
                                 ping.getDescription(),
                                 ping.getPlayers().getOnline(),
