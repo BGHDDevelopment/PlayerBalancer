@@ -76,7 +76,7 @@ public class PlayerBalancer extends Plugin {
 
     public boolean checkUpToDate() {
         try {
-            URLConnection con = new URL("https:// api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
+            URLConnection con = new URL("https://api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
             String reply = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
             return getDescription().getVersion().equals(reply);
         } catch (IOException e) {
