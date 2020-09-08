@@ -1,10 +1,13 @@
 import com.jaimemartz.playerbalancer.utils.HastebinPaste;
 import org.junit.Test;
 
+import java.net.URL;
+import static org.junit.Assert.*;
+
 public class HastebinPasteTest {
     @Test
-    public void test() {
-        HastebinPaste paste = new HastebinPaste("https://file.properties/paste/",
+    public void test() throws Exception {
+        HastebinPaste paste = new HastebinPaste("https://hastebin.com/",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed " +
                         "iaculis, sapien et vehicula tristique, diam libero bibendum " +
                         "nunc, et rutrum nisl nulla quis diam. Cras ipsum enim, molestie" +
@@ -16,10 +19,7 @@ public class HastebinPasteTest {
                         " orci, posuere malesuada ante non, elementum vehicula libero."
         );
 
-        try {
-            System.out.println(paste.paste());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        URL pasteUrl = paste.paste();
+        assertNotNull(pasteUrl);
     }
 }

@@ -37,7 +37,7 @@ public enum PasteHelper {
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, "UTF-8")) {
                     String content = CharStreams.toString(reader);
-                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
+                    HastebinPaste paste = new HastebinPaste(HASTEBIN_HOST, content);
                     return paste.paste();
                 }
             }
@@ -62,7 +62,7 @@ public enum PasteHelper {
                 try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
                     String content = CharStreams.toString(reader);
                     content = content.replaceAll("[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}", "?.?.?.?");
-                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
+                    HastebinPaste paste = new HastebinPaste(HASTEBIN_HOST, content);
                     return paste.paste();
                 }
             }
@@ -86,14 +86,16 @@ public enum PasteHelper {
             try (FileInputStream stream = new FileInputStream(file)) {
                 try (InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8)) {
                     String content = CharStreams.toString(reader);
-                    HastebinPaste paste = new HastebinPaste("https://file.properties/paste/", content);
+                    HastebinPaste paste = new HastebinPaste(HASTEBIN_HOST, content);
                     return paste.paste();
                 }
             }
         }
     };
 
-    private URL url;
+    private static final String HASTEBIN_HOST = "https://hastebin.com/";
+
+    private URL lastPasteUrl;
 
     private final BiConsumer<CommandSender, URL> consumer;
     private final boolean cache;
@@ -104,9 +106,9 @@ public enum PasteHelper {
     }
 
     public void send(PlayerBalancer plugin, CommandSender sender) {
-        if (url == null || !cache) {
+        if (lastPasteUrl == null || !cache) {
             try {
-                url = paste(plugin);
+                lastPasteUrl = paste(plugin);
             } catch (PasteException e) {
                 sender.sendMessage(new ComponentBuilder("An exception occurred while trying to send the paste: " + e.getMessage())
                         .color(ChatColor.RED)
@@ -127,8 +129,8 @@ public enum PasteHelper {
             );
         }
 
-        if (url != null) {
-            consumer.accept(sender, url);
+        if (lastPasteUrl != null) {
+            consumer.accept(sender, lastPasteUrl);
         } else {
             sender.sendMessage(new ComponentBuilder("Could not create the paste, try again...")
                     .color(ChatColor.RED)
@@ -137,15 +139,15 @@ public enum PasteHelper {
         }
     }
 
-    public URL getURL() {
-        return url;
+    public URL getLastPasteURL() {
+        return lastPasteUrl;
     }
 
     public abstract URL paste(PlayerBalancer plugin) throws Exception;
 
     public static void reset() {
         for (PasteHelper helper : values()) {
-            helper.url = null;
+            helper.lastPasteUrl = null;
         }
     }
 }
