@@ -42,6 +42,10 @@ public class PluginMessageListener implements Listener {
 
     @EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        
         if (event.getTag().equals(PB_CHANNEL) && event.getSender() instanceof Server) {
             ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
             String request = in.readUTF();
