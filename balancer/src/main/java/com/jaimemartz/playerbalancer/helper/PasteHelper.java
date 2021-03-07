@@ -93,7 +93,7 @@ public enum PasteHelper {
         }
     };
 
-    private static final String HASTEBIN_HOST = "https://hastebin.com/";
+    private static final String HASTEBIN_HOST = "https://haste.zneix.eu/";
 
     private URL lastPasteUrl;
 

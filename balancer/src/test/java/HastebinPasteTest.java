@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 public class HastebinPasteTest {
     @Test
     public void test() throws Exception {
-        HastebinPaste paste = new HastebinPaste("https://hastebin.com/",
+        HastebinPaste paste = new HastebinPaste("https://haste.zneix.eu/",
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed " +
                         "iaculis, sapien et vehicula tristique, diam libero bibendum " +
                         "nunc, et rutrum nisl nulla quis diam. Cras ipsum enim, molestie" +
