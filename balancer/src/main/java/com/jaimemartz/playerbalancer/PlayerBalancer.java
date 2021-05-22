@@ -68,7 +68,7 @@ public class PlayerBalancer extends Plugin {
         if (!checkUpToDate()) {
             getLogger().info("You are using a version of PlayerBalancer that is not the latest on spigot");
             getLogger().info("You might want to update to benefit of new features, improvements and fixes");
-            getLogger().info("Access the plugin page at https://www.spigotmc.org/resources/10788");
+            getLogger().info("Access the plugin page at https://www.spigotmc.org/resources/55011");
         }
 
         this.execStart();
@@ -76,7 +76,7 @@ public class PlayerBalancer extends Plugin {
 
     public boolean checkUpToDate() {
         try {
-            URLConnection con = new URL("https://api.spigotmc.org/legacy/update.php?resource=10788").openConnection();
+            URLConnection con = new URL("https://api.spigotmc.org/legacy/update.php?resource=55011").openConnection();
             String reply = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
             return getDescription().getVersion().equals(reply);
         } catch (IOException e) {
