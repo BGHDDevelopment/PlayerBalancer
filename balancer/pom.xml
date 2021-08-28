@@ -67,6 +67,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.imaginarycode.minecraft</groupId>
+            <artifactId>RedisBungee</artifactId>
+            <version>0.6.5-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>ninja.leaping.configurate</groupId>
             <artifactId>configurate-hocon</artifactId>
             <version>3.3</version>

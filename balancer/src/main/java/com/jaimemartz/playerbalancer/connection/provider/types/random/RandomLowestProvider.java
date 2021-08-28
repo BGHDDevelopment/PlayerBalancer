@@ -18,7 +18,7 @@ public class RandomLowestProvider extends AbstractProvider {
         int min = Integer.MAX_VALUE;
 
         for (ServerInfo server : servers) {
-            int count = server.getPlayers().size();
+            int count = plugin.getNetworkManager().getPlayers(server);
 
             if (count <= min) {
                 if (count < min) {
