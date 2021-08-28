@@ -17,7 +17,7 @@ public class ProgressiveFillerProvider extends AbstractProvider {
 
         for (ServerInfo server : servers) {
             ServerStatus status = plugin.getStatusManager().getStatus(server);
-            int count = server.getPlayers().size();
+            int count = plugin.getNetworkManager().getPlayers(server);
 
             if (count > max && count <= status.getMaximum()) {
                 max = count;

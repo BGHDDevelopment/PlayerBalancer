@@ -18,7 +18,7 @@ public class RandomFillerProvider extends AbstractProvider {
         int max = Integer.MIN_VALUE;
 
         for (ServerInfo server : servers) {
-            int count = server.getPlayers().size();
+            int count = plugin.getNetworkManager().getPlayers(server);
 
             if (count >= max) {
                 if (count > max) {

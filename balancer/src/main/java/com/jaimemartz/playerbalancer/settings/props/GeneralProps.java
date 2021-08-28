@@ -19,6 +19,9 @@ public class GeneralProps {
     @Setting(value = "plugin-messaging")
     private boolean pluginMessaging;
 
+    @Setting(value = "redis-bungee")
+    private boolean redisBungee;
+
     @Setting
     private String version;
 }
