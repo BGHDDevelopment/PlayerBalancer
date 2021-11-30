@@ -1,0 +1,5 @@
+name: PlayerBalancerPartyAndFriendsAddon
+version: ${project.version}
+main: com.bghddevelopment.partyandfriendsaddon.PBServerConnector
+depends: [PartyAndFriends, PlayerBalancer]
+author: BGHDDevelopmentLLC

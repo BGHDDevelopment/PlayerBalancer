@@ -9,10 +9,6 @@ You can view the resource [here](https://www.spigotmc.org/resources/55011/) and 
 
 While you may report issues via the "Issues" tab I recommend putting them on our [Discord](https://bghddevelopment.com/discord) as it will be a faster response.
 
-**Suggestions**
-
-We do have a suggestions and feedback site [here](https://feedback.bghddevelopment.com) which is reviewed by project maintainers, but feel free to make a pull request to add cool features without posting there!
-
 **Build**
 * Clone this repository
 * Build with maven
