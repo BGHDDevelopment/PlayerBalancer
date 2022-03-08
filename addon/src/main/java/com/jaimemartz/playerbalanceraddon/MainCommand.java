@@ -14,6 +14,11 @@ public class MainCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
+    // Command: /spb 
+    // <connect | fallback | bypassconnect | setbypass | clearbypass | overridestatus | clearoverride>
+    // <section | server | player> [player]
+    // example: /spb connect <section> [player]
+    // or: /sbp bypassconnect <server> [player]
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("spb")) {
