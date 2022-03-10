@@ -17,6 +17,7 @@ public class PBServerConnector extends PAFExtension implements ServerConnector {
     public void onEnable() {
         PAFPlayerClass.setServerConnector(this);
         ProxyServer.getInstance().getConsole().sendMessage(TextComponent.fromLegacyText("Enabled PBServerConnector connection for PlayerBalancer!"));
+        registerAsExtension();
     }
 
     public void connect(final ProxiedPlayer pPlayer, final ServerInfo pServerInfo) {
