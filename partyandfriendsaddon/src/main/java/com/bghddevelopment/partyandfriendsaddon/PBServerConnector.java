@@ -4,6 +4,7 @@ import de.simonsator.partyandfriends.api.PAFExtension;
 import de.simonsator.partyandfriends.api.friends.ServerConnector;
 import de.simonsator.partyandfriends.api.pafplayers.PAFPlayerClass;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -15,7 +16,7 @@ public class PBServerConnector extends PAFExtension implements ServerConnector {
 
     public void onEnable() {
         PAFPlayerClass.setServerConnector(this);
-        ProxyServer.getInstance().getConsole().sendMessage("Enabled PBServerConnector connection for PlayerBalancer!");
+        ProxyServer.getInstance().getConsole().sendMessage(TextComponent.fromLegacyText("Enabled PBServerConnector connection for PlayerBalancer!"));
     }
 
     public void connect(final ProxiedPlayer pPlayer, final ServerInfo pServerInfo) {
