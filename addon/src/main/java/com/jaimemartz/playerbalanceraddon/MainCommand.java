@@ -1,6 +1,7 @@
 package com.jaimemartz.playerbalanceraddon;
 
 import com.google.common.base.Strings;
+import com.jaimemartz.playerbalanceraddon.util.Color;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,16 +27,16 @@ public class MainCommand implements CommandExecutor {
                                 Player player = plugin.getServer().getPlayer(args[2]);
                                 if (player != null) {
                                     plugin.getManager().connectPlayer(player, input);
-                                    sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                                 } else {
-                                    sender.sendMessage(ChatColor.RED + "There is no player with that name connected to this server");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("NoPlayer")));
                                 }
                             } else {
                                 if (sender instanceof Player) {
                                     plugin.getManager().connectPlayer((Player) sender, input);
-                                    sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                                 } else {
-                                    sender.sendMessage(ChatColor.RED + "This command variant can only be executed by a player");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("ConsoleError")));
                                 }
                             }
                         } else {
@@ -49,16 +50,16 @@ public class MainCommand implements CommandExecutor {
                             Player player = plugin.getServer().getPlayer(args[1]);
                             if (player != null) {
                                 plugin.getManager().fallbackPlayer((Player) sender);
-                                sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                             } else {
-                                sender.sendMessage(ChatColor.RED + "There is no player with that name connected to this server");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("NoPlayer")));
                             }
                         } else {
                             if (sender instanceof Player) {
                                 plugin.getManager().fallbackPlayer((Player) sender);
-                                sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                             } else {
-                                sender.sendMessage(ChatColor.RED + "This command variant can only be executed by a player");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("ConsoleError")));
                             }
                         }
                         break;
@@ -71,16 +72,16 @@ public class MainCommand implements CommandExecutor {
                                 Player player = plugin.getServer().getPlayer(args[2]);
                                 if (player != null) {
                                     plugin.getManager().bypassConnect(player, input);
-                                    sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                                 } else {
-                                    sender.sendMessage(ChatColor.RED + "There is no player with that name connected to this server");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("NoPlayer")));
                                 }
                             } else {
                                 if (sender instanceof Player) {
                                     plugin.getManager().bypassConnect((Player) sender, input);
-                                    sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                                 } else {
-                                    sender.sendMessage(ChatColor.RED + "This command variant can only be executed by a player");
+                                    sender.sendMessage(Color.translate(plugin.getConfig().getString("ConsoleError")));
                                 }
                             }
                         } else {
@@ -94,16 +95,16 @@ public class MainCommand implements CommandExecutor {
                             Player player = plugin.getServer().getPlayer(args[1]);
                             if (player != null) {
                                 plugin.getManager().setPlayerBypass(player);
-                                sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                             } else {
-                                sender.sendMessage(ChatColor.RED + "There is no player with that name connected to this server");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("NoPlayer")));
                             }
                         } else {
                             if (sender instanceof Player) {
                                 plugin.getManager().setPlayerBypass((Player) sender);
-                                sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                             } else {
-                                sender.sendMessage(ChatColor.RED + "This command variant can only be executed by a player");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("ConsoleError")));
                             }
                         }
                         break;
@@ -114,16 +115,16 @@ public class MainCommand implements CommandExecutor {
                             Player player = plugin.getServer().getPlayer(args[1]);
                             if (player != null) {
                                 plugin.getManager().clearPlayerBypass((Player) sender);
-                                sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                             } else {
-                                sender.sendMessage(ChatColor.RED + "There is no player with that name connected to this server");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("NoPlayer")));
                             }
                         } else {
                             if (sender instanceof Player) {
                                 plugin.getManager().clearPlayerBypass((Player) sender);
-                                sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                             } else {
-                                sender.sendMessage(ChatColor.RED + "This command variant can only be executed by a player");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("ConsoleError")));
                             }
                         }
                         break;
@@ -133,9 +134,9 @@ public class MainCommand implements CommandExecutor {
                         if (args.length >= 3) {
                             if (args[2].equals("false") || args[2].equals("true")) {
                                 plugin.getManager().setStatusOverride(args[1], Boolean.valueOf(args[2]));
-                                sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                             } else {
-                                sender.sendMessage(ChatColor.RED + "The status parameter of this command variant has to be a boolean type, either false or true");
+                                sender.sendMessage(Color.translate(plugin.getConfig().getString("BooleanError")));
                             }
                         } else {
                             sender.sendMessage(ChatColor.RED + "Usage: /section overridestatus <section> <status: false|true>");
@@ -146,7 +147,7 @@ public class MainCommand implements CommandExecutor {
                     case "clearoverride": {
                         if (args.length >= 2) {
                             plugin.getManager().clearStatusOverride(args[1]);
-                            sender.sendMessage(ChatColor.GREEN + "Successfully sent request to the plugin");
+                            sender.sendMessage(Color.translate(plugin.getConfig().getString("RequestSent")));
                         } else {
                             sender.sendMessage(ChatColor.RED + "Usage: /section clearoverride <server>");
                         }

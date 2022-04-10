@@ -1,6 +1,8 @@
 package com.jaimemartz.playerbalancer;
 
 import com.google.common.reflect.TypeToken;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.jaimemartz.playerbalancer.commands.FallbackCommand;
 import com.jaimemartz.playerbalancer.commands.MainCommand;
 import com.jaimemartz.playerbalancer.commands.ManageCommand;
@@ -13,6 +15,7 @@ import com.jaimemartz.playerbalancer.ping.StatusManager;
 import com.jaimemartz.playerbalancer.section.SectionManager;
 import com.jaimemartz.playerbalancer.settings.SettingsHolder;
 import com.jaimemartz.playerbalancer.utils.CustomFormatter;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -23,6 +26,7 @@ import org.bstats.bungeecord.Metrics;
 import org.bstats.bungeecord.Metrics.SingleLineChart;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
@@ -67,24 +71,55 @@ public class PlayerBalancer extends Plugin {
             }
         }));
 
-        if (!checkUpToDate()) {
-            getLogger().info("You are using a version of PlayerBalancer that is not the latest on spigot");
-            getLogger().info("You might want to update to benefit of new features, improvements and fixes");
-            getLogger().info("Access the plugin page at https://www.spigotmc.org/resources/55011");
-        }
+        updateCheck();
 
         this.execStart();
     }
 
-    public boolean checkUpToDate() {
+    public void updateCheck() {
         try {
-            URLConnection con = new URL("https://api.spigotmc.org/legacy/update.php?resource=55011").openConnection();
-            String reply = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-            return getDescription().getVersion().equals(reply);
-        } catch (IOException e) {
-            getLogger().log(Level.WARNING, "Could not access Spigot API, maybe you have a firewall or something that blocks request to it", e);
+            String urlString = "https://updatecheck.bghddevelopment.com";
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String input;
+            StringBuffer response = new StringBuffer();
+            while ((input = reader.readLine()) != null) {
+                response.append(input);
+            }
+            reader.close();
+            JsonObject object = new JsonParser().parse(response.toString()).getAsJsonObject();
+
+            if (object.has("plugins")) {
+                JsonObject plugins = object.get("plugins").getAsJsonObject();
+                JsonObject info = plugins.get("PlayerBalancer").getAsJsonObject();
+                String version = info.get("version").getAsString();
+                if (version.equals(getDescription().getVersion())) {
+                    getLogger().log(Level.INFO, ("PlayerBalancer is on the latest version."));
+                } else {
+                    getLogger().log(Level.WARNING, (""));
+                    getLogger().log(Level.WARNING, (""));
+                    getLogger().log(Level.WARNING, ("Your PlayerBalancer version is out of date!"));
+                    getLogger().log(Level.WARNING, ("We recommend updating ASAP!"));
+                    getLogger().log(Level.WARNING, (""));
+                    getLogger().log(Level.WARNING, ("Your Version: &e" + getDescription().getVersion()));
+                    getLogger().log(Level.WARNING, ("Newest Version: &e" + version));
+                    getLogger().log(Level.WARNING, (""));
+                    getLogger().log(Level.WARNING, (""));
+                    return;
+                }
+                return;
+            } else {
+                getLogger().log(Level.SEVERE, ("&cWrong response from update API, contact plugin developer!"));
+                return;
+            }
+        } catch (
+                Exception ex) {
+            getLogger().log(Level.SEVERE, ("&cFailed to get updater check. (" + ex.getMessage() + ")"));
+            return;
         }
-        return true;
     }
 
     @Override

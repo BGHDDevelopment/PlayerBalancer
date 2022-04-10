@@ -20,7 +20,7 @@ public class PlayerBalancerPlaceholderExpansion extends PlaceholderExpansion {
             String section = identifier.split("pc_")[1];
 
             if (section == null)
-                return null;
+                return "Invalid Section";
 
             // For the first call this placeholder will return 0
             // For the next one, the result of the previous one
@@ -41,7 +41,7 @@ public class PlayerBalancerPlaceholderExpansion extends PlaceholderExpansion {
 
     @Override
     public String getAuthor() {
-        return "Jamezrin <jaime@jamezrin.name>";
+        return "BGHDDevelopmentLLC";
     }
 
     @Override

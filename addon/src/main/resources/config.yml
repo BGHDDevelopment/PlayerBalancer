@@ -1,0 +1,4 @@
+RequestSent: "&aSuccessfully sent request to the plugin"
+NoPlayer: "&cThere is no player with that name connected to this server"
+ConsoleError: "&cThis command variant can only be executed by a player"
+BooleanError: "&cThe status parameter of this command variant has to be a boolean type, either false or true"
