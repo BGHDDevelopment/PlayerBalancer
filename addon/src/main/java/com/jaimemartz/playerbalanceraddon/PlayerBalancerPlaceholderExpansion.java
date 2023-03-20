@@ -46,4 +46,12 @@ public class PlayerBalancerPlaceholderExpansion extends PlaceholderExpansion {
     public String getVersion() {
         return "bundled";
     }
+
+    /**
+     * This is required or else PlaceholderAPI will unregister the Expansion on reload
+     */
+    @Override
+    public boolean persist() {
+        return true;
+    }
 }
