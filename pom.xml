@@ -11,6 +11,7 @@
 
     <modules>
         <module>balancer</module>
+        <module>balancer-velocity</module>
         <module>addon</module>
         <module>partyandfriendsaddon</module>
     </modules>
