@@ -81,6 +81,7 @@ public class PlayerBalancer {
     private final Metrics.Factory metricsFactory;
     private final PluginContainer container;
     private final Path dataDirectory;
+    private String version = "2.3.4";
 
     @Inject
     public PlayerBalancer(ProxyServer proxyServer, Logger logger, Metrics.Factory metricsFactory, PluginContainer container, @DataDirectory Path dataDirectory) {
@@ -129,7 +130,7 @@ public class PlayerBalancer {
                 JsonObject plugins = object.get("plugins").getAsJsonObject();
                 JsonObject info = plugins.get("PlayerBalancer").getAsJsonObject();
                 String version = info.get("version").getAsString();
-                if (version.equals(pluginVersion.get())) {
+                if (version.equals(getVersion())) {
                     getLogger().info(("PlayerBalancer is on the latest version."));
                 } else {
                     getLogger().warn("");

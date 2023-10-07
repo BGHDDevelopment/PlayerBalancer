@@ -17,6 +17,7 @@ public class PlayerBalancerAddon extends JavaPlugin {
     private PluginMessageManager manager;
     private PlayerBalancerPlaceholderExpansion expansion;
     private ConfigurationFile config;
+    private String version = "2.3.4";
 
     @Override
     public void onEnable() {
@@ -50,7 +51,7 @@ public class PlayerBalancerAddon extends JavaPlugin {
                 JsonObject plugins = object.get("plugins").getAsJsonObject();
                 JsonObject info = plugins.get("PlayerBalancer").getAsJsonObject();
                 String version = info.get("version").getAsString();
-                if (version.equals(getDescription().getVersion())) {
+                if (version.equals(this.getVersion())) {
                     getLogger().log(Level.INFO, ("PlayerBalancerAddon is on the latest version."));
                 } else {
                     getLogger().log(Level.WARNING, (""));

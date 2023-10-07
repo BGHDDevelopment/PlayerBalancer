@@ -6,7 +6,7 @@
 
     <groupId>com.jaimemartz</groupId>
     <artifactId>playerbalancer-parent</artifactId>
-    <version>2.3.3</version>
+    <version>2.3.4</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -29,7 +29,7 @@
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/jamezrin/PlayerBalancer/issues</url>
+        <url>https://github.com/BGHDDevelopment/PlayerBalancer/issues</url>
     </issueManagement>
 
     <properties>
