@@ -15,7 +15,7 @@ public class DefaultConfigLoadTest {
 
     @Before
     public void before() throws IOException {
-        file = getClass().getResource("default.conf");
+        file = getClass().getResource("velocity.conf");
     }
 
     @Test
