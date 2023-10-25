@@ -53,7 +53,7 @@ import java.util.Optional;
 @Plugin(
         id = "playerbalancer",
         name = "PlayerBalancer Velocity",
-        version = "2.3.3",
+        version = "2.3.4",
         description = "PlayerBalancer is a plugin for setting up a network with multiple lobbies of different types.",
         authors = {"jaime29010", "BGHDDevelopment", "HappyAreaBean"},
         dependencies = {
@@ -160,10 +160,10 @@ public class PlayerBalancer {
         if (!dataDirectory.toFile().exists())
             dataDirectory.toFile().mkdir();
 
-        File file = new File(dataDirectory.toFile(), "plugin.conf");
+        File file = new File(dataDirectory.toFile(), "/plugin.conf");
 
         if (!file.exists()) {
-            try (InputStream in = getClass().getResourceAsStream("velocity.conf")) {
+            try (InputStream in = getClass().getResourceAsStream("/velocity.conf")) {
                 Files.copy(in, file.toPath());
             } catch (IOException e) {
                 logger.error("Unable to copy velocity.conf", e);
