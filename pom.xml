@@ -6,7 +6,7 @@
 
     <groupId>com.jaimemartz</groupId>
     <artifactId>playerbalancer-parent</artifactId>
-    <version>2.3.4</version>
+    <version>2.3.5</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -142,13 +142,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>1.18.26</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

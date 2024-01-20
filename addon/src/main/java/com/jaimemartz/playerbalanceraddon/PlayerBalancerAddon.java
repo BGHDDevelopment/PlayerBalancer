@@ -17,7 +17,7 @@ public class PlayerBalancerAddon extends JavaPlugin {
     private PluginMessageManager manager;
     private PlayerBalancerPlaceholderExpansion expansion;
     private ConfigurationFile config;
-    private String version = "2.3.4";
+    private String version = "2.3.5";
 
     @Override
     public void onEnable() {

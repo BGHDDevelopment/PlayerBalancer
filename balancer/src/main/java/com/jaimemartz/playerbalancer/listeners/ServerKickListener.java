@@ -119,7 +119,13 @@ public class ServerKickListener implements Listener {
             }
 
             if (target == null) {
-                MessageUtils.send(player, messages.getUnavailableServerMessage());
+                try {
+                    MessageUtils.send(player, messages.getUnavailableServerMessage());
+                    return null;
+                } catch (NullPointerException exception) {
+                    //Do because this randomly is firing NPE for some new versions
+                    plugin.getLogger().info("PlayerBalancer caught an NPE on ServerKickListener. This can be reported but the actual cause is unknown at this time.");
+                }
                 return null;
             }
 

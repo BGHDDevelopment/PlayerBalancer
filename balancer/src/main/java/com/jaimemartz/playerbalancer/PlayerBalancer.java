@@ -104,8 +104,8 @@ public class PlayerBalancer extends Plugin {
                     getLogger().log(Level.WARNING, ("Your PlayerBalancer version is out of date!"));
                     getLogger().log(Level.WARNING, ("We recommend updating ASAP!"));
                     getLogger().log(Level.WARNING, (""));
-                    getLogger().log(Level.WARNING, ("Your Version: &e" + getDescription().getVersion()));
-                    getLogger().log(Level.WARNING, ("Newest Version: &e" + version));
+                    getLogger().log(Level.WARNING, ("Your Version: " + getDescription().getVersion()));
+                    getLogger().log(Level.WARNING, ("Newest Version: " + version));
                     getLogger().log(Level.WARNING, (""));
                     getLogger().log(Level.WARNING, (""));
                     return;
