@@ -3,11 +3,14 @@ package com.jaimemartz.playerbalancer.utils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentStyle;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
+import net.md_5.bungee.chat.ComponentStyleSerializer;
 import net.md_5.bungee.chat.TextComponentSerializer;
 import net.md_5.bungee.chat.TranslatableComponentSerializer;
 
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,10 +20,12 @@ import java.net.Socket;
 import java.util.List;
 
 public final class ServerListPing {
+
     private static Gson gson = new GsonBuilder()
             .registerTypeAdapter(BaseComponent.class, new ComponentSerializer())
             .registerTypeAdapter(TextComponent.class, new TextComponentSerializer())
             .registerTypeAdapter(TranslatableComponentSerializer.class, new TranslatableComponentSerializer())
+            .registerTypeAdapter(ComponentStyle.class, new ComponentStyleSerializer() )
             .create();
 
     private static int readVarInt(DataInputStream in) throws IOException {
