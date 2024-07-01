@@ -17,7 +17,7 @@ public class SectionCommand extends FallbackCommand {
 
     @Override
     public boolean hasPermission(Invocation invocation) {
-        return invocation.source().hasPermission(permission);
+        return permission.isEmpty() || invocation.source().hasPermission(permission);
     }
 
     @Override
