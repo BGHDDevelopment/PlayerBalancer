@@ -29,8 +29,11 @@ public class PBServerConnector implements ServerConnector {
     @Override
     public void connect(Player player, RegisteredServer registeredServer) {
         PlayerLocker.lock(player);
-        player.createConnectionRequest(registeredServer).fireAndForget();
-        PlayerLocker.unlock(player);
+        player.createConnectionRequest(registeredServer)
+                        .connectWithIndication()
+                        .whenComplete((result, throwable) -> {
+                            PlayerLocker.unlock(player);
+                        });
     }
 
 }
