@@ -14,6 +14,7 @@
         <module>balancer-velocity</module>
         <module>addon</module>
         <module>partyandfriendsaddon</module>
+        <module>partyandfriendsaddon-velocity</module>
     </modules>
 
     <name>PlayerBalancerParent</name>
