@@ -1,0 +1,20 @@
+{
+  "id": "playerbalancerpartyandfriendsaddon",
+  "name": "PlayerBalancerPartyAndFriendsAddon",
+  "version": "${version}",
+  "authors": [
+    "BGHDDevelopmentLLC",
+    "HappyAreaBean"
+  ],
+  "dependencies": [
+    {
+      "id": "partyandfriends",
+      "optional": false
+    },
+    {
+      "id": "playerbalancer",
+      "optional": false
+    }
+  ],
+  "main": "com.bghddevelopment.partyandfriendsaddon.PBServerConnector"
+}
