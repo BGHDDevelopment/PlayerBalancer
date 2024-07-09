@@ -9,9 +9,11 @@ import com.google.common.io.ByteStreams;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 public class PluginMessageManager implements PluginMessageListener {
@@ -38,13 +40,18 @@ public class PluginMessageManager implements PluginMessageListener {
             ByteArrayDataInput in = ByteStreams.newDataInput(message);
             String subchannel = in.readUTF();
 
-            Iterator<Consumer<ByteArrayDataInput>> iterator = contexts.get(
+            Collection<Consumer<ByteArrayDataInput>> consumers = contexts.get(
                     new MessageContext(channel, subchannel, player.getUniqueId())
-            ).iterator();
+            );
 
-            if (iterator.hasNext()) {
-                iterator.next().accept(in);
-                iterator.remove();
+            if (consumers != null) {
+                synchronized (consumers) {
+                    Iterator<Consumer<ByteArrayDataInput>> iterator = consumers.iterator();
+                    if (iterator.hasNext()) {
+                        iterator.next().accept(in);
+                        iterator.remove();
+                    }
+                }
             }
         }
     }

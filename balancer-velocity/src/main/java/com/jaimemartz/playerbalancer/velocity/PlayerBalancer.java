@@ -53,7 +53,7 @@ import java.util.Optional;
 @Plugin(
         id = "playerbalancer",
         name = "PlayerBalancer Velocity",
-        version = "2.3.5",
+        version = "2.3.6",
         description = "PlayerBalancer is a plugin for setting up a network with multiple lobbies of different types.",
         authors = {"jaime29010", "BGHDDevelopment", "HappyAreaBean"},
         dependencies = {
@@ -81,7 +81,7 @@ public class PlayerBalancer {
     private final Metrics.Factory metricsFactory;
     private final PluginContainer container;
     private final Path dataDirectory;
-    private String version = "2.3.5";
+    private String version = "2.3.6";
 
     @Inject
     public PlayerBalancer(ProxyServer proxyServer, Logger logger, Metrics.Factory metricsFactory, PluginContainer container, @DataDirectory Path dataDirectory) {
