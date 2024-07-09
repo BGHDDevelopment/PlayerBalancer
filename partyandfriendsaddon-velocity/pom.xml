@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.bghddevelopment.partyandfriendsaddon</groupId>
-    <artifactId>PBServerConnector-Velocity</artifactId>
+    <artifactId>PartyAndFriendsAddon-Velocity</artifactId>
     <version>2.3.6</version>
     <packaging>jar</packaging>
 

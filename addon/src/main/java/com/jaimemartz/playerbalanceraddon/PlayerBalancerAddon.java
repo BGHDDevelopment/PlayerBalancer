@@ -59,8 +59,8 @@ public class PlayerBalancerAddon extends JavaPlugin {
                     getLogger().log(Level.WARNING, ("Your PlayerBalancerAddon version is out of date!"));
                     getLogger().log(Level.WARNING, ("We recommend updating ASAP!"));
                     getLogger().log(Level.WARNING, (""));
-                    getLogger().log(Level.WARNING, ("Your Version: &e" + getDescription().getVersion()));
-                    getLogger().log(Level.WARNING, ("Newest Version: &e" + version));
+                    getLogger().log(Level.WARNING, ("Your Version:" + getDescription().getVersion()));
+                    getLogger().log(Level.WARNING, ("Newest Version:" + version));
                     getLogger().log(Level.WARNING, (""));
                     getLogger().log(Level.WARNING, (""));
                     return;
